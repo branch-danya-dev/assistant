@@ -1,0 +1,25 @@
+[project]
+name = "personal-agent"
+version = "0.0.0"
+description = "Planning baseline and typed contracts for an agent-first personal AI assistant"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = []
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11"]
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

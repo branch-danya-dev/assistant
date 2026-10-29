@@ -1,0 +1,682 @@
+{
+  "schema_version": "1.0",
+  "status": "planning",
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "domain": "identity",
+      "title": "Model-independent persistent identity",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Persona and preferences remain available after switching model providers."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-002",
+      "domain": "identity",
+      "title": "Scoped response style",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Professional task mode and conversational mode share identity without changing task calculations."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-003",
+      "domain": "identity",
+      "title": "Inspectable and editable persona",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Owner can view, edit, version and restore identity configuration."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-004",
+      "domain": "memory",
+      "title": "Persistent scoped project decisions",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "A decision survives restart, is linked to project and carries verifiable provenance."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-005",
+      "domain": "memory",
+      "title": "Decision supersession and contradiction handling",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "New decision supersedes old one without deleting past rationale; conflicting claims are surfaced."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-006",
+      "domain": "memory",
+      "title": "Hybrid lexical/semantic retrieval",
+      "priority": "P1",
+      "target_milestone": "M2",
+      "status": "specified",
+      "acceptance": [
+        "Scoped query returns relevant cited records without injecting other projects."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-007",
+      "domain": "memory",
+      "title": "Memory review/export/delete",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Owner can inspect and export selected records, delete them and rebuild indexes."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-008",
+      "domain": "memory",
+      "title": "Sensitive data boundaries",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Private records stay local by default; retrieval enforces scope and export rules."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-009",
+      "domain": "orchestration",
+      "title": "Durable task state machine",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Task has explicit lifecycle, persisted steps and stable IDs."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-010",
+      "domain": "orchestration",
+      "title": "Tool-aware multi-step planning",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Agent builds executable plan with dependencies and can revise it with audit."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-011",
+      "domain": "orchestration",
+      "title": "Tool result verification",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Completed action must have execution evidence or verifiable artifact; claims alone are insufficient."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-012",
+      "domain": "orchestration",
+      "title": "Bounded retries and budgets",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Loops respect time, retry, token/API cost and tool budgets."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-013",
+      "domain": "orchestration",
+      "title": "Safe recovery and idempotency",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Restart does not duplicate message/payment/file-mutating operations."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-014",
+      "domain": "orchestration",
+      "title": "Concurrent independent tasks",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "At least two read-only workflows run independently without race on shared resources."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-015",
+      "domain": "orchestration",
+      "title": "Scheduler, events and notifications",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Owner-approved task can trigger on schedule and report verified state."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-016",
+      "domain": "security",
+      "title": "Central typed authorization engine",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Every tool call passes policy check with target and side-effect; denied calls never run."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-017",
+      "domain": "security",
+      "title": "Untrusted input prompt-injection defenses",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Webpage, document and message instructions cannot escalate privileges or override owner policy."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-018",
+      "domain": "security",
+      "title": "Audit trail and stop control",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Attempts/approvals/results are logged and emergency stop prevents new execution."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-019",
+      "domain": "security",
+      "title": "Sensitive secrets and network egress",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "No secrets in prompts/logs/repo; unauthorized cloud egress rejected."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-020",
+      "domain": "models",
+      "title": "Local LLM adapter",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Run a verified tool-using local model with measured VRAM footprint on host."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-021",
+      "domain": "models",
+      "title": "Provider-neutral inference port",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Provider can be substituted without rebuilding identity/memory/task stores."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-022",
+      "domain": "models",
+      "title": "Optional gated cloud routing",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Explicit owner policy controls cloud request and sensitive data exposure."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-023",
+      "domain": "models",
+      "title": "Resource and cost accounting",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Track runtime tokens/latency/cost/VRAM and bound model residency."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-024",
+      "domain": "tools",
+      "title": "Typed registry and sandboxed dispatch",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Tool declarations validate arguments, side effect and authorized scope."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-025",
+      "domain": "tools",
+      "title": "Scoped filesystem access",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Read/write only approved test workspace and reject traversal/unsafe targets."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-026",
+      "domain": "tools",
+      "title": "Reliable numerical computations",
+      "priority": "P0",
+      "target_milestone": "M2",
+      "status": "specified",
+      "acceptance": [
+        "Monetary calculations use deterministic numerical tool and pass known fixtures."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-027",
+      "domain": "tools",
+      "title": "DOCX/PDF document editing",
+      "priority": "P0",
+      "target_milestone": "M2",
+      "status": "specified",
+      "acceptance": [
+        "Create and revise document and verify key structure/content preserved."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-028",
+      "domain": "tools",
+      "title": "XLSX workbook authoring and analysis",
+      "priority": "P0",
+      "target_milestone": "M2",
+      "status": "specified",
+      "acceptance": [
+        "Editable workbook with formulas independently recalculated/verified."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-029",
+      "domain": "tools",
+      "title": "Browser research and citations",
+      "priority": "P0",
+      "target_milestone": "M2",
+      "status": "specified",
+      "acceptance": [
+        "Research sites via approved browser; preserve source links and capture timestamps."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-030",
+      "domain": "tools",
+      "title": "Approval-gated browser state changes",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Web forms/submit actions require target-sensitive policy and audited consent."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-031",
+      "domain": "tools",
+      "title": "Windows OS adapter",
+      "priority": "P1",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "OS operations execute with least privilege and staged confirmation."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-032",
+      "domain": "tools",
+      "title": "Screen perception and UI automation",
+      "priority": "P2",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "Read screenshot and perform only authorized, verified UI actions."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-033",
+      "domain": "communications",
+      "title": "Telegram bot control channel",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Authorized user can submit task and retrieve status without opening unsafe endpoints."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-034",
+      "domain": "communications",
+      "title": "Personal Telegram integration",
+      "priority": "P2",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "Read approved chats and draft responses; outbound send explicitly confirmed."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-035",
+      "domain": "communications",
+      "title": "Email integration",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Search authorized inbox and draft response without implicit send."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-036",
+      "domain": "communications",
+      "title": "Calendar integration",
+      "priority": "P2",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "Read schedule and stage event changes for approval."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-037",
+      "domain": "business",
+      "title": "Supplier research and comparisons",
+      "priority": "P0",
+      "target_milestone": "M2",
+      "status": "specified",
+      "acceptance": [
+        "Comparable offers preserve source, price unit, currency and missing details."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-038",
+      "domain": "business",
+      "title": "Procurement request preparation",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Draft messages/order specifications without purchase or message send."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-039",
+      "domain": "business",
+      "title": "Cost and margin scenario models",
+      "priority": "P0",
+      "target_milestone": "M2",
+      "status": "specified",
+      "acceptance": [
+        "Transparent editable low/base/high scenarios with traceable inputs."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-040",
+      "domain": "business",
+      "title": "Project management and deadlines",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Tasks/dependencies/decisions can be tracked with consistent project context."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-041",
+      "domain": "development",
+      "title": "Safe Python execution and code tasks",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Run bounded scripts in isolated workspace; evaluate outputs and tests."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-042",
+      "domain": "development",
+      "title": "Git and GitHub integration",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Read code and stage proposed changes for user review."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-043",
+      "domain": "development",
+      "title": "CLO and professional app adapters",
+      "priority": "P2",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "Verify real integration capabilities before specifying supported mutation."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-044",
+      "domain": "evolution",
+      "title": "Outcome feedback and skill candidates",
+      "priority": "P1",
+      "target_milestone": "M3",
+      "status": "specified",
+      "acceptance": [
+        "Verified outcomes may produce reviewable reusable workflow candidates."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-045",
+      "domain": "evolution",
+      "title": "Sandboxed candidate tool development",
+      "priority": "P2",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "Candidate generated code cannot enter trusted registry absent tests and approval."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-046",
+      "domain": "evolution",
+      "title": "Optional offline fine-tuning framework",
+      "priority": "P2",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "Only after curated data, regression benchmark and reversible promotion design."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-047",
+      "domain": "interfaces",
+      "title": "Local text interface and task dashboard",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Owner can request task, inspect state, review artifacts and approval prompts."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-048",
+      "domain": "interfaces",
+      "title": "Remote access and authenticated client",
+      "priority": "P2",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "Remote client authenticates; no open unauthenticated control endpoint."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-049",
+      "domain": "interfaces",
+      "title": "Local voice input/output",
+      "priority": "P2",
+      "target_milestone": "M4",
+      "status": "specified",
+      "acceptance": [
+        "Mic can be explicitly disabled; STT/TTS work locally when available."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-050",
+      "domain": "quality",
+      "title": "Agent-oriented specs and CI validation",
+      "priority": "P0",
+      "target_milestone": "M0",
+      "status": "specified",
+      "acceptance": [
+        "All IDs, cross-links and machine records validate in CI."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-051",
+      "domain": "quality",
+      "title": "Versioned objective scenario benchmarks",
+      "priority": "P0",
+      "target_milestone": "M0",
+      "status": "specified",
+      "acceptance": [
+        "Five reproducible scenario specs exist with expected artifacts and safety checks."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-052",
+      "domain": "quality",
+      "title": "Agent-friendly task traceability",
+      "priority": "P0",
+      "target_milestone": "M0",
+      "status": "specified",
+      "acceptance": [
+        "Task, requirement, capability, scenario, decision and component references resolve."
+      ],
+      "owner": "project",
+      "notes": "Design intent only; implementation pending."
+    }
+  ]
+}

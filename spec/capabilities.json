@@ -1,0 +1,387 @@
+{
+  "schema_version": "1.0",
+  "capabilities": [
+    {
+      "id": "CAP-001",
+      "name": "local_inference",
+      "group": "inference",
+      "side_effect": "read",
+      "scope": "model_runtime",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-020",
+        "REQ-021"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-002",
+      "name": "context_retrieval",
+      "group": "memory",
+      "side_effect": "read",
+      "scope": "local_store",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-004",
+        "REQ-006"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-003",
+      "name": "memory_write",
+      "group": "memory",
+      "side_effect": "workspace_write",
+      "scope": "local_store",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-004",
+        "REQ-005"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-004",
+      "name": "task_management",
+      "group": "orchestration",
+      "side_effect": "workspace_write",
+      "scope": "local_store",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-009",
+        "REQ-010"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-005",
+      "name": "authorization",
+      "group": "security",
+      "side_effect": "read",
+      "scope": "policy_engine",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-016"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-006",
+      "name": "audit_events",
+      "group": "security",
+      "side_effect": "workspace_write",
+      "scope": "local_store",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-018"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-007",
+      "name": "filesystem_read",
+      "group": "filesystem",
+      "side_effect": "read",
+      "scope": "approved_paths",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-025"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-008",
+      "name": "filesystem_write",
+      "group": "filesystem",
+      "side_effect": "workspace_write",
+      "scope": "approved_paths",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-025"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-009",
+      "name": "calculator",
+      "group": "computation",
+      "side_effect": "read",
+      "scope": "sandbox",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-026"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-010",
+      "name": "python_sandbox",
+      "group": "computation",
+      "side_effect": "workspace_write",
+      "scope": "sandbox",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-041"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-011",
+      "name": "docx_pdf",
+      "group": "documents",
+      "side_effect": "workspace_write",
+      "scope": "approved_paths",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-027"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-012",
+      "name": "spreadsheet",
+      "group": "documents",
+      "side_effect": "workspace_write",
+      "scope": "approved_paths",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-028"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-013",
+      "name": "browser_research",
+      "group": "web",
+      "side_effect": "read",
+      "scope": "approved_browser",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-029"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-014",
+      "name": "browser_mutation",
+      "group": "web",
+      "side_effect": "external_send",
+      "scope": "approved_browser",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-030"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-015",
+      "name": "telegram_bot",
+      "group": "communication",
+      "side_effect": "external_send",
+      "scope": "service_api",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-033"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-016",
+      "name": "telegram_personal",
+      "group": "communication",
+      "side_effect": "external_send",
+      "scope": "service_api",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-034"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-017",
+      "name": "email_read",
+      "group": "communication",
+      "side_effect": "read",
+      "scope": "service_api",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-035"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-018",
+      "name": "email_send",
+      "group": "communication",
+      "side_effect": "external_send",
+      "scope": "service_api",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-035"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-019",
+      "name": "calendar",
+      "group": "communication",
+      "side_effect": "external_send",
+      "scope": "service_api",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-036"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-020",
+      "name": "windows_control",
+      "group": "system",
+      "side_effect": "privileged_change",
+      "scope": "windows",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-031"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-021",
+      "name": "desktop_vision",
+      "group": "system",
+      "side_effect": "read",
+      "scope": "windows",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-032"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-022",
+      "name": "github",
+      "group": "development",
+      "side_effect": "workspace_write",
+      "scope": "service_api",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-042"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-023",
+      "name": "clo_adapter",
+      "group": "professional",
+      "side_effect": "workspace_write",
+      "scope": "app_specific",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-043"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-024",
+      "name": "skill_proposer",
+      "group": "evolution",
+      "side_effect": "workspace_write",
+      "scope": "sandbox",
+      "policy": "scoped",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-044"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-025",
+      "name": "skill_promoter",
+      "group": "evolution",
+      "side_effect": "privileged_change",
+      "scope": "trusted_registry",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-045"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-026",
+      "name": "cloud_inference",
+      "group": "inference",
+      "side_effect": "external_send",
+      "scope": "external_provider",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-022"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-027",
+      "name": "notifications",
+      "group": "orchestration",
+      "side_effect": "external_send",
+      "scope": "service_api",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-015"
+      ],
+      "adapter": "TBD",
+      "verification": "Fixture-based tool result + evidence check; implementation pending."
+    }
+  ]
+}

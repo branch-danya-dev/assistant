@@ -1,0 +1,451 @@
+{
+  "schema_version": "1.0",
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "title": "Automated spec validity and traceability",
+      "status": "in_progress",
+      "priority": "P0",
+      "milestone": "M0",
+      "depends_on": [],
+      "requirement_ids": [
+        "REQ-050",
+        "REQ-052"
+      ],
+      "acceptance": [
+        "Validate all ids/references and schema examples in CI."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-002",
+      "title": "Document security boundaries and threat cases",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M0",
+      "depends_on": [
+        "TASK-001"
+      ],
+      "requirement_ids": [
+        "REQ-016",
+        "REQ-017"
+      ],
+      "acceptance": [
+        "Threat table includes injection, exfiltration and irreversible external actions."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-003",
+      "title": "Define acceptance fixtures and benchmark rubric",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M0",
+      "depends_on": [
+        "TASK-001"
+      ],
+      "requirement_ids": [
+        "REQ-051"
+      ],
+      "acceptance": [
+        "All SCN-001..005 fixtures and scoring methodology specified."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-004",
+      "title": "Implement persistence migrations and event journal",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-001",
+        "TASK-002"
+      ],
+      "requirement_ids": [
+        "REQ-004",
+        "REQ-009"
+      ],
+      "acceptance": [
+        "Restart retains task and scoped memory events."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-005",
+      "title": "Build authorization policy and stop switch",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-002",
+        "TASK-004"
+      ],
+      "requirement_ids": [
+        "REQ-016",
+        "REQ-018",
+        "REQ-019"
+      ],
+      "acceptance": [
+        "No denied tool request reaches executor; stop blocks new actions."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-006",
+      "title": "Implement local model adapter and router port",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-001"
+      ],
+      "requirement_ids": [
+        "REQ-020",
+        "REQ-021"
+      ],
+      "acceptance": [
+        "Swap adapter in test without task-data or identity loss."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-007",
+      "title": "Implement tool descriptor registry and safe read",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-024",
+        "REQ-025"
+      ],
+      "acceptance": [
+        "Reject malformed/out-of-scope paths and missing authorization."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-008",
+      "title": "Context assembly, project memory and supersession",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-004",
+        "TASK-006"
+      ],
+      "requirement_ids": [
+        "REQ-005",
+        "REQ-004"
+      ],
+      "acceptance": [
+        "Historical decision and latest version retrieved with source."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-009",
+      "title": "Orchestrator with bounded plan/execute/verify",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-005",
+        "TASK-006",
+        "TASK-007",
+        "TASK-008"
+      ],
+      "requirement_ids": [
+        "REQ-010",
+        "REQ-011",
+        "REQ-012"
+      ],
+      "acceptance": [
+        "SCN-004 and SCN-005 pass with saved evidence."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-010",
+      "title": "Minimal local task interface",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-009"
+      ],
+      "requirement_ids": [
+        "REQ-047"
+      ],
+      "acceptance": [
+        "Owner can inspect planned/running/blocked/completed states."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-011",
+      "title": "Calculator and financial numerical verifier",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "TASK-009"
+      ],
+      "requirement_ids": [
+        "REQ-026",
+        "REQ-039"
+      ],
+      "acceptance": [
+        "Known money fixtures use deterministic calculations and pass."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-012",
+      "title": "DOCX/PDF adapter with structure tests",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "TASK-007",
+        "TASK-009"
+      ],
+      "requirement_ids": [
+        "REQ-027"
+      ],
+      "acceptance": [
+        "SCN-003 passes with diff and no accidental replacement."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-013",
+      "title": "XLSX adapter with formula result verification",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "TASK-011"
+      ],
+      "requirement_ids": [
+        "REQ-028"
+      ],
+      "acceptance": [
+        "SCN-002 pass and file reopens; formulas and cached results checked."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-014",
+      "title": "Browser research adapter and source evidence",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "TASK-005",
+        "TASK-009"
+      ],
+      "requirement_ids": [
+        "REQ-029",
+        "REQ-037"
+      ],
+      "acceptance": [
+        "SCN-001 fixture result contains citations and missing data, no send."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-015",
+      "title": "Run business-workflow evaluation matrix",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "TASK-012",
+        "TASK-013",
+        "TASK-014"
+      ],
+      "requirement_ids": [
+        "REQ-037",
+        "REQ-039"
+      ],
+      "acceptance": [
+        "All five baseline scenarios have reproducible pass/fail evidence."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-016",
+      "title": "Persist scheduler, retries and non-idempotent reconciliation",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-009"
+      ],
+      "requirement_ids": [
+        "REQ-013",
+        "REQ-015"
+      ],
+      "acceptance": [
+        "Restart does not send/modify twice; uncertainty blocks."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-017",
+      "title": "Telegram bot with authenticated status and approvals",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-005",
+        "TASK-016"
+      ],
+      "requirement_ids": [
+        "REQ-033"
+      ],
+      "acceptance": [
+        "Unauthorized user rejected, no send without approval."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-018",
+      "title": "Project dashboard and searchable history",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-008",
+        "TASK-010"
+      ],
+      "requirement_ids": [
+        "REQ-040",
+        "REQ-007"
+      ],
+      "acceptance": [
+        "Owner sees why a decision was made and edits permitted records."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-019",
+      "title": "Cloud model escalation under egress control",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-006",
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-022"
+      ],
+      "acceptance": [
+        "Private fixture payload cannot leave host in local mode."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-020",
+      "title": "Sandboxed Python and repository workflows",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-041",
+        "REQ-042"
+      ],
+      "acceptance": [
+        "Command boundaries/repo diff review preserved."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-021",
+      "title": "Reviewed skill proposal, test and activation",
+      "status": "todo",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "TASK-002",
+        "TASK-020"
+      ],
+      "requirement_ids": [
+        "REQ-044",
+        "REQ-045"
+      ],
+      "acceptance": [
+        "SCN-006 denied activation before owner approval."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-022",
+      "title": "Desktop/CLO adapter feasibility and controlled rollout",
+      "status": "todo",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-031",
+        "REQ-043"
+      ],
+      "acceptance": [
+        "Supported operations explicitly verified against installed software."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-023",
+      "title": "Voice and remote secured client",
+      "status": "todo",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "TASK-010",
+        "TASK-017"
+      ],
+      "requirement_ids": [
+        "REQ-049",
+        "REQ-048"
+      ],
+      "acceptance": [
+        "Audio mic switch and remote auth regression pass."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    }
+  ]
+}

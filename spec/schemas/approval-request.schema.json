@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ApprovalRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "approval_id",
+    "task_id",
+    "capability_id",
+    "arguments_digest",
+    "resource",
+    "side_effect",
+    "expires_at",
+    "status"
+  ],
+  "properties": {
+    "approval_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "capability_id": {
+      "type": "string"
+    },
+    "arguments_digest": {
+      "type": "string"
+    },
+    "resource": {
+      "type": "string"
+    },
+    "side_effect": {
+      "enum": [
+        "read",
+        "workspace_write",
+        "external_send",
+        "privileged_change",
+        "financial"
+      ]
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "approved",
+        "denied",
+        "expired",
+        "consumed"
+      ]
+    },
+    "approved_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

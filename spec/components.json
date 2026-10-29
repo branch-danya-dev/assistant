@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "components": [
+    {
+      "id": "identity",
+      "responsibility": "Persona, preferences and provenance",
+      "target_milestone": "M1",
+      "status": "planned"
+    },
+    {
+      "id": "memory",
+      "responsibility": "Facts, decisions, event history and retrieval",
+      "target_milestone": "M1",
+      "status": "planned"
+    },
+    {
+      "id": "tasks",
+      "responsibility": "Durable task graph, budget and checkpoints",
+      "target_milestone": "M1",
+      "status": "planned"
+    },
+    {
+      "id": "policy",
+      "responsibility": "Authorization, data classification and approvals",
+      "target_milestone": "M1",
+      "status": "planned"
+    },
+    {
+      "id": "models",
+      "responsibility": "Provider adapter, context assembly and routing",
+      "target_milestone": "M1",
+      "status": "planned"
+    },
+    {
+      "id": "tools",
+      "responsibility": "Typed tool registry, dispatch and verification",
+      "target_milestone": "M1",
+      "status": "planned"
+    },
+    {
+      "id": "audit",
+      "responsibility": "Action/event trace and owner inspection",
+      "target_milestone": "M1",
+      "status": "planned"
+    },
+    {
+      "id": "file_adapter",
+      "responsibility": "Scoped file operations",
+      "target_milestone": "M1",
+      "status": "planned"
+    },
+    {
+      "id": "office_adapter",
+      "responsibility": "Documents and spreadsheets",
+      "target_milestone": "M2",
+      "status": "planned"
+    },
+    {
+      "id": "compute_adapter",
+      "responsibility": "Python and numerical verification",
+      "target_milestone": "M2",
+      "status": "planned"
+    },
+    {
+      "id": "browser_adapter",
+      "responsibility": "Safe research and citations",
+      "target_milestone": "M2",
+      "status": "planned"
+    },
+    {
+      "id": "integrations",
+      "responsibility": "Telegram, email and Git",
+      "target_milestone": "M3",
+      "status": "planned"
+    },
+    {
+      "id": "scheduler",
+      "responsibility": "Background jobs and recoverable triggers",
+      "target_milestone": "M3",
+      "status": "planned"
+    },
+    {
+      "id": "evolution",
+      "responsibility": "Skills and review lifecycle",
+      "target_milestone": "M4",
+      "status": "planned"
+    },
+    {
+      "id": "desktop",
+      "responsibility": "Windows UI and screen actions",
+      "target_milestone": "M4",
+      "status": "planned"
+    },
+    {
+      "id": "ui",
+      "responsibility": "Task management interface",
+      "target_milestone": "M1",
+      "status": "planned"
+    }
+  ]
+}

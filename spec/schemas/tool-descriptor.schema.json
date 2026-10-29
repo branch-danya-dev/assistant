@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolDescriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "input_schema",
+    "side_effect",
+    "scope",
+    "timeout_seconds",
+    "approval_required",
+    "verifier"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^CAP-[0-9]{3}$"
+    },
+    "version": {
+      "type": "string"
+    },
+    "input_schema": {
+      "type": "object"
+    },
+    "side_effect": {
+      "enum": [
+        "read",
+        "workspace_write",
+        "external_send",
+        "privileged_change",
+        "financial"
+      ]
+    },
+    "scope": {
+      "type": "string"
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "verifier": {
+      "type": "string"
+    },
+    "data_classes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "public",
+          "internal",
+          "private",
+          "restricted"
+        ]
+      }
+    },
+    "retry_policy": {
+      "type": "string"
+    },
+    "idempotent": {
+      "type": "boolean"
+    }
+  }
+}

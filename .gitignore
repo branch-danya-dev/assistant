@@ -1,0 +1,36 @@
+# Python and builds
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+# Machine local and private state
+.env
+.env.*
+!.env.example
+.local/
+.runtime/
+.state/
+data/
+logs/
+memory/
+models/
+secrets/
+backups/
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+# Editor/OS
+.idea/
+.vscode/settings.json
+.DS_Store
+Thumbs.db

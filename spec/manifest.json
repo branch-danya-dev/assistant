@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "project_id": "personal-ai-assistant",
+  "stage": "planning",
+  "last_reviewed": "2026-10-29",
+  "canonical_source": "spec/*.json for structured records; docs/* for rationale",
+  "instruction_priority": [
+    "AGENTS.md",
+    "spec/decisions.json",
+    "spec/requirements.json",
+    "spec/tasks.json",
+    "docs/architecture/*.md"
+  ],
+  "entrypoints": [
+    {
+      "path": "AGENTS.md",
+      "role": "MUST_READ",
+      "purpose": "Policy and agent startup instructions",
+      "context_cost": "small"
+    },
+    {
+      "path": "README.md",
+      "role": "START",
+      "purpose": "Product summary and navigation",
+      "context_cost": "small"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "role": "DOC_INDEX",
+      "purpose": "Route to topic docs",
+      "context_cost": "small"
+    },
+    {
+      "path": "spec/requirements.json",
+      "role": "REQUIREMENTS",
+      "purpose": "Canonical requirement registry",
+      "context_cost": "medium"
+    },
+    {
+      "path": "spec/tasks.json",
+      "role": "TASKS",
+      "purpose": "Task DAG and acceptance criteria",
+      "context_cost": "medium"
+    },
+    {
+      "path": "spec/decisions.json",
+      "role": "DECISIONS",
+      "purpose": "Binding/provisional architecture decision register",
+      "context_cost": "medium"
+    },
+    {
+      "path": "spec/capabilities.json",
+      "role": "CAPABILITIES",
+      "purpose": "Tool capability list and approval classes",
+      "context_cost": "medium"
+    },
+    {
+      "path": "spec/scenarios.json",
+      "role": "EVALUATION",
+      "purpose": "End-to-end acceptance scenarios",
+      "context_cost": "small"
+    },
+    {
+      "path": "spec/milestones.json",
+      "role": "ROADMAP",
+      "purpose": "Exit gates by milestone",
+      "context_cost": "small"
+    },
+    {
+      "path": "spec/components.json",
+      "role": "COMPONENTS",
+      "purpose": "Logical architecture component map",
+      "context_cost": "small"
+    }
+  ],
+  "references": [
+    "docs/product/vision.md",
+    "docs/product/use-cases.md",
+    "docs/product/roadmap.md",
+    "docs/architecture/overview.md",
+    "docs/architecture/orchestration.md",
+    "docs/architecture/memory.md",
+    "docs/architecture/models.md",
+    "docs/architecture/tools.md",
+    "docs/architecture/security.md",
+    "docs/architecture/evolution.md",
+    "docs/architecture/interfaces.md",
+    "docs/engineering/quality.md",
+    "docs/engineering/implementation.md",
+    "docs/engineering/project-status.md",
+    "docs/engineering/import-to-github.md",
+    "src/personal_agent/ports.py",
+    ".github/workflows/spec-validation.yml",
+    "tools/validate_specs.py"
+  ],
+  "schemas": [
+    "spec/schemas/memory-record.schema.json",
+    "spec/schemas/tool-descriptor.schema.json",
+    "spec/schemas/task-event.schema.json",
+    "spec/schemas/approval-request.schema.json",
+    "spec/schemas/task-state.schema.json"
+  ],
+  "agent_read_strategy": "Read AGENTS + manifest then only ID-matched records and relevant topic docs. Do not paste entire repository into LLM context.",
+  "implementation_warning": "Most records are planned; no functional autonomous agent exists."
+}

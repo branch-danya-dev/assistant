@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TaskEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "task_id",
+    "sequence",
+    "kind",
+    "timestamp",
+    "actor",
+    "evidence_refs",
+    "payload"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "kind": {
+      "enum": [
+        "created",
+        "planned",
+        "queued",
+        "started",
+        "tool_proposed",
+        "approval_requested",
+        "approved",
+        "denied",
+        "tool_executed",
+        "verified",
+        "checkpointed",
+        "blocked",
+        "completed",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor": {
+      "enum": [
+        "owner",
+        "agent",
+        "tool",
+        "system"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "payload": {
+      "type": "object"
+    },
+    "idempotency_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

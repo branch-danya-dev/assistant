@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "milestones": [
+    {
+      "id": "M0",
+      "name": "Specification and bootstrap",
+      "status": "specified",
+      "exit_gate": "docs/tests/tracers exist, validator passes; no runtime claims"
+    },
+    {
+      "id": "M1",
+      "name": "Local agent core",
+      "status": "planned",
+      "exit_gate": "safe read-only end-to-end task with local LLM, memory, approvals and audit"
+    },
+    {
+      "id": "M2",
+      "name": "Productive work tools",
+      "status": "planned",
+      "exit_gate": "supplier, spreadsheet and document scenarios pass with verifiable artifacts"
+    },
+    {
+      "id": "M3",
+      "name": "Persistence and integrations",
+      "status": "planned",
+      "exit_gate": "durable scheduled tasks, safe restarts, approval-gated communication"
+    },
+    {
+      "id": "M4",
+      "name": "Advanced agent and evolution",
+      "status": "planned",
+      "exit_gate": "desktop/voice/remote + reviewed skill candidate lifecycle measured and tested"
+    }
+  ]
+}

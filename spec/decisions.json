@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0",
+  "decisions": [
+    {
+      "id": "ADR-001",
+      "title": "Autonomous agent option C with tools and durable memory",
+      "status": "accepted",
+      "context": "Owner explicitly chose option C; practical tasks are primary, not avatar realism.",
+      "decision": "Keep core task orchestration and memory first.",
+      "revisit_when": "Product goals or user priority change.",
+      "recorded_on": "2026-10-29",
+      "owner": "project owner"
+    },
+    {
+      "id": "ADR-002",
+      "title": "Single-user modular monolith on Windows",
+      "status": "provisional",
+      "context": "Lower operational cost than microservices for one host and user.",
+      "decision": "Python application with clean ports; workers logical.",
+      "revisit_when": "Multiple independent users or remote deployment needs arise.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-003",
+      "title": "SQLite with FTS5 as initial durable store",
+      "status": "provisional",
+      "context": "Local low-administration default with versioned migrations.",
+      "decision": "Use abstraction for semantic index and potential PostgreSQL replacement.",
+      "revisit_when": "Concurrency, scale or retrieval benchmark fails.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-004",
+      "title": "LLM/provider-agnostic identity and model router",
+      "status": "provisional",
+      "context": "Preserve user continuity across local and cloud models.",
+      "decision": "Never store identity or task truth in model weights alone.",
+      "revisit_when": "No provider-independent evaluation succeeds.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-005",
+      "title": "Local by default; cloud explicit opt-in",
+      "status": "provisional",
+      "context": "Respects privacy and offline utility without giving up quality.",
+      "decision": "Cloud is gated and task-sensitive.",
+      "revisit_when": "Owner supplies different data transfer constraints.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-006",
+      "title": "Tool registry and authorization before execution",
+      "status": "provisional",
+      "context": "Action correctness and side-effect safety cannot be delegated to LLM.",
+      "decision": "Typed tools, policy gates, audit and verifier.",
+      "revisit_when": "Security review finds stronger isolation needed.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-007",
+      "title": "Versioned facts/events and project-scoped retrieval",
+      "status": "provisional",
+      "context": "Source lineage and contradictory decisions must remain inspectable.",
+      "decision": "Store provenance and supersession, not overwrite summaries.",
+      "revisit_when": "Storage benchmark or privacy requirement changes.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-008",
+      "title": "Controlled skill evolution; no autonomous core changes",
+      "status": "provisional",
+      "context": "Useful improvement without uncontrolled code execution.",
+      "decision": "Sandbox proposals, tests, owner promotion.",
+      "revisit_when": "Owner approves alternative governance mechanism.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-009",
+      "title": "No automatic weight fine-tuning in initial releases",
+      "status": "provisional",
+      "context": "Insufficient curated examples and benchmark at project start.",
+      "decision": "Retain data selection/evaluation possibility later.",
+      "revisit_when": "Sufficient training data and success metric exist.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-010",
+      "title": "Browser via Playwright where suitable; MCP optional",
+      "status": "provisional",
+      "context": "Browser automation needs deterministic safety and observation.",
+      "decision": "Treat MCP as adapter, not central dependency.",
+      "revisit_when": "Browser/tool benchmarks demand other implementation.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-011",
+      "title": "Telegram bot before personal-account integration",
+      "status": "provisional",
+      "context": "Separate channel simpler to secure, test and audit.",
+      "decision": "Stage personal-account integration later.",
+      "revisit_when": "Owner changes integration priorities.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-012",
+      "title": "JSON canonical specs, Markdown explanatory documents",
+      "status": "provisional",
+      "context": "Stable IDs, easy AI indexing and stdlib validation.",
+      "decision": "Keep schemas and traceability authoritative.",
+      "revisit_when": "Schema complexity warrants another IDL.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-013",
+      "title": "No default multi-agent orchestration",
+      "status": "provisional",
+      "context": "One orchestrator and bounded tools simpler to debug and evaluate.",
+      "decision": "Multi-agent only after measured benefit.",
+      "revisit_when": "Parallel benchmark demonstrates advantage.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-014",
+      "title": "Conservative action approvals and no automatic external sends",
+      "status": "provisional",
+      "context": "Avoid unapproved communication, purchases and OS changes.",
+      "decision": "Approval bound to concrete effect/recipient/target.",
+      "revisit_when": "Owner refines authorization rules.",
+      "recorded_on": "2026-10-29",
+      "owner": "proposed for owner review"
+    }
+  ]
+}

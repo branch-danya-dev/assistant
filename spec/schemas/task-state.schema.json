@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DurableTask",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "intent",
+    "state",
+    "project_id",
+    "step_ids",
+    "budget",
+    "created_at"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "intent": {
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "created",
+        "planned",
+        "queued",
+        "running",
+        "waiting_approval",
+        "blocked",
+        "paused",
+        "failed",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "project_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "step_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "budget": {
+      "type": "object"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_event_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "result_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
