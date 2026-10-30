@@ -1,11 +1,19 @@
-# Project status — Architecture Baseline v1.0 (2026-10-30)
+# Project status — first implementation, 2026-10-30
 
-- Stage: architecture/specification and project bootstrap; autonomous assistant runtime **not implemented**.
-- Selected local LLM: Ollama `qwen3.5:9b` (ADR-015); no comparative model ranking.
-- Owner-approved Windows root: `G:\Assistant` (ADR-016) with application-relative directory layout (ADR-019).
-- Accepted core baseline: modular monolith + SQLite/FTS + model-independent identity/memory + trust boundaries and M1 crash reconciliation (ADRs 002–007, 012, 014, 017–020).
-- Specification inventory: **54** requirements, **28** capabilities, **42** traceable tasks, **11** defined scenarios, **20** architectural decisions, **7** JSON Schema contracts with synthetic examples.
-- No real inference, memory store, tool adapters, task runtime, full security harness, or live user data exists in this repository.
-- CI checks schemas, spec coverage, references, and contract tests on Windows and Linux. It cannot certify the selected GPU or true task completion yet.
-- Next: complete M0 fixture and threat reviews (TASK-001..003, TASK-039/040) before M1 tasks; see `spec/tasks.json`.
-- Current repository: `branch-danya-dev/assistant`. Files in `docs/engineering/import-to-github.md` explain how to clone it onto G:.
+M0 complete; M1 partial. A working local read-only vertical slice exists: migrations, journal,
+memory/persona, trusted policy, crash recovery, Ollama and owner CLI. See `m1-evidence.md` and
+`runbook.md` for checks and supported operation boundaries.
+
+Selected qwen3.5:9b completed a synthetic live Windows task: read a scoped file, search project
+memory, produce an evidence-linked result and preserve state after reopening. With explicit
+owner consent, model files were copied and SHA-256-verified at G:\Assistant\models\ollama;
+User variables and actual running model paths were verified. Originals retained; no comparison
+or model download performed.
+
+Remaining M1 work: audited revision of running plans (TASK-009), interface gate closure after
+orchestration acceptance (TASK-010), safe create-only workspace writes (TASK-043) for REQ-025.
+Generic secret detection/vault integration is not claimed. M2/M3/M4 tools remain deferred.
+No real outbound message, purchase, installation or destructive executor is active.
+
+Canonical statuses/evidence in spec/ distinguish these gaps from implemented behavior.
+Architecture Baseline v1.0 remains the accepted design contract.

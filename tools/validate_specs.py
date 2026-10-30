@@ -122,6 +122,8 @@ def check() -> list[str]:
             errors.append(f"{req['id']}: bad priority")
         if req.get("status") not in ("proposed", "specified", "implemented", "deprecated"):
             errors.append(f"{req['id']}: bad status")
+        if req.get("status") == "implemented" and not req.get("evidence"):
+            errors.append(f"{req['id']}: implemented without evidence")
         if not req.get("acceptance"):
             errors.append(f"{req['id']}: missing acceptance")
         linked = coverage.get(req["id"], [])
@@ -166,6 +168,11 @@ def check() -> list[str]:
             errors.append(f"{adr}: M1 baseline decision is not accepted")
 
     graph = {t["id"]: t.get("depends_on", []) for t in tasks}
+    task_statuses = {t["id"]: t["status"] for t in tasks}
+    for task in tasks:
+        if task["status"] == "done" and any(task_statuses.get(dep) != "done"
+                                           for dep in task.get("depends_on", [])):
+            errors.append(f"{task['id']}: done before dependency gate")
     visited: set[str] = set()
     visiting: set[str] = set()
     def visit(node: str) -> None:

@@ -12,3 +12,5 @@ both `validate (windows-latest)` and `validate (ubuntu-latest)` succeeded.
 Current repository setup instructions already reference `branch-danya-dev/assistant` and distinguish specification from implementation. No real user records or credentials are test inputs. M0 completion does not certify any running agent or the later office/browser integrations.
 
 Local Windows Python 3.12.10: spec validator PASS; 8 unittest tests PASS.
+
+M0 fixture additions also passed both CI platforms: https://github.com/branch-danya-dev/assistant/actions/runs/41041764416.

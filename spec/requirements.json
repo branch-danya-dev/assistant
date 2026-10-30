@@ -8,12 +8,15 @@
       "title": "Model-independent persistent identity",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Persona and preferences remain available after switching model providers."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-002",
@@ -47,12 +50,15 @@
       "title": "Persistent scoped project decisions",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "A decision survives restart, is linked to project and carries verifiable provenance."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-005",
@@ -60,12 +66,15 @@
       "title": "Decision supersession and contradiction handling",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "New decision supersedes old one without deleting past rationale; conflicting claims are surfaced."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-006",
@@ -99,12 +108,15 @@
       "title": "Sensitive data boundaries",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Private records stay local by default; retrieval enforces scope and export rules."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-009",
@@ -112,12 +124,15 @@
       "title": "Durable task state machine",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Task has explicit lifecycle, persisted steps and stable IDs."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-010",
@@ -130,7 +145,11 @@
         "Agent builds executable plan with dependencies and can revise it with audit."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Partial: bounded sequential plans are implemented; audited in-task revision remains open in TASK-009.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_orchestrator.py"
+      ]
     },
     {
       "id": "REQ-011",
@@ -138,12 +157,15 @@
       "title": "Tool result verification",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Completed action must have execution evidence or verifiable artifact; claims alone are insufficient."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-012",
@@ -151,12 +173,15 @@
       "title": "Bounded retries and budgets",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Loops respect time, retry, token/API cost and tool budgets."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-013",
@@ -164,13 +189,16 @@
       "title": "Safe recovery and idempotency",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "After crash/restart, previously authorized side effects are not replayed without reconciliation; uncertain operations remain blocked with recorded reason and operation key.",
         "Task state/approval/action journal persists across restart."
       ],
       "owner": "project",
-      "notes": "M1 minimal durable safety baseline (ADR-018); M3 adds scheduler and connector reconciliation."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-014",
@@ -204,12 +232,15 @@
       "title": "Central typed authorization engine",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Every tool call passes policy check with target and side-effect; denied calls never run."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-017",
@@ -222,7 +253,12 @@
         "Webpage, document and message instructions cannot escalate privileges or override owner policy."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "M1 closed registry, scoped retrieval, payload-free diagnostics and loopback-only inference verified. Broad source/secret detection, vault and future network adapters not claimed.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_security.py",
+        "tests/test_models.py"
+      ]
     },
     {
       "id": "REQ-018",
@@ -230,12 +266,15 @@
       "title": "Audit trail and stop control",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Attempts/approvals/results are logged and emergency stop prevents new execution."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-019",
@@ -248,7 +287,12 @@
         "No secrets in prompts/logs/repo; unauthorized cloud egress rejected."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "M1 closed registry, scoped retrieval, payload-free diagnostics and loopback-only inference verified. Broad source/secret detection, vault and future network adapters not claimed.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_security.py",
+        "tests/test_models.py"
+      ]
     },
     {
       "id": "REQ-020",
@@ -256,13 +300,16 @@
       "title": "Qwen3.5 9B local inference via Ollama",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Given an installed Ollama and qwen3.5:9b, adapter responds to a text prompt and produces a valid structured tool call.",
         "Model name and provider are read from configuration; runtime status is reported accurately."
       ],
       "owner": "project",
-      "notes": "Owner selected qwen3.5:9b (ADR-015); no comparative LLM benchmarking. Runtime adapter is not implemented."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-021",
@@ -270,12 +317,15 @@
       "title": "Provider-neutral inference port",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Provider can be substituted without rebuilding identity/memory/task stores."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-022",
@@ -309,12 +359,15 @@
       "title": "Typed registry and sandboxed dispatch",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Tool declarations validate arguments, side effect and authorized scope."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-025",
@@ -327,7 +380,11 @@
         "Read/write only approved test workspace and reject traversal/unsafe targets."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Partial: exact scoped reads implemented. Safe workspace creation remains TASK-043; overwrite/delete unsupported.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_security.py"
+      ]
     },
     {
       "id": "REQ-026",
@@ -608,12 +665,15 @@
       "title": "Local text interface and task dashboard",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Owner can request task, inspect state, review artifacts and approval prompts."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-048",
@@ -695,7 +755,7 @@
       "title": "Portable G-drive workspace and separately managed model and state directories",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Owner Windows default root is G:\\Assistant with repo, models/ollama, data/db, data/history, data/memory, data/identity, data/skills, workspace, logs, backups and cache in separate root-relative directories.",
         "Missing or inaccessible G: produces an explicit error; no fallback to C:. Changing only ASSISTANT_ROOT relocates all application-owned paths without modifying other env variables.",
@@ -703,7 +763,10 @@
         "Private state remains outside git; safe consistent SQLite backup and restoration are documented and tested."
       ],
       "owner": "project",
-      "notes": "Accepted owner decision ADR-016; directory provisioning remains planned."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "REQ-054",
@@ -711,14 +774,17 @@
       "title": "Memory retention and lifecycle policy",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Classify durable facts/decisions versus temporary caches and archived source records; user can prevent automatic remembering and request record removal.",
         "Retention/compaction never destroys sourced decisions without explicit policy and auditable evidence.",
         "Local indexes are rebuildable from retained canonical records."
       ],
       "owner": "project",
-      "notes": "M1 minimal implementation; user-facing deletion/export features expand in M3."
+      "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     }
   ]
 }

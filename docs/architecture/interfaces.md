@@ -1,7 +1,9 @@
 # Interface boundaries
 
 ## First client
-Local API + desktop client eventually. The first implementation may use a CLI/test harness to validate behavior before UI investment; no GUI currently exists.
+Local API + desktop client eventually. The first implementation is an owner-only CLI:
+`python -m personal_agent`. Tasks, evidence, stop, recovery, memory and persona inspection are
+available; see `../engineering/runbook.md`. No GUI or unauthenticated web API exists.
 
 ## Future clients
 - Desktop app: conversations, tasks, tool approvals, evidence, memory editor, cost/resource dashboard.

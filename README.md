@@ -1,40 +1,72 @@
-# Personal AI Assistant — agent-first repository
+# Personal AI Assistant
 
-**Status:** `PLANNING` · **Implementation:** not started · **Target host:** Windows desktop · **Primary language:** Python.
+**M0 complete; M1 partial, working local vertical slice.** Python 3.12+ modular monolith,
+SQLite/FTS5, Windows first. Based on Architecture Baseline v1.0 (`c1a0079`).
 
-A local-first, hybrid-model, long-lived personal AI agent with a stable identity, persistent project memory, controlled autonomy and extensible tools. It is a proposed engineering system, **not** a claim of a sentient AI or a working product.
+Первая реализация уже работает: Qwen строит план, агент читает разрешённые текстовые файлы
+и проектную память, проверяет результаты и сохраняет журнал. Полнота M1 пока не заявляется.
+[Результаты и ограничения](docs/engineering/m1-evidence.md).
 
-> Russian summary: персональный ИИ-агент для Windows с независимой от LLM личностью, долговременной памятью, локальными/облачными моделями, инструментами и автономными задачами. Сейчас репозиторий содержит архитектуру, контракты и план реализации; работающее приложение ещё не создано.
+## Implemented
 
-## Start here
+- Ollama **qwen3.5:9b**, separate schema-validated planning and final response, numeric loopback
+  only, no proxies/redirects/cloud fallback or model comparisons.
+- Trusted `read_text` and `search_memory`: exact file scope, project/sensitivity filters,
+  traversal/junction/opened-handle checks and independent tool-result verification.
+- SQLite migrations and task journal, stable action IDs, exact one-use approvals, pre-dispatch
+  commits, persistent stop, explicit resume and `needs_reconciliation` for uncertain effects.
+- Sourced versioned memory, preserved supersession, FTS5, retention filtering/index rebuild,
+  explicit owner remembering/removal from retrieval and persona independent of model weights.
+- CLI for tasks, evidence, approvals, recovery, memory/persona and consistent database backup.
 
-- **Agents:** [`AGENTS.md`](AGENTS.md) is the mandatory orientation and safety file.
-- **Canonical machine-readable index:** [`spec/manifest.json`](spec/manifest.json).
-- **Product intent:** [`docs/product/vision.md`](docs/product/vision.md).
-- **Requirements:** [`spec/requirements.json`](spec/requirements.json).
-- **Architecture:** [`docs/architecture/overview.md`](docs/architecture/overview.md).
-- **Architecture baseline v1.0:** [`docs/engineering/architecture-baseline.md`](docs/engineering/architecture-baseline.md) (M1 contracts, trust and validation).
-- **Selected local model:** [`spec/model-config.json`](spec/model-config.json) (`qwen3.5:9b`).
-- **Storage layout:** [`spec/storage-config.json`](spec/storage-config.json) (`G:\Assistant`, ADR-016).
-- **Decision register:** [`spec/decisions.json`](spec/decisions.json).
-- **Implementation queue:** [`spec/tasks.json`](spec/tasks.json).
-- **Milestones and gates:** [`spec/milestones.json`](spec/milestones.json).
-- **Validation:** install `jsonschema>=4.23,<5` (or project dev extras), then `python tools/validate_specs.py` and `python -m unittest discover -s tests -v` on Windows or Linux.
+The production registry is read-only. Mutating effects and approval consumption are tested
+with synthetic crash fixtures; no real send/purchase/install/delete adapter is active.
+LLM summaries are labelled separately from verified tool results. Office/browser integrations,
+semantic embeddings, automatic plan revision and safe workspace writes remain open/deferred.
 
-## Technical baseline (provisional)
+## Windows quick start
 
-Windows desktop (OS version to verify); Ryzen 5 7600X; RTX 5070 Ti 16 GB VRAM; 32 GB RAM; SSD. Local inference via replaceable provider adapters (Ollama is a proposed first adapter), optional explicit cloud API. Python 3.12+; modular monolith; SQLite + FTS5 first; semantic retrieval via replaceable index; Tauri/React UI later. **Selected local model:** `qwen3.5:9b` via Ollama (owner-approved, ADR-015; runtime not implemented). No comparative model evaluation is required. See [`spec/model-config.json`](spec/model-config.json).
+```powershell
+cd G:\Assistant\repo
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m personal_agent init
+.\.venv\Scripts\python.exe -m personal_agent doctor
+.\.venv\Scripts\python.exe -m personal_agent demo
+```
 
-## Owner-approved Windows storage home
+`demo` uses synthetic data and a deterministic provider, explicitly no LLM inference.
+For real tasks, configure Windows User `OLLAMA_MODELS=G:\Assistant\models\ollama`, restart
+Ollama Desktop and ensure the selected tag exists. `.env` is not automatically loaded and cannot
+configure the separate Desktop process. See the [runbook](docs/engineering/runbook.md).
 
-Everything belongs under `G:\Assistant`: repository `repo/`, Ollama models `models/ollama/`, data/history/memory/identity `data/`, and separate workspace/logs/backups/cache. Use configurable `ASSISTANT_ROOT` rather than hardcoded paths for migration. No silent fallback to C:. See [`docs/architecture/storage.md`](docs/architecture/storage.md). These are future filesystem locations, not existing directories created by this documentation.
+Place an approved UTF-8 file at `G:\Assistant\workspace\example\note.txt`, then:
 
-## Conventions
+```powershell
+.\.venv\Scripts\python.exe -m personal_agent run --project example --allow-file note.txt "Read note.txt and summarize it with evidence."
+.\.venv\Scripts\python.exe -m personal_agent tasks
+.\.venv\Scripts\python.exe -m personal_agent show TASK_ID
+```
 
-The JSON specifications in `spec/` are canonical for structured status and traceability. All non-deprecated requirements must be covered by tasks, including deferred features; CI validates this. The selected local model is not subject to comparative A/B testing. Markdown in `docs/` supplies rationale and execution guidance. If they disagree, **do not silently choose**: log a documentation defect and reconcile them. Every feature has a stable requirement ID and verifiable acceptance tests. Proposed capabilities must never be presented as implemented.
+Only `ASSISTANT_ROOT` (or explicit absolute `--root`) controls application directories.
+No fallback to C:. State is outside `repo/`. Model/provider configuration comes from
+[spec/model-config.json](spec/model-config.json), not model output or speculative env flags.
 
-No credentials, private conversations, uploaded project files, local memory stores, model weights or personal information should be committed. See `.gitignore` and the security policy.
+## Validation and navigation
 
-## Current scope
+```powershell
+.\.venv\Scripts\python.exe tools\validate_specs.py
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m ruff check src tests setup.py
+# Explicit synthetic live check; no model pull or comparison:
+.\.venv\Scripts\python.exe tools\verify_host.py --root G:\Assistant
+```
 
-This is a **planning and project-bootstrap baseline**. Source packages, runtime infrastructure and production integrations are future work. Do not assume any feature is already implemented because it is described in a requirement.
+[AGENTS.md](AGENTS.md) · [Manifest](spec/manifest.json) · [Tasks](spec/tasks.json) ·
+[Requirements](spec/requirements.json) · [Scenarios](spec/scenarios.json) ·
+[Baseline](docs/engineering/architecture-baseline.md) · [Decisions](spec/decisions.json) ·
+[M0 evidence](docs/engineering/m0-evidence.md) · [M1 evidence](docs/engineering/m1-evidence.md) ·
+[Documentation index](docs/INDEX.md).
+
+Only synthetic fixtures/evidence belong in Git; private conversations, memory, credentials
+and model files do not.

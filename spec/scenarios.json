@@ -80,7 +80,7 @@
       "id": "SCN-004",
       "title": "Memory project continuity",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "verified",
       "requirement_ids": [
         "REQ-004",
         "REQ-005",
@@ -100,13 +100,18 @@
         "audit trail"
       ],
       "acceptance": "After restart, retrieve a sourced latest decision with previous superseded decision; no unrelated project leakage.",
-      "automated": "planned"
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory.py"
+      ],
+      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
     {
       "id": "SCN-005",
       "title": "Safe multi-step operation",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "verified",
       "requirement_ids": [
         "REQ-009",
         "REQ-010",
@@ -128,7 +133,12 @@
         "audit trail"
       ],
       "acceptance": "Agent plans/executes bounded read-only steps, records evidence and pauses at an unauthorized write; restart does not re-run irreversible actions.",
-      "automated": "planned"
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_orchestrator.py"
+      ],
+      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
     {
       "id": "SCN-006",
@@ -159,7 +169,7 @@
       "id": "SCN-007",
       "title": "Scoped private memory and injection denial",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "verified",
       "requirement_ids": [
         "REQ-008",
         "REQ-017",
@@ -179,7 +189,12 @@
         "audit trail"
       ],
       "acceptance": "Unauthorized task cannot retrieve restricted/private project record, export it, or follow injected instructions in source data; audit shows denial.",
-      "automated": "planned"
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_orchestrator.py"
+      ],
+      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
     {
       "id": "SCN-008",
@@ -210,7 +225,7 @@
       "id": "SCN-009",
       "title": "Portable Windows root relocation",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "verified",
       "requirement_ids": [
         "REQ-053"
       ],
@@ -228,13 +243,18 @@
         "audit trail"
       ],
       "acceptance": "Only ASSISTANT_ROOT override changes all app-owned paths; absent root fails without C: fallback and models path is configured separately for Ollama.",
-      "automated": "planned"
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_storage.py"
+      ],
+      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
     {
       "id": "SCN-010",
       "title": "Crash-safe action reconciliation",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "verified",
       "requirement_ids": [
         "REQ-009",
         "REQ-013",
@@ -255,13 +275,18 @@
         "audit trail"
       ],
       "acceptance": "Synthetic interrupted action enters needs_reconciliation; restart cannot execute uncertain side effect twice.",
-      "automated": "planned"
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_journal.py"
+      ],
+      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
     {
       "id": "SCN-011",
       "title": "Persistent identity across provider swap",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "verified",
       "requirement_ids": [
         "REQ-001"
       ],
@@ -279,7 +304,12 @@
         "audit trail"
       ],
       "acceptance": "Versioned persona survives process restart and mock provider replacement while preferences and provenance remain inspectable.",
-      "automated": "planned"
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_orchestrator.py"
+      ],
+      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     }
   ]
 }

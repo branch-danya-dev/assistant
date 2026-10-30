@@ -8,13 +8,16 @@
       "side_effect": "read",
       "scope": "model_runtime",
       "policy": "scoped",
-      "status": "planned",
+      "status": "implemented",
       "requirement_ids": [
         "REQ-020",
         "REQ-021"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.models.Ollama",
+      "verification": "docs/engineering/m1-evidence.md",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "CAP-002",
@@ -23,13 +26,16 @@
       "side_effect": "read",
       "scope": "local_store",
       "policy": "scoped",
-      "status": "planned",
+      "status": "in_progress",
       "requirement_ids": [
         "REQ-004",
         "REQ-006"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.memory / journal / orchestrator",
+      "verification": "Lexical scoped retrieval and linear task orchestration verified; semantic retrieval / plan revision remain tracked separately.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "CAP-003",
@@ -38,13 +44,16 @@
       "side_effect": "workspace_write",
       "scope": "local_store",
       "policy": "scoped",
-      "status": "planned",
+      "status": "implemented",
       "requirement_ids": [
         "REQ-004",
         "REQ-005"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.memory.Memory (owner-only API/CLI)",
+      "verification": "docs/engineering/m1-evidence.md",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "CAP-004",
@@ -53,13 +62,16 @@
       "side_effect": "workspace_write",
       "scope": "local_store",
       "policy": "scoped",
-      "status": "planned",
+      "status": "in_progress",
       "requirement_ids": [
         "REQ-009",
         "REQ-010"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.memory / journal / orchestrator",
+      "verification": "Lexical scoped retrieval and linear task orchestration verified; semantic retrieval / plan revision remain tracked separately.",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "CAP-005",
@@ -68,12 +80,15 @@
       "side_effect": "read",
       "scope": "policy_engine",
       "policy": "scoped",
-      "status": "planned",
+      "status": "implemented",
       "requirement_ids": [
         "REQ-016"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.tools.Registry + Journal",
+      "verification": "docs/engineering/m1-evidence.md",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "CAP-006",
@@ -82,12 +97,15 @@
       "side_effect": "workspace_write",
       "scope": "local_store",
       "policy": "scoped",
-      "status": "planned",
+      "status": "implemented",
       "requirement_ids": [
         "REQ-018"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.journal.Journal",
+      "verification": "docs/engineering/m1-evidence.md",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "CAP-007",
@@ -96,12 +114,15 @@
       "side_effect": "read",
       "scope": "approved_paths",
       "policy": "scoped",
-      "status": "planned",
+      "status": "implemented",
       "requirement_ids": [
         "REQ-025"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.tools.read_text",
+      "verification": "docs/engineering/m1-evidence.md",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ]
     },
     {
       "id": "CAP-008",

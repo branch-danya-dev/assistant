@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-10-30T10:56:23.391272Z",
+  "synthetic_only": true,
+  "selected_model": {
+    "reachable": true,
+    "model": "qwen3.5:9b",
+    "installed": true,
+    "digest": "56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+    "quantization": "Q4_K_M",
+    "text_generation": "pass",
+    "structured_tool_intent": "pass",
+    "tools_executed": 0,
+    "metrics": {
+      "prompt_eval_count": 66,
+      "eval_count": 86,
+      "total_duration": 885843900
+    }
+  },
+  "checks": {
+    "local_task_completed": true,
+    "both_read_tools_verified": true,
+    "expected_answer": true,
+    "memory_restart_and_history": true,
+    "persona_restart": true,
+    "journal_restart": true,
+    "windows_user_model_path": true,
+    "actual_model_files_on_root": true
+  },
+  "passed": true,
+  "task_id": "8e950d0e-3666-4d82-8ab5-e51c24506341",
+  "task_state": "completed",
+  "block_reason": null,
+  "verified_operations": [
+    "read_text",
+    "search_memory"
+  ],
+  "model_comparisons": 0
+}

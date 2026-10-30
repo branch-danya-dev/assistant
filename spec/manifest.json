@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "project_id": "personal-ai-assistant",
-  "stage": "planning",
+  "stage": "implementation",
   "last_reviewed": "2026-10-30",
   "canonical_source": "spec/*.json for structured records; docs/* for rationale",
   "instruction_priority": [
@@ -116,7 +116,11 @@
     "spec/examples/tool-descriptor.json",
     "spec/examples/tool-invocation.json",
     "spec/examples/persona.json",
-    "docs/engineering/architecture-baseline.md"
+    "docs/engineering/architecture-baseline.md",
+    "docs/engineering/m1-evidence.md",
+    "docs/engineering/runbook.md",
+    "tools/verify_host.py",
+    "tools/configure-ollama-storage.ps1"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
@@ -128,5 +132,5 @@
     "spec/schemas/persona.schema.json"
   ],
   "agent_read_strategy": "Read AGENTS + manifest then only ID-matched records and relevant topic docs. Do not paste entire repository into LLM context.",
-  "implementation_warning": "Most records are planned; no functional autonomous agent exists."
+  "implementation_warning": "M0 complete; local M1 read-only vertical slice verified. M1 remains partial; see TASK-009/010/043 and m1-evidence.md."
 }

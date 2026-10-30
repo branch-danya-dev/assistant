@@ -24,3 +24,5 @@ jobs:
         run: python -m ruff check src tests setup.py
       - name: Build distributable with canonical contracts
         run: python -m pip wheel . --no-deps --wheel-dir dist
+      - name: Verify distributable outside source checkout
+        run: python tools/verify_package.py

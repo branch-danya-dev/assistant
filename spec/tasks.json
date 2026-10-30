@@ -70,7 +70,7 @@
     {
       "id": "TASK-004",
       "title": "Implement persistence migrations and event journal",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -87,15 +87,15 @@
       ],
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_storage.py",
-        "tests/test_journal.py"
+        "tests/test_journal.py",
+        "tests/test_memory.py"
       ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-005",
       "title": "Build authorization policy and stop switch",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -112,7 +112,7 @@
       ],
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_storage.py",
+        "tests/test_security.py",
         "tests/test_journal.py"
       ],
       "owner": "unassigned"
@@ -120,7 +120,7 @@
     {
       "id": "TASK-006",
       "title": "Implement Ollama Qwen3.5 9B adapter and provider-neutral port",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -135,13 +135,18 @@
         "Configure Ollama qwen3.5:9b from spec/model-config.json; verify text generation and a controlled tool-call smoke check.",
         "Swapping a mock provider in unit tests does not erase task, identity or memory state; do not compare live LLMs."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_models.py",
+        "tests/test_orchestrator.py",
+        "docs/engineering/evidence/windows-host.json"
+      ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-007",
       "title": "Implement tool descriptor registry and safe read",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -154,13 +159,16 @@
       "acceptance": [
         "Reject malformed/out-of-scope paths and missing authorization."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_security.py"
+      ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-008",
       "title": "Context assembly, project memory and supersession",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -174,13 +182,16 @@
       "acceptance": [
         "Historical decision and latest version retrieved with source."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory.py"
+      ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-009",
       "title": "Orchestrator with bounded plan/execute/verify",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -199,15 +210,21 @@
         "REQ-012"
       ],
       "acceptance": [
-        "SCN-004 and SCN-005 pass with saved evidence."
+        "SCN-004 and SCN-005 pass with saved evidence.",
+        "Revise a plan with explicit dependencies and audit without replaying already verified actions (REQ-010)."
       ],
-      "evidence": [],
-      "owner": "unassigned"
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_orchestrator.py",
+        "docs/engineering/evidence/windows-host.json"
+      ],
+      "owner": "unassigned",
+      "notes": "Linear plan/execute/verify and SCN-004/005 pass. Audited plan revision with preserved completed steps remains open (REQ-010)."
     },
     {
       "id": "TASK-010",
       "title": "Minimal local task interface",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -219,8 +236,12 @@
       "acceptance": [
         "Owner can inspect planned/running/blocked/completed states."
       ],
-      "evidence": [],
-      "owner": "unassigned"
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_cli.py"
+      ],
+      "owner": "unassigned",
+      "notes": "CLI and task/evidence inspection verified; final gate follows completion of TASK-009."
     },
     {
       "id": "TASK-011",
@@ -479,7 +500,7 @@
     {
       "id": "TASK-024",
       "title": "Implement portable assistant home bootstrap, path resolver and migration verification",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -496,14 +517,15 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_storage.py",
-        "tests/test_journal.py"
+        "tools/configure-ollama-storage.ps1",
+        "docs/engineering/evidence/windows-host.json"
       ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-025",
       "title": "Implement stable versioned persona outside model weights",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -517,13 +539,17 @@
         "Persona+preference records persist across restart and mock provider replacement.",
         "Persona prompt assembly reads versioned identity without rewriting facts."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory.py",
+        "tests/test_orchestrator.py"
+      ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-026",
       "title": "Implement memory scope, sensitivity and export/egress enforcement",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -539,7 +565,12 @@
         "Cross-project and private/restricted records are never retrievable through unauthorized task scope.",
         "No private memory or secrets appear in cloud requests, tool arguments or diagnostic logs without approved policy."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory.py",
+        "tests/test_security.py",
+        "tests/test_orchestrator.py"
+      ],
       "owner": "unassigned"
     },
     {
@@ -586,7 +617,7 @@
     {
       "id": "TASK-029",
       "title": "Implement M1 restart-safe action journal and reconciliation block",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -604,7 +635,6 @@
       ],
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_storage.py",
         "tests/test_journal.py"
       ],
       "owner": "unassigned"
@@ -840,7 +870,7 @@
     {
       "id": "TASK-041",
       "title": "Implement memory lifecycle and archival defaults",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -854,7 +884,11 @@
         "Temporary retrieval cache can expire while canonical decisions remain verifiable.",
         "Owner-scoped retention and rebuildable indexes defined and tested."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory.py",
+        "tests/test_cli.py"
+      ],
       "owner": "unassigned"
     },
     {
@@ -876,6 +910,29 @@
       ],
       "evidence": [],
       "owner": "unassigned"
+    },
+    {
+      "id": "TASK-043",
+      "title": "Complete scoped create-only workspace writes",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-005",
+        "TASK-007",
+        "TASK-029"
+      ],
+      "requirement_ids": [
+        "REQ-025"
+      ],
+      "acceptance": [
+        "Create only new files within owner-approved project workspace; independently verify artifact and retain evidence.",
+        "Reject overwrite, traversal, junction/symlink and parent-swap races; no unapproved existing-file changes.",
+        "Crash/stop fixtures prove no uncertain mutation is replayed."
+      ],
+      "evidence": [],
+      "owner": "unassigned",
+      "notes": "First read-only slice covers TASK-007; this explicit remaining gate covers the write half of REQ-025."
     }
   ]
 }

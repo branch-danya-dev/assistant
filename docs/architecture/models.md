@@ -9,7 +9,8 @@
 - **Initial context budget:** 8,192 tokens, configurable later by operational need and available memory. A model's advertised 256K maximum is **not** our deployed context target.
 - **Selection rationale:** explicit owner preference, text/vision and tool-capable model family, practical fit for RTX 5070 Ti 16 GB VRAM. Model weights alone do not implement tool execution or vision parsing.
 - **No model tournament:** do not run A/B tests, model-ranking experiments or request selection benchmarks as a prerequisite. Record the resolved Ollama digest and quantization when actually installed for reproducibility.
-- **Implementation state:** planning only; there is no installed/verified model or working runtime in this repository.
+- **Implementation state:** local adapter and synthetic live-host workflow verified. See
+  `../engineering/m1-evidence.md`; this does not certify future adapters or all M1 requirements.
 
 ## Startup and smoke verification (not comparative model testing)
 

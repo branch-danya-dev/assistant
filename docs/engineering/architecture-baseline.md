@@ -2,6 +2,9 @@
 
 **Date:** 2026-10-30. **Status:** approved design baseline, **not implemented software**. This document reconciles the final pre-development audit and governs the first milestones. Machine-readable sources remain `spec/*.json` and accepted ADRs.
 
+Implementation status is now tracked in `m1-evidence.md` and `spec/`; this document preserves
+the approved design and its acceptance gates, rather than claiming the repository is still empty.
+
 ## Accepted for M1
 
 | Decision | Contract |
