@@ -1,9 +1,10 @@
 # Implementation guide
 
 ## Repo state
-**First M1 slice implemented; M1 remains partial.** Runtime modules implement storage, journal,
-memory, identity, trusted reads, Ollama and a CLI. CI covers security, crash and local HTTP
-integration tests. See `m1-evidence.md` for actual checks and `runbook.md` for operation.
+**M1 in_progress: REQ-017/019 remain specified P0/M1.** See [review remediation](m1-review-fixes.md). Runtime modules implement storage, immutable plan
+revisions, journal, memory, identity, trusted reads and approved create-only files, Ollama and
+an owner CLI. CI covers security, crash and local HTTP integration tests.
+See `m1-completion.md` for acceptance evidence and `runbook.md` for operation.
 
 ## Owner Windows location
 
@@ -25,7 +26,7 @@ The canonical M1 baseline is `docs/engineering/architecture-baseline.md`, with t
 
 ## Delivery order
 1. M0: validate docs, contracts and decisions.
-2. M1: root path bootstrap / typed task journal and safe crash reconciliation / authorization / source-provenance memory, private scopes and stable persona / selected Ollama Qwen3.5 adapter / read-only tool.
+2. M1: root paths, typed task/action journal, safe reconciliation, bounded plan revisions, authorization, scoped memory/persona, selected Qwen, trusted reads and approved create-only files.
 3. M2: file/document/spreadsheet/calculator/browser; prove scenarios.
 4. M3+: scheduler, remote integrations and self-improvement experiments.
 

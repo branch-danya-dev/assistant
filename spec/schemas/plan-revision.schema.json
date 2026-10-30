@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlanRevisionProposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "base_digest",
+    "reason",
+    "steps"
+  ],
+  "properties": {
+    "base_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ordinal",
+          "action_id",
+          "request",
+          "depends_on"
+        ],
+        "properties": {
+          "ordinal": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 39
+          },
+          "action_id": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "request": {
+            "type": "object"
+          },
+          "depends_on": {
+            "type": "array",
+            "uniqueItems": true,
+            "maxItems": 40,
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        }
+      }
+    },
+    "mode": {
+      "enum": [
+        "replace",
+        "append"
+      ],
+      "description": "append carries NEW steps only; the exact saved base is retained by trusted code."
+    }
+  }
+}

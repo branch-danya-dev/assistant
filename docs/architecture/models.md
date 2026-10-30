@@ -43,3 +43,7 @@ Host target: RTX 5070 Ti (16 GB VRAM), Ryzen 5 7600X, 32 GB RAM, Windows. Observ
 ## Reference
 
 Official Ollama catalog: https://ollama.com/library/qwen3.5
+
+Final evidence is projected separately from complete saved source data, within 6,000 serialized
+UTF-8 message bytes. `receipt_only` means the model did not receive source content; a partial
+analysis cannot claim semantic success. See ADR-022 and `../engineering/m1-review-fixes.md`.

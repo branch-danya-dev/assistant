@@ -32,7 +32,7 @@
         "REQ-006"
       ],
       "adapter": "personal_agent.memory / journal / orchestrator",
-      "verification": "Lexical scoped retrieval and linear task orchestration verified; semantic retrieval / plan revision remain tracked separately.",
+      "verification": "Lexical scoped retrieval is verified. Semantic retrieval remains deferred independently of the implemented plan revision.",
       "evidence": [
         "docs/engineering/m1-evidence.md"
       ]
@@ -62,15 +62,16 @@
       "side_effect": "workspace_write",
       "scope": "local_store",
       "policy": "scoped",
-      "status": "in_progress",
+      "status": "implemented",
       "requirement_ids": [
         "REQ-009",
         "REQ-010"
       ],
-      "adapter": "personal_agent.memory / journal / orchestrator",
-      "verification": "Lexical scoped retrieval and linear task orchestration verified; semantic retrieval / plan revision remain tracked separately.",
+      "adapter": "personal_agent.plans / journal / safe_fs / bounded",
+      "verification": "docs/engineering/m1-completion.md",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ]
     },
     {
@@ -121,7 +122,8 @@
       "adapter": "personal_agent.tools.read_text",
       "verification": "docs/engineering/m1-evidence.md",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -130,13 +132,18 @@
       "group": "filesystem",
       "side_effect": "workspace_write",
       "scope": "approved_paths",
-      "policy": "scoped",
-      "status": "planned",
+      "policy": "approval",
+      "status": "implemented",
       "requirement_ids": [
         "REQ-025"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.plans / journal / safe_fs / bounded",
+      "verification": "docs/engineering/m1-completion.md",
+      "evidence": [
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
+      ]
     },
     {
       "id": "CAP-009",

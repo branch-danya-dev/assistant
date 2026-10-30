@@ -62,7 +62,8 @@ class SecurityTests(RuntimeCase):
         try:
             scope = {**self.scope, "files": ["junction/secret.txt"]}
             with self.assertRaises(AgentError):
-                self.registry.resolve(self.request(path="junction/secret.txt"), self.task_doc, scope)
+                resolved = self.registry.resolve(self.request(path="junction/secret.txt"), self.task_doc, scope)
+                self.registry.execute(resolved, self.task_doc, scope)
         finally:
             if os.name == "nt":
                 link.rmdir()

@@ -1,11 +1,13 @@
 # Personal AI Assistant
 
-**M0 complete; M1 partial, working local vertical slice.** Python 3.12+ modular monolith,
+**M0 complete; M1 in progress after independent review.** Python 3.12+ modular monolith,
 SQLite/FTS5, Windows first. Based on Architecture Baseline v1.0 (`c1a0079`).
 
 Первая реализация уже работает: Qwen строит план, агент читает разрешённые текстовые файлы
-и проектную память, проверяет результаты и сохраняет журнал. Полнота M1 пока не заявляется.
-[Результаты и ограничения](docs/engineering/m1-evidence.md).
+и проектную память, создаёт разрешённые новые файлы после подтверждения, проверяет результаты
+и сохраняет журнал. Пересмотр плана сохраняет выполненные действия и подтверждения.
+[Исправления review, доказательства и открытые P0-gates](docs/engineering/m1-review-fixes.md).
+REQ-017/019 remain specified; partial analysis is reported explicitly, never as full semantic success.
 
 ## Implemented
 
@@ -15,14 +17,19 @@ SQLite/FTS5, Windows first. Based on Architecture Baseline v1.0 (`c1a0079`).
   traversal/junction/opened-handle checks and independent tool-result verification.
 - SQLite migrations and task journal, stable action IDs, exact one-use approvals, pre-dispatch
   commits, persistent stop, explicit resume and `needs_reconciliation` for uncertain effects.
+- Bounded plan revisions with immutable completed actions and explicit dependencies; process
+  deadlines/cancellation; create-only files after exact owner approval and independent observation.
 - Sourced versioned memory, preserved supersession, FTS5, retention filtering/index rebuild,
   explicit owner remembering/removal from retrieval and persona independent of model weights.
 - CLI for tasks, evidence, approvals, recovery, memory/persona and consistent database backup.
 
-The production registry is read-only. Mutating effects and approval consumption are tested
-with synthetic crash fixtures; no real send/purchase/install/delete adapter is active.
+The production registry supports reads and approval-gated create-only files. Mutating effects
+and approval consumption are tested with real synthetic filesystem/crash fixtures;
+no send/purchase/install/overwrite/delete adapter is active.
 LLM summaries are labelled separately from verified tool results. Office/browser integrations,
-semantic embeddings, automatic plan revision and safe workspace writes remain open/deferred.
+semantic embeddings and general document editing remain deferred. Windows is primary;
+Linux create-only execution allows flat output names and requires a trusted environment and
+kernel support (ADR-021). PR #4 must be accepted first; neither PR is automatically merged.
 
 ## Windows quick start
 

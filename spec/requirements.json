@@ -131,7 +131,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -140,15 +141,18 @@
       "title": "Tool-aware multi-step planning",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Agent builds executable plan with dependencies and can revise it with audit."
       ],
       "owner": "project",
-      "notes": "Partial: bounded sequential plans are implemented; audited in-task revision remains open in TASK-009.",
+      "notes": "Verified immutable bounded plan revisions and exclusive scoped create-only files. Linux supports flat names in a trusted project root (ADR-021); no overwrite/delete.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_orchestrator.py"
+        "tests/test_orchestrator.py",
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -164,7 +168,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -180,7 +186,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -197,7 +205,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -253,11 +262,12 @@
         "Webpage, document and message instructions cannot escalate privileges or override owner policy."
       ],
       "owner": "project",
-      "notes": "M1 closed registry, scoped retrieval, payload-free diagnostics and loopback-only inference verified. Broad source/secret detection, vault and future network adapters not claimed.",
+      "notes": "P0/M1 acceptance remains OPEN, not certified by closed-registry tests. Priority, target milestone and acceptance unchanged. TASK-026 and TASK-044 retain the remaining gate; see review remediation report.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
-        "tests/test_models.py"
+        "tests/test_models.py",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -273,7 +283,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -287,11 +298,12 @@
         "No secrets in prompts/logs/repo; unauthorized cloud egress rejected."
       ],
       "owner": "project",
-      "notes": "M1 closed registry, scoped retrieval, payload-free diagnostics and loopback-only inference verified. Broad source/secret detection, vault and future network adapters not claimed.",
+      "notes": "P0/M1 acceptance remains OPEN, not certified by closed-registry tests. Priority, target milestone and acceptance unchanged. TASK-026 and TASK-044 retain the remaining gate; see review remediation report.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
-        "tests/test_models.py"
+        "tests/test_models.py",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -375,15 +387,18 @@
       "title": "Scoped filesystem access",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Read/write only approved test workspace and reject traversal/unsafe targets."
       ],
       "owner": "project",
-      "notes": "Partial: exact scoped reads implemented. Safe workspace creation remains TASK-043; overwrite/delete unsupported.",
+      "notes": "Verified immutable bounded plan revisions and exclusive scoped create-only files. Linux supports flat names in a trusted project root (ADR-021); no overwrite/delete.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_security.py"
+        "tests/test_security.py",
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -672,7 +687,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -783,7 +800,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     }
   ]

@@ -1,0 +1,132 @@
+{
+  "timestamp": "2026-10-30T19:11:38.941428Z",
+  "synthetic_only": true,
+  "selected_model": {
+    "reachable": true,
+    "model": "qwen3.5:9b",
+    "installed": true,
+    "digest": "56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+    "quantization": "Q4_K_M",
+    "text_generation": "pass",
+    "structured_tool_intent": "pass",
+    "tools_executed": 0,
+    "metrics": {
+      "prompt_eval_count": 66,
+      "eval_count": 86,
+      "total_duration": 880275000
+    }
+  },
+  "runtime_source_fingerprint": "e7a418d3c886c9550a46a37b7d4af2a06a6ffffbe3e1b05737cb1c4b0614830d",
+  "checks": {
+    "local_task_completed": true,
+    "both_read_tools_verified": true,
+    "expected_answer": true,
+    "memory_restart_and_history": true,
+    "persona_restart": true,
+    "journal_restart": true,
+    "windows_user_model_path": true,
+    "actual_model_files_on_root": true,
+    "live_create_approval_revision_exactly_once": true
+  },
+  "passed": true,
+  "task_id": "dced455c-7876-4a7f-a7b4-f5dde27093c7",
+  "task_state": "completed",
+  "block_reason": null,
+  "verified_operations": [
+    "read_text",
+    "search_memory"
+  ],
+  "model_comparisons": 0,
+  "model_storage_evidence": {
+    "passed": true,
+    "ollama_report": {
+      "from_count": 2,
+      "from_matches_manifest": true,
+      "tag_digest_matches_manifest": true,
+      "tag_digest_source": "verified_retained_manifest_blob"
+    },
+    "independent_filesystem": {
+      "manifest": {
+        "path": "manifests/registry.ollama.ai/library/qwen3.5/9b-q4_K_M",
+        "exists": true,
+        "canonical_containment": true,
+        "bytes": 1252,
+        "size_matches_manifest": true,
+        "sha256": "7dd7bb310c1f18ad132c7fd72e73d4f6cff2e916c596a818701d2a1269037c7f",
+        "hash_matches_manifest": null
+      },
+      "blobs": [
+        {
+          "path": "blobs/sha256-08f9698c1116d2ba3d2c1751f6e98919823e13bb28ff5eb7451c7bc9b40907c5",
+          "exists": true,
+          "canonical_containment": true,
+          "bytes": 177,
+          "size_matches_manifest": true,
+          "sha256": "08f9698c1116d2ba3d2c1751f6e98919823e13bb28ff5eb7451c7bc9b40907c5",
+          "hash_matches_manifest": true
+        },
+        {
+          "path": "blobs/sha256-f836f08f921193f4d6b6a6952dba0a6fb116759d26a757bcb395d570d73976ca",
+          "exists": true,
+          "canonical_containment": true,
+          "bytes": 921704832,
+          "size_matches_manifest": true,
+          "sha256": "f836f08f921193f4d6b6a6952dba0a6fb116759d26a757bcb395d570d73976ca",
+          "hash_matches_manifest": true
+        },
+        {
+          "path": "blobs/sha256-02d45dc1cf451ba2475ac33b301c2dd8f985abe4c182ce04a1f2f5bf0260278d",
+          "exists": true,
+          "canonical_containment": true,
+          "bytes": 5629109120,
+          "size_matches_manifest": true,
+          "sha256": "02d45dc1cf451ba2475ac33b301c2dd8f985abe4c182ce04a1f2f5bf0260278d",
+          "hash_matches_manifest": true
+        },
+        {
+          "path": "blobs/sha256-b507b9c2f6ca642bffcd06665ea7c91f235fd32daeefdf875a0f938db05fb315",
+          "exists": true,
+          "canonical_containment": true,
+          "bytes": 13,
+          "size_matches_manifest": true,
+          "sha256": "b507b9c2f6ca642bffcd06665ea7c91f235fd32daeefdf875a0f938db05fb315",
+          "hash_matches_manifest": true
+        },
+        {
+          "path": "blobs/sha256-50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32",
+          "exists": true,
+          "canonical_containment": true,
+          "bytes": 11343,
+          "size_matches_manifest": true,
+          "sha256": "50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32",
+          "hash_matches_manifest": true
+        },
+        {
+          "path": "blobs/sha256-9371364b27a52acac9d87f88bd93c9db1174d8d6ec57f6888925cdc1788871ff",
+          "exists": true,
+          "canonical_containment": true,
+          "bytes": 65,
+          "size_matches_manifest": true,
+          "sha256": "9371364b27a52acac9d87f88bd93c9db1174d8d6ec57f6888925cdc1788871ff",
+          "hash_matches_manifest": true
+        },
+        {
+          "path": "blobs/sha256-56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+          "exists": true,
+          "canonical_containment": true,
+          "bytes": 1088,
+          "size_matches_manifest": true,
+          "sha256": "56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+          "hash_matches_manifest": true
+        }
+      ],
+      "hashes_checked": true
+    },
+    "running_process_environment_verified": false,
+    "loaded_model_memory_independently_verified": false
+  },
+  "isolated_runtime": true,
+  "runtime_relative": "cache/host-acceptance-cb442cd3-21b6-4fbd-b413-4b287d49f225",
+  "create_task_state": "completed",
+  "create_block_reason": null
+}

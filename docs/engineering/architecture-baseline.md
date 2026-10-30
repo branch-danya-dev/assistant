@@ -44,3 +44,10 @@ M2: office, spreadsheets, browser research and supplier workflows. M3: scheduler
 ## Quality gate
 
 Before merging any implementation PR: update related REQ/TASK/CAP/SCN IDs and acceptance evidence, tests on Windows/Linux as relevant, redacted logs, reversible data migration when schema changes, and no unapproved external side effects. `AGENTS.md` is the agent entry point.
+
+## Review correction addendum (ADR-022)
+
+The original safety/recovery invariants remain binding. ADR-022 supersedes the lifecycle
+reporting boundary by adding terminal partial for verified operations without full semantic
+analysis, plus compact append revisions and additive SQLite v3 compatibility. See
+[m1-review-fixes.md](m1-review-fixes.md). This does not close REQ-017/019 or change ADR-021.

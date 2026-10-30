@@ -1,0 +1,81 @@
+{
+  "scope": "M1 independent-review remediation, synthetic evidence only",
+  "reviewed_head": "c4a52196019c3ed9cce573139b4a34dfd0386110",
+  "base_sha": "42a9f31dd1556a1714d64d86ee6e8f630b027d2f",
+  "pr": "https://github.com/branch-danya-dev/assistant/pull/5",
+  "status": "runtime_validation_steps_passed_M1_security_gate_open",
+  "milestone": "in_progress",
+  "REQ-017": "specified",
+  "REQ-019": "specified",
+  "merge_performed": false,
+  "local": {
+    "platform": "Windows",
+    "python": "3.12.10",
+    "tests_discovered": 104,
+    "tests_passed": 102,
+    "linux_only_skips": 2,
+    "contracts": "pass",
+    "ruff": "pass",
+    "wheel_build": "pass",
+    "installed_package_outside_checkout": "pass",
+    "scope": "Synthetic fixtures; existing Python environment, isolated temporary build/package directories. Production database not opened.",
+    "full_suite_checkpoint": "7b682ac1328b8442eecfd3d1122d83fac1ce49bf",
+    "subsequent_changed_area_tests": {
+      "commit": "a204fa0a6cba9758add50ef3ad36db43a430fc90",
+      "context_tests_passed": 8,
+      "preview_tests_passed": 10,
+      "ruff": "pass"
+    }
+  },
+  "ci": {
+    "url": "https://github.com/branch-danya-dev/assistant/actions/runs/41120999267",
+    "tested_commit": "a204fa0a6cba9758add50ef3ad36db43a430fc90",
+    "basis": "Validation steps and test totals read from both job logs; aggregate status remains available at the run URL.",
+    "windows": {
+      "job_id": 124287128265,
+      "validation_steps": "pass",
+      "tests_discovered": 104,
+      "tests_passed": 102,
+      "platform_skips": 2
+    },
+    "ubuntu": {
+      "job_id": 124287128021,
+      "validation_steps": "pass",
+      "tests_discovered": 104,
+      "tests_passed": 100,
+      "platform_skips": 4
+    },
+    "contracts": "pass",
+    "ruff": "pass",
+    "wheel_build": "pass",
+    "installed_package_outside_checkout": "pass",
+    "earlier_remediation_run": "https://github.com/branch-danya-dev/assistant/actions/runs/41120634384"
+  },
+  "live_selected_model": {
+    "model": "qwen3.5:9b",
+    "status": "unavailable_current_check_not_passed",
+    "attempted_commit": "a204fa0a6cba9758add50ef3ad36db43a430fc90",
+    "report": "docs/engineering/evidence/windows-m1-review-host.json",
+    "reason": "Ollama refused the initial loopback connection; no task dispatched or current model hashes checked.",
+    "historical_report": "docs/engineering/evidence/windows-m1-completion.json",
+    "historical_revision_provenance": "owner/test-harness injected, not live model-generated",
+    "production_database_modified": false,
+    "model_comparisons": 0
+  },
+  "tested_runtime_commit": "a204fa0a6cba9758add50ef3ad36db43a430fc90",
+  "runtime_source_fingerprint": "0315706e877d8513f78a6097ca38dc6cdce9b6c41e83a0df627eb0ce423d9ad0",
+  "preserved_original_pr5_commits": [
+    "3010129",
+    "8fd8649",
+    "9ae713a",
+    "c4a5219"
+  ],
+  "migration": "Additive SQLite v3; backup before opening production state, matching backup/code for rollback.",
+  "remaining_limits": [
+    "REQ-017/019 remain specified P0/M1; TASK-026/044 security gate open.",
+    "Withheld source content yields partial, not full semantic success; no chunked full-document analysis.",
+    "Preview expiry is cleaned on creation or explicit cleanup-previews, not by a background daemon; legacy unregistered files require owner review.",
+    "Linux ADR-021 trusted roots and flat create remain mandatory. Interrupted Windows writes may need reconciliation.",
+    "No current live Qwen acceptance pass; historical evidence has explicit harness revision provenance."
+  ]
+}

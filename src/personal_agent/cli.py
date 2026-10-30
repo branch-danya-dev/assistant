@@ -6,6 +6,7 @@ import json
 import os
 import sqlite3
 import sys
+from pathlib import Path
 
 from .config import AgentError, Paths, safe_relative
 from .demo import run_demo
@@ -14,25 +15,41 @@ from .journal import Journal
 from .memory import Memory
 from .models import Ollama
 from .orchestrator import Agent
+from .previews import Previews
 from .storage import Store
 
 
 def parser() -> argparse.ArgumentParser:
-    root = argparse.ArgumentParser(description="Local personal agent (partial M1)")
+    root = argparse.ArgumentParser(description="Local personal agent (M1)")
     root.add_argument("--root", help="Explicit ASSISTANT_ROOT override; default G:\\Assistant on Windows")
     commands = root.add_subparsers(dest="command", required=True)
+    commands.add_parser("cleanup-previews", help="Remove expired registered approval previews only")
     for command in ("init", "doctor", "smoke", "demo", "tasks", "stop", "clear-stop", "recover", "backup", "persona"):
         commands.add_parser(command)
     run = commands.add_parser("run")
     run.add_argument("intent")
     run.add_argument("--project", required=True)
     run.add_argument("--allow-file", action="append", default=[], help="Exact project-workspace relative UTF-8 file")
+    run.add_argument("--allow-create", action="append", default=[],
+                     help="Exact NEW file in existing project directories; separate approval is still required")
     run.add_argument("--include-private", action="store_true", help="Explicit local-only private memory scope")
     for command in ("show", "resume", "cancel"):
         commands.add_parser(command).add_argument("task_id")
+    evidence = commands.add_parser("show-evidence")
+    evidence.add_argument("task_id")
+    evidence.add_argument("evidence_ref")
+    evidence.add_argument("--project", required=True)
+    evidence.add_argument("--limit", type=int, default=16384)
+    revise = commands.add_parser("revise")
+    revise.add_argument("task_id")
+    revise.add_argument("--plan", type=Path, required=True,
+                        help="JSON proposal with base_digest, reason and immutable step identities")
     approval = commands.add_parser("approve")
     approval.add_argument("approval_id")
     approval.add_argument("--digest", required=True, help="Digest from the reviewed exact action")
+    preview = commands.add_parser("approval-preview")
+    preview.add_argument("approval_id")
+    preview.add_argument("--project", required=True)
     reconcile = commands.add_parser("reconcile")
     reconcile.add_argument("action_id")
     reconcile.add_argument("--outcome", required=True, choices=("applied", "not_applied"))
@@ -100,12 +117,24 @@ def execute(args) -> dict:
                               store.connection.execute("SELECT id,state FROM tasks ORDER BY rowid DESC LIMIT 100")]}
         if args.command == "show":
             return journal.inspect(args.task_id)
+        if args.command == "show-evidence":
+            if not 256 <= args.limit <= 32768:
+                raise AgentError("invalid_output_limit")
+            result = journal.evidence(args.task_id, args.evidence_ref, args.project)
+            if len(json.dumps(result).encode()) > args.limit:
+                return {"evidence_ref": args.evidence_ref, "truncated": True,
+                        "result_digest": result["result_digest"], "output_limit": args.limit}
+            return result
         if args.command in ("stop", "clear-stop"):
             journal.stop(args.command == "stop")
             return {"stopped": journal.stopped(), "in_flight_effects_undone": False}
+        if args.command == "cancel":
+            journal.cancel(args.task_id)
+            return journal.inspect(args.task_id)
         if args.command == "run":
             paths.project_workspace(args.project)
-            scope = {"files": [safe_relative(p) for p in args.allow_file], "memory_classes":
+            scope = {"files": [safe_relative(p) for p in args.allow_file],
+                     "create_files": [safe_relative(p) for p in args.allow_create], "memory_classes":
                      ["public", "internal", *(["private"] if args.include_private else [])]}
             task_id = journal.create(args.intent, args.project, scope)
             return Agent(store, Ollama()).run(task_id)
@@ -116,12 +145,36 @@ def execute(args) -> dict:
         if args.command == "persona":
             return Identity(paths).current()
         with store.execution_lock():
+            if args.command == "cleanup-previews":
+                return Previews(store).cleanup()
+            if args.command == "approval-preview":
+                approval = journal.approval(args.approval_id)
+                task_id = approval["task_id"]
+                if journal.get(task_id)["project_id"] != args.project:
+                    raise AgentError("approval_scope_mismatch")
+                action_row = store.connection.execute("SELECT action_id FROM approvals WHERE id=?",
+                                                       (args.approval_id,)).fetchone()
+                action = journal.action(action_row[0])
+                # Owner-requested private review artifact: full proposed bytes stay out of stdout.
+                document = {"approval": approval, "request": json.loads(action["request"]),
+                            "scope": journal.scope(task_id), "action_id": action["id"]}
+                preview = Previews(store).create(document)
+                return {"approval_id": args.approval_id, "arguments_digest": action["digest"],
+                        **preview, "status": approval["status"]}
+            if args.command == "revise":
+                journal.recover()
+                with args.plan.open("rb") as file:
+                    raw = file.read(65537)
+                if len(raw) > 65536:
+                    raise AgentError("plan_input_budget_exhausted")
+                try:
+                    proposal = json.loads(raw)
+                except ValueError as exc:
+                    raise AgentError("invalid_plan_revision") from exc
+                journal.plans.revise(args.task_id, proposal, Agent(store, Ollama()).registry)
+                return journal.inspect(args.task_id)
             if args.command == "recover":
                 return {"recovered_task_ids": journal.recover(), "executed_actions": 0}
-            if args.command == "cancel":
-                journal.recover()
-                journal.transition(args.task_id, "cancelled")
-                return journal.inspect(args.task_id)
             if args.command == "approve":
                 journal.approve(args.approval_id, args.digest)
                 return journal.approval(args.approval_id)
@@ -148,7 +201,14 @@ def main(argv=None) -> int:
         sys.stdout.reconfigure(encoding="utf-8")
     try:
         result = execute(parser().parse_args(argv))
-        print(json.dumps(result, ensure_ascii=False, indent=2))
+        rendered = json.dumps(result, ensure_ascii=False, indent=2)
+        if len(rendered.encode("utf-8")) > 65536:
+            # Source metadata can still be large. Keep the state readable, and make truncation explicit.
+            rendered = json.dumps({"task_id": result.get("task", {}).get("task_id"),
+                "state": result.get("task", {}).get("state"), "truncated": True,
+                "preview": rendered.encode("utf-8")[:16000].decode("utf-8", errors="ignore")},
+                ensure_ascii=False, indent=2)
+        print(rendered)
         state = result.get("task", {}).get("state")
         return 0 if state in (None, "completed", "cancelled") else 2
     except (AgentError, OSError, sqlite3.Error) as exc:

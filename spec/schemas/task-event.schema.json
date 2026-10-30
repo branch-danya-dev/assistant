@@ -28,6 +28,7 @@
       "enum": [
         "created",
         "planned",
+        "plan_revised",
         "queued",
         "started",
         "tool_proposed",
@@ -41,11 +42,13 @@
         "completed",
         "failed",
         "cancelled",
+        "cancellation_requested",
         "approval_consumed",
         "reconciliation_required",
         "reconciled",
         "resumed",
-        "paused"
+        "paused",
+        "partial"
       ]
     },
     "timestamp": {

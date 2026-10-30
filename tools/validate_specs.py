@@ -114,7 +114,8 @@ def check() -> list[str]:
             if ref in coverage:
                 coverage[ref].append(task)
 
-    milestone_num = lambda s: int(s[1:])
+    def milestone_num(s):
+        return int(s[1:])
     for req in docs["requirements"]:
         if req.get("target_milestone") not in sets["milestones"]:
             errors.append(f"{req['id']}: unknown milestone")
@@ -134,6 +135,19 @@ def check() -> list[str]:
             for t in linked if t.get("milestone") in sets["milestones"]
         ):
             errors.append(f"{req['id']}: P0 not covered by target milestone")
+
+    for milestone in docs["milestones"]:
+        if milestone.get("status") not in ("planned", "in_progress", "completed"):
+            errors.append(f"{milestone['id']}: invalid status")
+        if milestone.get("status") == "completed":
+            for req in docs["requirements"]:
+                if (req["priority"] == "P0" and req["target_milestone"] == milestone["id"]
+                        and req["status"] not in ("implemented", "deprecated")):
+                    errors.append(f"{milestone['id']}: completed with open P0 {req['id']}")
+            for task in tasks:
+                if (task["priority"] == "P0" and task["milestone"] == milestone["id"]
+                        and task["status"] != "done"):
+                    errors.append(f"{milestone['id']}: completed with open P0 {task['id']}")
 
     for cap in docs["capabilities"]:
         check_refs(cap, "requirement_ids", sets["requirements"], errors)
