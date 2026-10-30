@@ -40,3 +40,12 @@ Desktop / API / Telegram (later) / Voice (later)
 
 ## Architectural constraints
 Host initially Windows, Python 3.12+, single user, SQLite starting point. Provider names and UI stack are provisional; no assumptions of universal tool support or identical model capabilities.
+
+## Binding implementation baseline (ADR-002/003/004/005/006/007/012/014/017/018/019/020)
+
+- Initial application is a single-user Python modular monolith on Windows; SQLite/FTS5 for canonical records and an optional independently replaceable semantic index.
+- Persona stored outside LLM weights; context retrieval is scope-filtered; tool intents never confer privilege.
+- Effective tool permissions come from an owner-approved registry and actual arguments, never model text.
+- M1 includes durable journal, approval consumption, safe restart and reconciliation; M3 adds scheduling and external connector recovery.
+- `ASSISTANT_ROOT` is the only absolute application-root setting; no silent fallback to another drive.
+- See `docs/architecture/identity.md`, `orchestration.md`, `tools.md` and `storage.md`.
