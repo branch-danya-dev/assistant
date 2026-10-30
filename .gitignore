@@ -24,6 +24,8 @@ memory/
 models/
 secrets/
 backups/
+cache/
+workspace/
 *.sqlite
 *.sqlite3
 *.db

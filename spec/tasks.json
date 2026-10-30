@@ -63,7 +63,8 @@
       "milestone": "M1",
       "depends_on": [
         "TASK-001",
-        "TASK-002"
+        "TASK-002",
+        "TASK-024"
       ],
       "requirement_ids": [
         "REQ-004",
@@ -103,7 +104,8 @@
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
-        "TASK-001"
+        "TASK-001",
+        "TASK-024"
       ],
       "requirement_ids": [
         "REQ-020",
@@ -444,6 +446,26 @@
       ],
       "acceptance": [
         "Audio mic switch and remote auth regression pass."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-024",
+      "title": "Implement portable assistant home bootstrap, path resolver and migration verification",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-001"
+      ],
+      "requirement_ids": [
+        "REQ-053"
+      ],
+      "acceptance": [
+        "Resolve all configured dirs under ASSISTANT_ROOT; enforce root containment, reject missing G: or denied writes, no fallback.",
+        "Provide explicit bootstrap and Windows Ollama env setup flow, with safe migration and DB backup guidance.",
+        "CI unit tests cover root override, traversal, directory layout and model path mapping."
       ],
       "evidence": [],
       "owner": "unassigned"

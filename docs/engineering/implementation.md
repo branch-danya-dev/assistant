@@ -3,6 +3,10 @@
 ## Repo state
 **Planning/bootstrap only.** `src/personal_agent/ports.py` has minimal protocol placeholders, not concrete implementations. CI validates documents; it does not mean runtime functionality is tested.
 
+## Owner Windows location
+
+Clone to `G:\Assistant\repo`, not the system disk. Before running code or downloading the model, provision `G:\Assistant` using the procedure in `docs/architecture/storage.md`. The root is configurable through `ASSISTANT_ROOT`, while Ollama Desktop requires a user-level `OLLAMA_MODELS=G:\Assistant\models\ollama` and a restart. CI and isolated tests may explicitly set temporary roots. Do not hardcode G: in modules or silently fall back to C:.
+
 ## Local development (Windows PowerShell)
 
 ```powershell

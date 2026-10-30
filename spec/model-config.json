@@ -26,5 +26,7 @@
     "Advertised maximum context is not a guarantee of usable context on 16 GB VRAM.",
     "Tool use and vision capability must be wired through the adapter; model selection alone does not implement them.",
     "Cloud inference remains optional and consent-gated; no fallback model is chosen by default."
-  ]
+  ],
+  "model_storage_policy": "ADR-016",
+  "ollama_model_directory_from_storage_config": "models/ollama"
 }

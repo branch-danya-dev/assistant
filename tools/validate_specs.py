@@ -27,6 +27,21 @@ def check() -> list[str]:
     manifest = load("spec/manifest.json")
     if manifest.get("schema_version") != "1.0":
         errors.append("manifest: unsupported schema_version")
+    storage = load("spec/storage-config.json")
+    if storage.get("policy_id") != "ADR-016" or storage.get("default_root") != "G:\\Assistant":
+        errors.append("storage-config: owner-approved G: root mismatch")
+    layout = storage.get("layout", {})
+    required = {"repository", "models_ollama", "data", "db", "history", "memory", "identity", "skills", "workspace", "logs", "backups", "cache"}
+    if not required.issubset(layout):
+        errors.append("storage-config: missing directories")
+    for label, path in layout.items():
+        if (not isinstance(path, str) or not path or path.startswith(("/", "\\\\")) or
+                ":" in path or ".." in path.replace("\\\\", "/").split("/")):
+            errors.append(f"storage-config: unsafe relative directory {label}")
+    if storage.get("ollama", {}).get("default_model_storage") != "G:\\Assistant\\models\\ollama":
+        errors.append("storage-config: Ollama storage mismatch")
+    if storage.get("relative_path_policy", {}).get("no_silent_fallback_to_system_disk") is not True:
+        errors.append("storage-config: no fallback policy missing")
     selected = load("spec/model-config.json")
     if selected.get("primary_local", {}).get("model") != "qwen3.5:9b":
         errors.append("model-config: primary local model differs from ADR-015")
