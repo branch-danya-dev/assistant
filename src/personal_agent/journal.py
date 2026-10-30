@@ -218,6 +218,10 @@ class Journal:
                 if previous[0] != fingerprint:
                     raise AgentError("action_changed_after_prepare")
                 return action_id
+            if effect != "read" and self.db.execute(
+                    "SELECT 1 FROM actions WHERE task_id=? AND resource=? AND effect!='read'",
+                    (task_id, resource)).fetchone():
+                raise AgentError("non_idempotent_plan_replay_denied")
             self.db.execute("""INSERT INTO actions(id,task_id,ordinal,request,digest,effect,
                             resource,status) VALUES (?,?,?,?,?,?,?,'pending')""",
                             (action_id, task_id, ordinal, encode(request), fingerprint, effect, resource))

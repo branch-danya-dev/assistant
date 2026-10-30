@@ -21,7 +21,7 @@ jobs:
       - name: Run unit, security, crash and HTTP integration tests
         run: python -m unittest discover -s tests -v
       - name: Check Python source
-        run: python -m ruff check src tests setup.py
+        run: python -m ruff check src tests setup.py tools/verify_host.py
       - name: Build distributable with canonical contracts
         run: python -m pip wheel . --no-deps --wheel-dir dist
       - name: Verify distributable outside source checkout

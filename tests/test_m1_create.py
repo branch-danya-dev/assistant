@@ -178,18 +178,32 @@ with Store(Paths(sys.argv[1])) as store, store.execution_lock():
         with Store(self.paths) as reopened:
             self.assertEqual(reopened.connection.execute("PRAGMA integrity_check").fetchone()[0], "ok")
 
-    def test_linux_kernel_denies_parent_moved_out_after_open_before_publish(self):
+    def test_owner_can_review_exact_approval_in_private_artifact_without_stdout_content(self):
+        import test_cli
+        waiting = self.agent.run(self.task_id)
+        action = waiting["actions"][0]
+        result = test_cli.CliTests.invoke(self, "approval-preview", action["approval_id"],
+                                         "--project", "alpha")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("synthetic once", result.stdout)
+        metadata = json.loads(result.stdout)
+        preview = json.loads((self.paths.root / metadata["private_preview_relative"]).read_text())
+        self.assertEqual(preview["request"]["arguments"]["text"], "synthetic once")
+        self.assertEqual(preview["approval"]["arguments_digest"], action["digest"])
+        denied = test_cli.CliTests.invoke(self, "approval-preview", action["approval_id"],
+                                         "--project", "other")
+        self.assertEqual(denied.returncode, 2)
+
+    def test_linux_kernel_denies_root_moved_out_after_open_before_publish(self):
         if os.name == "nt":
             self.skipTest("Linux Landlock publication race")
-        nested = self.base / "nested"
-        nested.mkdir()
-        outside = self.paths.root / "outside"
+        outside = self.paths.root.parent / "outside"
         script = '''
 import os, subprocess, sys
 from personal_agent.config import Paths, AgentError
 import personal_agent.safe_fs as fs
 paths = Paths(sys.argv[1])
-binding = fs.snapshot(paths, 'alpha', 'nested/new.txt')
+binding = fs.snapshot(paths, 'alpha', 'new.txt')
 helper_code = "import os,sys; sys.stdin.read(1); os.rename(sys.argv[1],sys.argv[2]); print('done',flush=True)"
 helper = subprocess.Popen([sys.executable, '-c', helper_code, sys.argv[2], sys.argv[3]],
                           stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -201,15 +215,57 @@ def race(fd, parent, name):
     original(fd, parent, name)
 fs._publish_linux = race
 try:
-    fs.create_text(paths, 'alpha', 'nested/new.txt', 'private synthetic text', binding)
+    fs.create_text(paths, 'alpha', 'new.txt', 'private synthetic text', binding)
 except AgentError as error:
     assert str(error) == 'exclusive_file_publish_failed', str(error)
     sys.exit(0)
 sys.exit(4)
 '''
-        result = subprocess.run([sys.executable, "-c", script, str(self.paths.root), str(nested),
+        result = subprocess.run([sys.executable, "-c", script, str(self.paths.root), str(self.base),
                                  str(outside)], capture_output=True, text=True, timeout=20,
                                 env={**os.environ, "PYTHONPATH": str(REPO / "src")})
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(outside.exists(), "Attack must actually move the pinned parent")
         self.assertFalse((outside / "new.txt").exists())
+
+    def test_linux_nested_create_is_denied_before_dispatch(self):
+        if os.name == "nt":
+            self.skipTest("Linux flat-output restriction")
+        (self.base / "nested").mkdir()
+        task_id = self.journal.create("Nested synthetic", "alpha", {
+            "files": [], "create_files": ["nested/file.txt"], "memory_classes": ["public"]})
+        request = {"task_id": task_id, "capability_id": "CAP-008", "operation": "create_text",
+                   "arguments": {"path": "nested/file.txt", "text": "data"}}
+        with self.assertRaisesRegex(AgentError, "nested_create_requires_windows"):
+            self.agent.registry.resolve(request, self.journal.get(task_id), self.journal.scope(task_id))
+        self.assertFalse((self.base / "nested/file.txt").exists())
+
+    def test_duplicate_create_intents_cannot_dispatch_same_effect_twice(self):
+        class Duplicate(CreateProvider):
+            def complete(self, messages, *, task_id):
+                reply = super().complete(messages, task_id=task_id)
+                if reply["steps"]:
+                    reply["steps"] *= 2
+                return reply
+        self.agent.model = Duplicate()
+        action_id = self.approved()
+        result = self.agent.run(self.task_id)
+        self.assertEqual(result["task"]["state"], "blocked")
+        self.assertEqual(result["task"]["block_reason"], "non_idempotent_plan_replay_denied")
+        self.assertEqual(result["task"]["budget"]["tool_calls"], 1)
+        self.assertEqual(self.journal.action(action_id)["attempts"], 1)
+
+    def test_windows_nested_create_is_supported_with_pinned_parents(self):
+        if os.name != "nt":
+            self.skipTest("Windows supports nested outputs")
+        (self.base / "nested").mkdir()
+        task_id = self.journal.create("Nested synthetic", "alpha", {
+            "files": [], "create_files": ["nested/file.txt"], "memory_classes": ["public"]})
+        task, scope = self.journal.get(task_id), self.journal.scope(task_id)
+        request = {"task_id": task_id, "capability_id": "CAP-008", "operation": "create_text",
+                   "arguments": {"path": "nested/file.txt", "text": "nested once"}}
+        resolved = self.agent.registry.resolve(request, task, scope)
+        result = run_worker(self.paths, {"kind": "tool", "resolved": asdict(resolved),
+                                        "task": task, "scope": scope})
+        self.assertEqual(result["bytes"], 11)
+        self.assertEqual((self.base / "nested/file.txt").read_text(), "nested once")

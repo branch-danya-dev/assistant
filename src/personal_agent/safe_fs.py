@@ -186,6 +186,11 @@ def _publish_linux(fd: int, parent_fd: int, name: str):
 
 
 def create_text(paths: Paths, project: str, relative: str, text: str, binding: list) -> dict:
+    relative = safe_relative(relative)
+    if os.name != "nt" and "/" in relative:
+        # A POSIX fd pins identity, not a pathname. Do not allow a mutable intermediate
+        # parent to be renamed even within the allowed tree between check and publication.
+        raise AgentError("nested_create_requires_windows")
     data = text.encode("utf-8")
     if len(data) > MAX_FILE_BYTES:
         raise AgentError("file_size_exceeded")

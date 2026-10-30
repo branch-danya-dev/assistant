@@ -1,7 +1,7 @@
 # Project status — first implementation, 2026-10-30
 
-M0 complete; M1 partial. A working local read-only vertical slice exists: migrations, journal,
-memory/persona, trusted policy, crash recovery, Ollama and owner CLI. See `m1-evidence.md` and
+M0 complete; M1 completion candidate. Runtime includes migrations, immutable plan revisions,
+memory/persona, approved create-only files, bounded workers, crash recovery, Ollama and owner CLI. See `m1-completion.md` and
 `runbook.md` for checks and supported operation boundaries.
 
 Selected qwen3.5:9b completed a synthetic live Windows task: read a scoped file, search project
@@ -10,8 +10,9 @@ owner consent, model files were copied and SHA-256-verified at G:\Assistant\mode
 User variables and actual running model paths were verified. Originals retained; no comparison
 or model download performed.
 
-Remaining M1 work: audited revision of running plans (TASK-009), interface gate closure after
-orchestration acceptance (TASK-010), safe create-only workspace writes (TASK-043) for REQ-025.
+TASK-009/010/043 are implemented; final release evidence is recorded in m1-completion.md.
+Windows is primary. Linux is owner-approved trusted environment with flat output names,
+Landlock and no unsafe fallback; full nested create paths are supported only on Windows.
 Generic secret detection/vault integration is not claimed. M2/M3/M4 tools remain deferred.
 No real outbound message, purchase, installation or destructive executor is active.
 

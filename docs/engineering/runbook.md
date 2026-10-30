@@ -74,6 +74,10 @@ is available through `show-evidence TASK_ID action:ACTION_ID --project PROJECT -
 Source contents are withheld, including arbitrary secret strings; this view never reads foreign
 projects. Use your own local file viewer for content that you are authorized to inspect.
 `approve APPROVAL_ID --digest EXACT_REVIEWED_DIGEST` is an owner CLI action, never an LLM tool.
+Before approval, `approval-preview APPROVAL_ID --project PROJECT` creates a private JSON file
+in the application's cache containing the full exact proposal and scope. Open that file locally
+to review the proposed content; the CLI prints only its relative location and approval digest.
+It never approves or executes the proposal. Preview files are private state, never Git artifacts.
 Approvals expire after ten minutes and are consumed in the same transaction as dispatch.
 The registry permits `create_text` only for exact `--allow-create new.txt` targets in existing
 project directories. This allowlist alone does not approve the content: inspect the proposal,
@@ -84,6 +88,7 @@ sends, purchases, installs, deletion or overwriting.
 ```powershell
 python -m personal_agent run --project example --allow-create result.txt "Create result.txt containing Synthetic result."
 python -m personal_agent show TASK_ID
+python -m personal_agent approval-preview APPROVAL_ID --project example
 python -m personal_agent approve APPROVAL_ID --digest EXACT_REVIEWED_DIGEST
 python -m personal_agent resume TASK_ID
 python -m personal_agent show-evidence TASK_ID action:ACTION_ID --project example
@@ -99,8 +104,9 @@ The saved initial plan remains in v1 format for migration compatibility; history
 new active snapshots. A no-op, stale, cyclic or substituted plan is rejected transactionally.
 
 Windows pins ancestors without delete/write sharing. On Linux the owner explicitly selected a
-trusted environment: do not move the application/project roots during execution. Landlock ABI
-3+, O_TMPFILE and procfs are required; nested moves outside scope fail at publication. There is
+trusted environment: do not move the application/project roots during execution. Linux creates
+only direct children of the project root; nested output paths are denied before dispatch.
+Landlock ABI 3+, O_TMPFILE and procfs are required. There is
 no unsafe fallback on unsupported filesystems. See [full boundaries](m1-completion.md).
 
 An unknown mutating outcome becomes `needs_reconciliation`. Inspect the external state before

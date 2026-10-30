@@ -22,6 +22,20 @@ from personal_agent.safe_fs import opened_path
 from personal_agent.storage import Store, now, uid
 
 
+def runtime_fingerprint():
+    repository = Path(__file__).resolve().parents[1]
+    files = [*repository.glob("src/personal_agent/*.py"),
+             *repository.glob("spec/schemas/*.json"),
+             repository / "spec/model-config.json", repository / "spec/storage-config.json",
+             Path(__file__).resolve()]
+    digest = hashlib.sha256()
+    for file in sorted(files):
+        # Git can check out CRLF on Windows: hash canonical UTF-8 text for reproducibility.
+        digest.update(file.relative_to(repository).as_posix().encode() + b"\0"
+                      + file.read_text(encoding="utf-8").encode("utf-8") + b"\0")
+    return digest.hexdigest()
+
+
 def verify_model_files(paths, info, status, *, hash_files=True):
     """Separate Ollama assertions from filesystem observations; no inference from prefix alone."""
     expected = paths.directory("models_ollama")
@@ -214,6 +228,7 @@ def verify(root: str) -> dict:
               "actual_model_files_on_root": storage["passed"],
               "live_create_approval_revision_exactly_once": create_verified}
     return {"timestamp": now(), "synthetic_only": True, "selected_model": smoke,
+            "runtime_source_fingerprint": runtime_fingerprint(),
             "checks": checks, "passed": all(checks.values()), "task_id": task_id,
             "task_state": result["task"]["state"], "block_reason": result["task"]["block_reason"],
             "verified_operations": sorted(operations), "model_comparisons": 0,

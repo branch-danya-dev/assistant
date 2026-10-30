@@ -6,6 +6,7 @@ import json
 import os
 import sqlite3
 import sys
+import tempfile
 from pathlib import Path
 
 from .config import AgentError, Paths, safe_relative
@@ -45,6 +46,9 @@ def parser() -> argparse.ArgumentParser:
     approval = commands.add_parser("approve")
     approval.add_argument("approval_id")
     approval.add_argument("--digest", required=True, help="Digest from the reviewed exact action")
+    preview = commands.add_parser("approval-preview")
+    preview.add_argument("approval_id")
+    preview.add_argument("--project", required=True)
     reconcile = commands.add_parser("reconcile")
     reconcile.add_argument("action_id")
     reconcile.add_argument("--outcome", required=True, choices=("applied", "not_applied"))
@@ -140,6 +144,24 @@ def execute(args) -> dict:
         if args.command == "persona":
             return Identity(paths).current()
         with store.execution_lock():
+            if args.command == "approval-preview":
+                approval = journal.approval(args.approval_id)
+                task_id = approval["task_id"]
+                if journal.get(task_id)["project_id"] != args.project:
+                    raise AgentError("approval_scope_mismatch")
+                action_row = store.connection.execute("SELECT action_id FROM approvals WHERE id=?",
+                                                       (args.approval_id,)).fetchone()
+                action = journal.action(action_row[0])
+                # Owner-requested private review artifact: full proposed bytes stay out of stdout.
+                document = {"approval": approval, "request": json.loads(action["request"]),
+                            "scope": journal.scope(task_id), "action_id": action["id"]}
+                with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", prefix="approval-",
+                                                  suffix=".json", dir=paths.directory("cache"),
+                                                  delete=False) as file:
+                    json.dump(document, file, ensure_ascii=False, indent=2)
+                    preview_path = Path(file.name).relative_to(paths.root).as_posix()
+                return {"approval_id": args.approval_id, "arguments_digest": action["digest"],
+                        "private_preview_relative": preview_path, "status": approval["status"]}
             if args.command == "revise":
                 journal.recover()
                 with args.plan.open("rb") as file:
@@ -180,7 +202,14 @@ def main(argv=None) -> int:
         sys.stdout.reconfigure(encoding="utf-8")
     try:
         result = execute(parser().parse_args(argv))
-        print(json.dumps(result, ensure_ascii=False, indent=2))
+        rendered = json.dumps(result, ensure_ascii=False, indent=2)
+        if len(rendered.encode("utf-8")) > 65536:
+            # Source metadata can still be large. Keep the state readable, and make truncation explicit.
+            rendered = json.dumps({"task_id": result.get("task", {}).get("task_id"),
+                "state": result.get("task", {}).get("state"), "truncated": True,
+                "preview": rendered.encode("utf-8")[:16000].decode("utf-8", errors="ignore")},
+                ensure_ascii=False, indent=2)
+        print(rendered)
         state = result.get("task", {}).get("state")
         return 0 if state in (None, "completed", "cancelled") else 2
     except (AgentError, OSError, sqlite3.Error) as exc:

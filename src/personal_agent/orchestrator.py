@@ -159,9 +159,12 @@ class Agent:
                     if self.journal.stopped():
                         raise AgentError("emergency_stop_active")
                     output = self._tool(resolved, task, scope)
-                except Exception:
+                except Exception as exc:
                     # Unknown effects stay dispatched until recover marks reconciliation.
                     if resolved.descriptor["side_effect"] != "read":
+                        with self.store.transaction():
+                            self.journal._event(task_id, "denied", {"action_id": action_id,
+                                "code": str(exc) if isinstance(exc, AgentError) else "internal_error"})
                         self.journal.recover()
                         return True
                     with self.store.transaction():

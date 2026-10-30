@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import dataclass
 
 from jsonschema import Draft202012Validator
@@ -83,6 +84,8 @@ class Registry:
             if relative not in scope.get("create_files" if create else "files", []):
                 raise AgentError("file_not_in_owner_scope")
             if create:
+                if os.name != "nt" and "/" in relative:
+                    raise AgentError("nested_create_requires_windows")
                 if relative not in scope.get("create_bindings", {}):
                     raise AgentError("workspace_binding_required")
                 if len(request["arguments"]["text"].encode("utf-8")) > MAX_FILE_BYTES:

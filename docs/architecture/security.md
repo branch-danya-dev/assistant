@@ -15,7 +15,7 @@
 | Effect | Default |
 |---|---|
 | Scoped read | Allowed only for explicitly approved data/resources |
-| Workspace new-file write | Permitted in isolated workspace, with audit and no overwrite |
+| Workspace new-file write | Exact owner file scope plus content/target-bound one-use approval in M1; no overwrite |
 | Existing file overwrite, deletion, external upload/export | Preview/diff and explicit effect-bound approval |
 | External messages, GitHub remote mutation, browser submit | Explicit target/operation/content-bound approval |
 | Privileged Windows changes, package/tool installation | Explicit elevated approval after sandbox review |

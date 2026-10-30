@@ -14,7 +14,7 @@ Final milestone status is gated on the recorded checks below, not this document'
 | Independent re-observation never calls execute; one create dispatch and one approval consumption | `test_real_create_exactly_once_and_side_effect_free_verify` |
 | Timeout, task budget, stop, task-local cancellation, parent process death terminate the worker tree | `tests/test_bounded.py` |
 | Windows directory-handle chain denies write/delete sharing; rejects reparse points, ADS, hardlinks and replacement of approved parents | `tests/test_m1_create.py`, `tests/test_security.py` |
-| Linux trusted environment: no-follow dirfds, anonymous O_TMPFILE, exclusive linkat publication, layered Landlock; moved nested parent cannot receive file outside approved tree | `test_linux_kernel_denies_parent_moved_out_after_open_before_publish` |
+| Linux trusted environment: flat new-file names only, no-follow dirfds, anonymous O_TMPFILE, exclusive linkat publication, layered Landlock | `test_linux_nested_create_is_denied_before_dispatch`, `test_linux_kernel_denies_root_moved_out_after_open_before_publish` |
 | Real crash after create before journal acknowledgment becomes needs_reconciliation, with no automatic replay | `test_real_crash_after_create_before_ack_never_replays` |
 | Actual model manifest/blob existence, canonical opened-handle containment, sizes and SHA-256; separate Ollama tag/FROM assertions | `tests/test_host_evidence.py`, `tools/verify_host.py` |
 
@@ -41,8 +41,10 @@ Landlock ABI 3+, procfs, supported syscall architecture or required rights cause
 **Owner-confirmed Linux mode (ADR-021): trusted environment.** Windows is the primary target.
 The application home and project-root directory identities on Linux are trusted anchors;
 another process with the owner's credentials must not move them during execution. Pinning
-a Linux directory fd does not prohibit its rename. Nested directory moves are constrained
-by Landlock at publication. This is not a sandbox against a hostile owner, root, debugger,
+a Linux directory fd does not prohibit its rename. Linux creates are therefore limited to
+**direct children of the trusted project root**; nested create paths are rejected before dispatch.
+This avoids ambiguous in-project parent renames as well as out-of-tree replacements. Landlock
+also denies publication if the root is moved outside the app home. This is not a sandbox against a hostile owner, root, debugger,
 database editor or kernel. Windows pins the entire ancestor chain for the filesystem call.
 
 The verifier checks content hash, length, file identity and independently reopened bytes.
@@ -73,12 +75,28 @@ statements and source strings rather than pretending a regex detects every secre
 includes these receipts and plan history; its event view is limited to the latest 100 events.
 Owner/model prose uses bounded best-effort credential redaction. Generic secret detection,
 vault integration, and factual verification of generated prose are still not claimed.
+For concrete approval review, `approval-preview APPROVAL_ID --project PROJECT` exports the
+exact request and scope into a new private cache JSON file; stdout contains only its location
+and bound digest. This keeps reviewable proposed content available without dumping it into logs.
+All CLI responses also have a 64 KiB cap with explicit truncation.
 
 ## Validation record
 
-Pending final Windows/Ubuntu CI, package check and current host acceptance. Do not infer
-successful execution from the existence of tests. Final links/results are recorded here before
-the M1 status is advanced.
+Current host acceptance passed with real selected Qwen, including create/approval/revision,
+independent hashes and persisted evidence in an isolated synthetic runtime. The owner's
+production database was not opened/migrated. See [host report](evidence/windows-m1-completion.json).
+The report fingerprints runtime source, schemas, model/storage configuration and the verifier.
+
+Final CI/package result links are recorded here before M1 status is advanced. The first Ubuntu
+run exposed O_TMPFILE's retained anonymous `/proc` name; independent published-name/inode
+verification corrected that and subsequent Ubuntu CI passed. Host checks also discovered the
+local Ollama retained-original-manifest format; the verifier now hashes the retained original
+and checks its agreement with all active layers, not merely the tag's filename.
+
+API references: [Windows relative FILE_CREATE and sharing](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/nf-ntifs-ntcreatefile),
+[Linux O_TMPFILE publication](https://man7.org/linux/man-pages/man2/open.2.html),
+[Landlock rights and limits](https://www.kernel.org/doc/html/latest/userspace-api/landlock.html),
+[Ollama manifest implementation](https://github.com/ollama/ollama/blob/main/manifest/manifest.go).
 
 ## Integration order
 
