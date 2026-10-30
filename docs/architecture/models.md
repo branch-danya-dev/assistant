@@ -5,6 +5,7 @@
 - **Primary local model:** Qwen3.5 9B, Ollama tag `qwen3.5:9b`.
 - **Provider:** Ollama, loopback endpoint `http://127.0.0.1:11434`.
 - **Source of truth:** `spec/model-config.json`; example environment: `.env.example`.
+- **Model files:** `G:\Assistant\models\ollama` via Windows User-level `OLLAMA_MODELS` (ADR-016; `spec/storage-config.json`). Restart Ollama after changing that variable, and configure it before the model pull.
 - **Initial context budget:** 8,192 tokens, configurable later by operational need and available memory. A model's advertised 256K maximum is **not** our deployed context target.
 - **Selection rationale:** explicit owner preference, text/vision and tool-capable model family, practical fit for RTX 5070 Ti 16 GB VRAM. Model weights alone do not implement tool execution or vision parsing.
 - **No model tournament:** do not run A/B tests, model-ranking experiments or request selection benchmarks as a prerequisite. Record the resolved Ollama digest and quantization when actually installed for reproducibility.

@@ -1,5 +1,9 @@
 # Layered memory architecture
 
+## Physical storage
+
+The accepted local persistence root on the owner Windows host is `G:\Assistant\data`, with `db/`, `history/`, `memory/`, `identity/`, `skills/` as separate partitions. Store only root-relative references and use an explicit `ASSISTANT_ROOT` override for migration. See `spec/storage-config.json` and `docs/architecture/storage.md` (ADR-016). The Git checkout is separate from private data.
+
 ## Storage partitions
 1. Working context: bounded per-session/task; ephemeral and not the sole source of truth.
 2. Event history: append-only tool/action/decision events with evidence references.

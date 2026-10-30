@@ -29,6 +29,14 @@ class SpecTests(unittest.TestCase):
         self.assertTrue(any(d["status"] == "provisional" for d in decisions))
         self.assertTrue(any(d["status"] == "accepted" for d in decisions))
 
+    def test_accepted_storage_policy(self):
+        storage = load("spec/storage-config.json")
+        self.assertEqual(storage["default_root"], "G:\\Assistant")
+        self.assertEqual(storage["layout"]["repository"], "repo")
+        self.assertEqual(storage["layout"]["models_ollama"], "models/ollama")
+        self.assertEqual(storage["ollama"]["default_model_storage"], "G:\\Assistant\\models\\ollama")
+        self.assertTrue(storage["relative_path_policy"]["no_silent_fallback_to_system_disk"])
+
     def test_ports_are_importable(self):
         request = ToolRequest("CAP-007", "runtime-task-id", {"path": "example.txt"}, SideEffect.READ)
         result = ToolResult(True, {"name": "example"})

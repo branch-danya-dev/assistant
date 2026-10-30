@@ -678,6 +678,22 @@
       ],
       "owner": "project",
       "notes": "Design intent only; implementation pending."
+    },
+    {
+      "id": "REQ-053",
+      "domain": "infrastructure",
+      "title": "Portable G-drive workspace and separately managed model and state directories",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Owner Windows default root is G:\\Assistant with repo, models/ollama, data/db, data/history, data/memory, data/identity, data/skills, workspace, logs, backups and cache in separate root-relative directories.",
+        "Missing or inaccessible G: produces an explicit error; no fallback to C:. Changing ASSISTANT_ROOT migrates application-owned paths without code modification.",
+        "Ollama models use OLLAMA_MODELS bound to effective root before first model pull; restart and path access are checked.",
+        "Private state remains outside git; safe consistent SQLite backup and restoration are documented and tested."
+      ],
+      "owner": "project",
+      "notes": "Accepted owner decision ADR-016; directory provisioning remains planned."
     }
   ]
 }

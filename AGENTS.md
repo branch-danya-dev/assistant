@@ -8,6 +8,10 @@ Build a reliable, local-first Windows personal agent, not a chatbot wrapper. Use
 
 `ADR-015` and `spec/model-config.json` select **Ollama `qwen3.5:9b`** for initial local inference. Do not start a model comparison, evaluation tournament or switch to another model without new owner instruction. Keep provider adapters replaceable, but prioritize this one implementation. Run only functional smoke, integration, safety and acceptance checks needed to establish that the system works; do not confuse the model choice with an installed runtime.
 
+## Binding local storage policy
+
+ADR-016 and `spec/storage-config.json` select `G:\Assistant` on Windows. Code is in `G:\Assistant\repo`, Ollama weights at `G:\Assistant\models\ollama` via User-level `OLLAMA_MODELS`, durable memory and history under `G:\Assistant\data`. Resolve paths via `ASSISTANT_ROOT`, with explicit override for CI and migration. Do not write to C: as fallback, do not commit private runtime files, and read `docs/architecture/storage.md` before any installation, persistence or migration changes.
+
 ## Required startup sequence
 
 1. Read `README.md` and `spec/manifest.json`.

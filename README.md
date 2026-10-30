@@ -14,6 +14,7 @@ A local-first, hybrid-model, long-lived personal AI agent with a stable identity
 - **Requirements:** [`spec/requirements.json`](spec/requirements.json).
 - **Architecture:** [`docs/architecture/overview.md`](docs/architecture/overview.md).
 - **Selected local model:** [`spec/model-config.json`](spec/model-config.json) (`qwen3.5:9b`).
+- **Storage layout:** [`spec/storage-config.json`](spec/storage-config.json) (`G:\Assistant`, ADR-016).
 - **Decision register:** [`spec/decisions.json`](spec/decisions.json).
 - **Implementation queue:** [`spec/tasks.json`](spec/tasks.json).
 - **Milestones and gates:** [`spec/milestones.json`](spec/milestones.json).
@@ -22,6 +23,10 @@ A local-first, hybrid-model, long-lived personal AI agent with a stable identity
 ## Technical baseline (provisional)
 
 Windows desktop (OS version to verify); Ryzen 5 7600X; RTX 5070 Ti 16 GB VRAM; 32 GB RAM; SSD. Local inference via replaceable provider adapters (Ollama is a proposed first adapter), optional explicit cloud API. Python 3.12+; modular monolith; SQLite + FTS5 first; semantic retrieval via replaceable index; Tauri/React UI later. **Selected local model:** `qwen3.5:9b` via Ollama (owner-approved, ADR-015; runtime not implemented). No comparative model evaluation is required. See [`spec/model-config.json`](spec/model-config.json).
+
+## Owner-approved Windows storage home
+
+Everything belongs under `G:\Assistant`: repository `repo/`, Ollama models `models/ollama/`, data/history/memory/identity `data/`, and separate workspace/logs/backups/cache. Use configurable `ASSISTANT_ROOT` rather than hardcoded paths for migration. No silent fallback to C:. See [`docs/architecture/storage.md`](docs/architecture/storage.md). These are future filesystem locations, not existing directories created by this documentation.
 
 ## Conventions
 

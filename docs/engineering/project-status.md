@@ -4,6 +4,7 @@
 - Real functional adapters: **none**.
 - Runtime inference: **not implemented or installed by this repository**.
 - Owner-selected default local model: **Ollama `qwen3.5:9b`** (ADR-015, `spec/model-config.json`).
+- Owner-approved default storage root: **`G:\Assistant`** (ADR-016, `spec/storage-config.json`); directories have not been provisioned by these documentation changes.
 - Comparative model evaluations: **out of scope by owner choice**; functional smoke and safety checks remain required.
 - Built today: agent instructions, machine-readable requirements/tasks/capability list, decision register, contracts, initial typed ports, validator, unittest, CI workflow.
 - Open architecture choices: vector index, UI framework, production API auth, permissions details, licensing, sandbox implementation and budgets. Local model selection is **not** open.

@@ -37,6 +37,12 @@
       "context_cost": "small"
     },
     {
+      "path": "spec/storage-config.json",
+      "role": "STORAGE_POLICY",
+      "purpose": "G: home, Ollama weights, durable state and portability",
+      "context_cost": "small"
+    },
+    {
       "path": "spec/requirements.json",
       "role": "REQUIREMENTS",
       "purpose": "Canonical requirement registry",
@@ -98,7 +104,9 @@
     "src/personal_agent/ports.py",
     ".github/workflows/spec-validation.yml",
     "tools/validate_specs.py",
-    "spec/model-config.json"
+    "spec/model-config.json",
+    "spec/storage-config.json",
+    "docs/architecture/storage.md"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
