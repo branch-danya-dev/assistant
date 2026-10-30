@@ -27,10 +27,10 @@ def verify_model_files(paths, info, status, *, hash_files=True):
     expected = paths.directory("models_ollama")
     reject_links(expected)
     root = expected.resolve(strict=True)
-    manifest = root / "manifests/registry.ollama.ai/library/qwen3.5/9b"
+    manifest_directory = root / "manifests/registry.ollama.ai/library/qwen3.5"
     end = time.monotonic() + 300
 
-    def inspect(path, expected_digest=None, expected_size=None):
+    def inspect(path, expected_digest=None, expected_size=None, *, is_manifest=False):
         reject_links(path)
         actual = path.resolve(strict=True)
         if not actual.is_relative_to(root):
@@ -49,19 +49,19 @@ def verify_model_files(paths, info, status, *, hash_files=True):
                 raise AgentError("model_path_changed")
             h = hashlib.sha256()
             data = bytearray()
-            if hash_files or path == manifest:
+            if hash_files or is_manifest:
                 while chunk := os.read(fd, 1024 * 1024):
                     if time.monotonic() >= end:
                         raise AgentError("model_hash_timeout")
                     h.update(chunk)
-                    if path == manifest:
+                    if is_manifest:
                         data.extend(chunk)
                         if len(data) > 1048576:
                             raise AgentError("model_manifest_too_large")
             after = os.fstat(fd)
             if (before.st_size, before.st_mtime_ns) != (after.st_size, after.st_mtime_ns):
                 raise AgentError("model_file_changed")
-            digest = h.hexdigest() if hash_files or path == manifest else None
+            digest = h.hexdigest() if hash_files or is_manifest else None
             return {"path": actual.relative_to(root).as_posix(), "exists": True,
                     "canonical_containment": True, "bytes": before.st_size,
                     "size_matches_manifest": expected_size is None or before.st_size == expected_size,
@@ -70,7 +70,43 @@ def verify_model_files(paths, info, status, *, hash_files=True):
         finally:
             os.close(fd)
 
-    manifest_check, raw = inspect(manifest)
+    # Ollama may resolve the selected 9b alias to a quantization-tag manifest. Match the
+    # selected runtime digest against files of this same model; never choose another model.
+    reject_links(manifest_directory)
+    candidates = sorted(p for p in manifest_directory.iterdir()
+                        if p.name == "9b" or p.name.startswith("9b-"))
+    if not candidates or len(candidates) > 32:
+        raise AgentError("selected_manifest_missing_or_ambiguous")
+    matched = []
+    selected_digest = status.get("digest", "").removeprefix("sha256:")
+    if not re.fullmatch(r"[a-f0-9]{64}", selected_digest):
+        raise AgentError("invalid_selected_model_digest")
+    for candidate in candidates:
+        check, data = inspect(candidate, is_manifest=True)
+        if check["sha256"] == selected_digest:
+            matched.append((check, data, "named_manifest_file"))
+            continue
+        current = json.loads(data)
+        retained = [layer for layer in current.get("layers", [])
+                    if layer.get("mediaType") == "application/vnd.docker.distribution.manifest.v2+json"
+                    and layer.get("digest") == "sha256:" + selected_digest]
+        if retained:
+            # New Ollama versions retain the original manifest as a blob when rewriting its
+            # named representation. Verify that blob AND its agreement with active layers.
+            original_check, original_data = inspect(root / "blobs" / ("sha256-" + selected_digest),
+                selected_digest, retained[0]["size"], is_manifest=True)
+            original = json.loads(original_data)
+            effective = [layer for layer in current["layers"] if layer not in retained]
+            if (original_check["sha256"] == selected_digest
+                    and original_check["size_matches_manifest"]
+                    and original.get("config") == current.get("config")
+                    and original.get("layers") == effective):
+                matched.append((check, data, "verified_retained_manifest_blob"))
+    if not matched:
+        return {"passed": False, "ollama_report": {"tag_digest_matches_manifest": False},
+                "independent_filesystem": {"candidate_manifest_count": len(candidates)},
+                "loaded_model_memory_independently_verified": False}
+    manifest_check, raw, digest_source = matched[0]
     document = json.loads(raw)
     records = [document["config"], *document["layers"]]
     blobs = []
@@ -89,13 +125,13 @@ def verify_model_files(paths, info, status, *, hash_files=True):
             continue
         entry, _ = inspect(path)
         reported_matches &= entry["path"] in {b["path"] for b in blobs}
-    tag_matches = status.get("digest", "").removeprefix("sha256:") == manifest_check["sha256"]
+    tag_matches = True  # The selected digest and all active-layer agreement were checked above.
     passed = (bool(blobs) and reported_matches and tag_matches
               and all(b["size_matches_manifest"] for b in blobs)
               and (not hash_files or all(b["hash_matches_manifest"] for b in blobs)))
     return {"passed": passed,
             "ollama_report": {"from_count": len(reported), "from_matches_manifest": reported_matches,
-                              "tag_digest_matches_manifest": tag_matches},
+                              "tag_digest_matches_manifest": tag_matches, "tag_digest_source": digest_source},
             "independent_filesystem": {"manifest": manifest_check, "blobs": blobs,
                                        "hashes_checked": hash_files},
             "running_process_environment_verified": False,
@@ -103,12 +139,15 @@ def verify_model_files(paths, info, status, *, hash_files=True):
 
 
 def verify(root: str) -> dict:
-    paths = Paths(root)
-    paths.bootstrap()
+    owner_paths = Paths(root)
+    owner_paths.require()
     model = Ollama(timeout=120)
     smoke = model.smoke()
     info = model._request("/api/show", {"model": "qwen3.5:9b"})
-    storage = verify_model_files(paths, info, smoke)
+    storage = verify_model_files(owner_paths, info, smoke)
+    # Never migrate or mix acceptance data into the owner's real task/memory database.
+    paths = Paths(owner_paths.directory("cache") / ("host-acceptance-" + uid()))
+    paths.bootstrap()
     project = "host-check-" + uid()[:8]
     workspace = paths.project_workspace(project)
     workspace.mkdir()
@@ -134,18 +173,54 @@ def verify(root: str) -> dict:
     actions = result["actions"]
     operations = {a["request"]["operation"] for a in actions if a["status"] == "verified"}
     answer = (result["result"] or {}).get("answer", "")
+    # A second live task creates an exact synthetic file. Opt-in to this harness authorizes
+    # only this fixture payload; an unexpected model proposal is never automatically approved.
+    with Store(paths) as store:
+        journal = Journal(store)
+        create_task = journal.create(
+            'Use create_text to create exactly new.txt with text "SYNTHETIC-CREATE-42". '
+            'Do not add a newline. Then report saved evidence.', project,
+            {"files": [], "create_files": ["new.txt"], "memory_classes": ["public", "internal"]})
+        agent = Agent(store, model)
+        waiting = agent.run(create_task)
+        expected = {"task_id": create_task, "capability_id": "CAP-008", "operation": "create_text",
+                    "arguments": {"path": "new.txt", "text": "SYNTHETIC-CREATE-42"}}
+        create_result = waiting
+        if (waiting["task"]["state"] == "waiting_approval" and len(waiting["actions"]) == 1
+                and journal.plan(create_task) == [expected]):
+            action = waiting["actions"][0]
+            current = journal.plans.current(create_task)
+            # Revise while awaiting approval; preserve the approved operation and add a dependency.
+            proposal = {"base_digest": current["digest"], "reason": "Synthetic live acceptance revision",
+                        "steps": [*current["steps"], {"ordinal": 1, "action_id": f"{create_task}:1",
+                            "depends_on": [f"{create_task}:0"], "request": {
+                                "task_id": create_task, "capability_id": "CAP-002",
+                                "operation": "search_memory", "arguments": {"query": "colour"}}}]}
+            journal.plans.revise(create_task, proposal, agent.registry)
+            journal.approve(action["approval_id"], action["digest"])
+            create_result = agent.run(create_task)
+            create_verified = (create_result["task"]["state"] == "completed"
+                               and journal.action(action["id"])["attempts"] == 1
+                               and journal.approval(action["approval_id"])["status"] == "consumed"
+                               and (workspace / "new.txt").read_text() == "SYNTHETIC-CREATE-42")
+        else:
+            create_verified = False
     checks = {"local_task_completed": result["task"]["state"] == "completed",
               "both_read_tools_verified": operations == {"read_text", "search_memory"},
               "expected_answer": "LOCAL-42" in answer and "green" in answer.lower(),
               "memory_restart_and_history": {r["id"] for r in records} == {old, latest},
               "persona_restart": identity_survived, "journal_restart": task_survived,
-              "windows_user_model_path": model_storage_status(paths)["windows_user_value_matches"],
-              "actual_model_files_on_root": storage["passed"]}
+              "windows_user_model_path": model_storage_status(owner_paths)["windows_user_value_matches"],
+              "actual_model_files_on_root": storage["passed"],
+              "live_create_approval_revision_exactly_once": create_verified}
     return {"timestamp": now(), "synthetic_only": True, "selected_model": smoke,
             "checks": checks, "passed": all(checks.values()), "task_id": task_id,
             "task_state": result["task"]["state"], "block_reason": result["task"]["block_reason"],
             "verified_operations": sorted(operations), "model_comparisons": 0,
-            "model_storage_evidence": storage}
+            "model_storage_evidence": storage, "isolated_runtime": True,
+            "runtime_relative": paths.root.relative_to(owner_paths.root).as_posix(),
+            "create_task_state": create_result["task"]["state"],
+            "create_block_reason": create_result["task"]["block_reason"]}
 
 
 if __name__ == "__main__":

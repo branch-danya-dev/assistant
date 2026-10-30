@@ -211,7 +211,9 @@ def create_text(paths: Paths, project: str, relative: str, text: str, binding: l
             if os.name != "nt":
                 _publish_linux(fd, fds[-1], target.name)
             _regular(fd)
-            if opened_path(fd) != target:
+            # Linux O_TMPFILE's original fd keeps its anonymous procfs name after linkat.
+            # The separate observer opens the published name and must match this inode receipt.
+            if os.name == "nt" and opened_path(fd) != target:
                 raise AgentError("opened_target_changed")
             return _receipt(fd, relative, data)
         except OSError as exc:

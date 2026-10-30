@@ -45,3 +45,20 @@ class HostEvidenceTests(RuntimeCase):
         with self.assertRaisesRegex(AgentError, "model_path_outside_root"):
             verify_model_files(self.paths, {"modelfile": f"FROM {other}"}, self.status)
         self.assertFalse(verify_model_files(self.paths, self.info, {"digest": "0" * 64})["passed"])
+
+    def test_rewritten_manifest_requires_hashed_original_and_identical_active_layers(self):
+        root = self.paths.directory("models_ollama")
+        manifest = root / "manifests/registry.ollama.ai/library/qwen3.5/9b"
+        raw = manifest.read_bytes()
+        original = root / "blobs" / ("sha256-" + self.status["digest"])
+        original.write_bytes(raw)
+        wrapped = json.loads(raw)
+        wrapped["layers"].append({"mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+                                   "digest": "sha256:" + self.status["digest"], "size": len(raw)})
+        manifest.write_text(json.dumps(wrapped), encoding="utf-8")
+        report = verify_model_files(self.paths, self.info, self.status)
+        self.assertTrue(report["passed"])
+        self.assertEqual(report["ollama_report"]["tag_digest_source"], "verified_retained_manifest_blob")
+        wrapped["config"]["size"] += 1
+        manifest.write_text(json.dumps(wrapped), encoding="utf-8")
+        self.assertFalse(verify_model_files(self.paths, self.info, self.status)["passed"])
