@@ -123,3 +123,34 @@ with Store(Paths(sys.argv[1])) as store, store.execution_lock():
         with self.assertRaises(AgentError):
             self.journal.complete(task, {"evidence_refs": ["fake"]})
         self.assertNotIn("Synthetic", json.dumps(self.journal.events(task)))
+
+    def test_unknown_effect_cannot_bypass_reconciliation_transition(self):
+        task, action, _ = self.action("external_send")
+        approval = self.journal.request_approval(action)
+        self.journal.approve(approval, self.journal.action(action)["digest"])
+        self.journal.start(task)
+        self.journal.dispatch(action, approval_required=True)
+        with self.assertRaises(AgentError):
+            self.journal.recover()
+        with self.store.execution_lock():
+            self.journal.recover()
+        with self.assertRaises(AgentError):
+            self.journal.transition(task, "queued")
+        self.journal.reconcile(action, "not_applied", "fixture://confirmed-absent")
+        with self.assertRaises(AgentError):
+            self.journal.start(task, resume=True)
+
+    def test_tool_and_wall_budgets_survive_restart(self):
+        task, action, _ = self.action()
+        document = self.journal.get(task)
+        document["budget"].update(tool_limit=1, tool_calls=1)
+        with self.store.transaction():
+            self.journal._save(document)
+        with self.assertRaisesRegex(AgentError, "tool_budget_exhausted"):
+            self.journal.dispatch(action, approval_required=False)
+        document["budget"].update(tool_calls=0, deadline="2000-01-01T00:00:00.000000Z")
+        with self.store.transaction():
+            self.journal._save(document)
+        with Store(self.paths) as reopened:
+            with self.assertRaisesRegex(AgentError, "wall_budget_exhausted"):
+                Journal(reopened).dispatch(action, approval_required=False)

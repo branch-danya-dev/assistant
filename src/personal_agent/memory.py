@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime, timezone
 
 from .config import AgentError, validate
 from .storage import Store, encode, now, uid
@@ -16,6 +17,10 @@ class Memory:
     def add(self, record: dict) -> str:
         record = {"sensitivity": "private", "retention_class": "project", **record}
         validate("memory-record", record)
+        for field in ("recorded_at", "expires_at", "valid_from", "valid_to"):
+            if record.get(field):
+                record[field] = datetime.fromisoformat(record[field].replace("Z", "+00:00"))\
+                    .astimezone(timezone.utc).isoformat(timespec="microseconds").replace("+00:00", "Z")
         if (not record["source_refs"] or len(record["statement"]) > 16000
                 or len(encode(record)) > 24000 or record["project_id"] is None):
             raise AgentError("sourced_bounded_project_record_required")

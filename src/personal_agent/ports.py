@@ -1,4 +1,4 @@
-"""Minimal trusted boundaries for future adapters. No runtime implementation exists.
+"""Provider-neutral boundaries used by the local runtime and future adapters.
 
 The model supplies an untrusted action *intent*. Only the trusted ToolRegistry/
 AuthorizationPort may resolve effective side effects, scope and approval.

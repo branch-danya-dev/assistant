@@ -1,4 +1,4 @@
-name: Spec validation
+name: Contracts and local runtime
 on:
   push:
   pull_request:
@@ -14,9 +14,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install JSON Schema validation dependency
-        run: python -m pip install "jsonschema>=4.23,<5"
+      - name: Install project and declared development dependencies
+        run: python -m pip install -e ".[dev]"
       - name: Validate contracts, coverage and schema fixtures
         run: python tools/validate_specs.py
-      - name: Run bootstrap tests
+      - name: Run unit, security, crash and HTTP integration tests
         run: python -m unittest discover -s tests -v
+      - name: Check Python source
+        run: python -m ruff check src tests setup.py
+      - name: Build distributable with canonical contracts
+        run: python -m pip wheel . --no-deps --wheel-dir dist
