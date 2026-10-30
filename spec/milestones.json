@@ -4,14 +4,25 @@
     {
       "id": "M0",
       "name": "Specification and bootstrap",
-      "status": "specified",
-      "exit_gate": "All active requirements trace to tasks, accepted core ADRs and synthetic threat fixtures documented; JSON Schema examples and traceability checks pass on Windows and Linux."
+      "status": "completed",
+      "exit_gate": "All active requirements trace to tasks, accepted core ADRs and synthetic threat fixtures documented; JSON Schema examples and traceability checks pass on Windows and Linux.",
+      "evidence": [
+        "docs/engineering/m0-evidence.md"
+      ]
     },
     {
       "id": "M1",
       "name": "Local agent core",
-      "status": "planned",
-      "exit_gate": "Verified Qwen3.5 local read-only end-to-end workflow, versioned identity, private scoped memory, authorization, durable journal, restart-safe needs_reconciliation, and single-root G path resolver (SCN-004/005/007/009/010/011)."
+      "status": "in_progress",
+      "exit_gate": "Verified Qwen3.5 local read-only end-to-end workflow, versioned identity, private scoped memory, authorization, durable journal, restart-safe needs_reconciliation, and single-root G path resolver (SCN-004/005/007/009/010/011).",
+      "evidence": [
+        "docs/engineering/m1-evidence.md"
+      ],
+      "remaining": [
+        "TASK-009",
+        "TASK-010",
+        "TASK-043"
+      ]
     },
     {
       "id": "M2",

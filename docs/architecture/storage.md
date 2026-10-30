@@ -1,6 +1,8 @@
 # Windows G-drive storage and portability (ADR-016)
 
-**Binding default:** `G:\Assistant`, as defined in `spec/storage-config.json`. This is a documentation/configuration convention; neither the local folders nor Ollama models are installed yet.
+**Binding default:** `G:\Assistant`, as defined in `spec/storage-config.json`. The first runtime
+implements this layout. Provisioning and actual model paths were verified on the owner host;
+other hosts must follow setup and verification. See `../engineering/m1-evidence.md`.
 
 ## Layout
 ```text

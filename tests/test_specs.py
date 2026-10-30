@@ -1,4 +1,4 @@
-"""Bootstrap contract validation: no assistant runtime is implemented."""
+"""Canonical contract and evidence validation, separate from runtime behavior tests."""
 import sys
 import unittest
 from pathlib import Path
@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "src"))
 
 from validate_specs import check, load  # noqa: E402
+
 from personal_agent.ports import ToolRequest, ToolResult  # noqa: E402
 
 
@@ -43,10 +44,15 @@ class SpecTests(unittest.TestCase):
         self.assertEqual(caps["CAP-022"]["side_effect"], "read")
         self.assertEqual(caps["CAP-028"]["policy"], "approval")
 
-    def test_scenarios_are_documented_not_implemented(self):
+    def test_verified_scenarios_require_actual_evidence(self):
         scenarios = load("spec/scenarios.json")["scenarios"]
         self.assertGreaterEqual(len(scenarios), 11)
-        self.assertTrue(all(x["status"] == "specified" for x in scenarios))
+        self.assertTrue(all(x["status"] in ("specified", "verified") for x in scenarios))
+        for scenario in scenarios:
+            if scenario["status"] == "verified":
+                self.assertTrue(scenario["evidence"])
+                for path in scenario["evidence"]:
+                    self.assertTrue((ROOT / path).is_file())
 
     def test_stub_ports_import(self):
         req = ToolRequest("CAP-022", "read_repo", "task-001", {"repo": "example/repo"})

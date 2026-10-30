@@ -19,6 +19,8 @@
 - [`engineering/architecture-baseline.md`](engineering/architecture-baseline.md): approved implementation contract and release gates.
 - [`engineering/threat-fixtures.md`](engineering/threat-fixtures.md): synthetic security regression cases.
 - [`engineering/implementation.md`](engineering/implementation.md): development process and local setup.
+- [`engineering/runbook.md`](engineering/runbook.md): CLI, stop, recovery, provisioning and backup.
+- [`engineering/m1-evidence.md`](engineering/m1-evidence.md): implementation checks and remaining work.
 
 Canonical datasets: `spec/{manifest,model-config,storage-config,requirements,capabilities,scenarios,decisions,milestones,tasks,components}.json`.
 Event/data contracts: `spec/schemas/*.schema.json`.

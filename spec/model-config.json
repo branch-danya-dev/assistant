@@ -20,7 +20,7 @@
     "functional_task_and_security_checks": "required",
     "provider_swap": "architecturally_supported_but_not_part_of_initial_selection"
   },
-  "implementation_status": "planned",
+  "implementation_status": "implemented",
   "source_url": "https://ollama.com/library/qwen3.5",
   "notes": [
     "Advertised maximum context is not a guarantee of usable context on 16 GB VRAM.",
@@ -28,5 +28,9 @@
     "Cloud inference remains optional and consent-gated; no fallback model is chosen by default."
   ],
   "model_storage_policy": "ADR-016",
-  "ollama_model_directory_from_storage_config": "models/ollama"
+  "ollama_model_directory_from_storage_config": "models/ollama",
+  "evidence": [
+    "docs/engineering/m1-evidence.md",
+    "docs/engineering/evidence/windows-host.json"
+  ]
 }

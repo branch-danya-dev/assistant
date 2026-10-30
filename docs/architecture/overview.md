@@ -35,8 +35,11 @@ Desktop / API / Telegram (later) / Voice (later)
 5. Deterministic verification checks result; memory is updated with references, not unverified claims.
 6. Task reaches terminal state, waits for approval, or checkpoints for resume.
 
-## Package boundaries (proposed, NOT present yet)
-`core`, `orchestration`, `models`, `memory`, `identity`, `tools`, `security`, `evolution`, `api`, `infrastructure`, `interfaces`. All are future modules; the existing `src/personal_agent/ports.py` is only a starter contract.
+## Implementation modules
+`config`, `storage`, `journal`, `memory`, `identity`, `models`, `tools`, `orchestrator`, `cli`
+exist under `src/personal_agent`; `ports` defines provider-neutral interfaces. The trusted tool
+registry separates resolution, scope checks, execution and independent verification. API/UI,
+scheduler, evolution and external integrations remain future modules.
 
 ## Architectural constraints
 Host initially Windows, Python 3.12+, single user, SQLite starting point. Primary local model/provider is selected by ADR-015 (Ollama `qwen3.5:9b`); UI stack remains provisional; no assumptions of universal tool support or identical model capabilities.

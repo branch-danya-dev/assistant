@@ -1,11 +1,14 @@
 [project]
 name = "personal-agent"
-version = "0.0.0"
-description = "Planning baseline and typed contracts for an agent-first personal AI assistant"
+version = "0.1.0"
+description = "Local personal agent core with durable journal and trusted tool policy"
 readme = "README.md"
 requires-python = ">=3.12"
 authors = []
-dependencies = []
+dependencies = ["jsonschema==4.26.0"]
+
+[project.scripts]
+personal-agent = "personal_agent.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11", "jsonschema>=4.23,<5"]
@@ -20,6 +23,9 @@ where = ["src"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
