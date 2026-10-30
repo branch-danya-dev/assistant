@@ -20,3 +20,8 @@ No real outbound message, purchase, installation or destructive executor is acti
 
 Canonical statuses/evidence in spec/ distinguish these gaps from implemented behavior.
 Architecture Baseline v1.0 remains the accepted design contract.
+
+The next stacked security change removes TASK-044's dependency deadlock and adds explicit
+TASK-026 acceptance gating. Current implementation/evidence and precise unmet conditions are
+in [m1-security-boundaries.md](m1-security-boundaries.md). Completion order is TASK-044 →
+TASK-026 → TASK-041 → TASK-009 → TASK-010; M1 and REQ-017/019 stay open.

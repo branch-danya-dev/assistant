@@ -9,9 +9,14 @@ from pathlib import Path, PureWindowsPath
 
 from jsonschema import Draft202012Validator, FormatChecker
 
+from .error_codes import ERROR_CODES
+
 
 class AgentError(Exception):
     """Public, payload-free error code suitable for CLI diagnostics."""
+
+    def __init__(self, code):
+        super().__init__(code if isinstance(code, str) and code in ERROR_CODES else "internal_error")
 
 
 def specification(relative: str) -> dict:

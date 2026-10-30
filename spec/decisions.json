@@ -221,6 +221,17 @@
       "decision": "Extend ADR-018 task lifecycle with terminal partial when complete source analysis is unavailable; retain all verified evidence and emit CLI exit 2. Keep complete saved results and requests separate from bounded LLM projections. Append revisions bind the exact saved base digest and retain old steps in trusted code. SQLite v3 adds preview ownership/expiry inventory and gates older binaries; no action/approval rewrite.",
       "revisit_when": "A reviewed chunked full-analysis workflow or a new context budget is authorized.",
       "migration": "Back up v1/v2 before opening with v3. Transactional additive migration preserves IDs, digests, approvals and evidence. Restore matching backup and older code to roll back; do not downgrade user_version manually."
+    },
+    {
+      "id": "ADR-023",
+      "title": "M1 scoped data admission and closed diagnostics",
+      "status": "accepted",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner via requested M1 security implementation",
+      "context": "Explicit implementation request for source/policy separation, data classification, secret boundaries and honest unchanged P0 acceptance.",
+      "decision": "Refine ADR-006/017 without changing the baseline: owner-controlled whole-file and memory labels, exact private local-context grants, recursive known-credential denial at runtime sinks, minimal child environment and closed diagnostic codes. Keep opaque or misclassified secrets and unimplemented connectors as unmet P0 acceptance, not lowered requirements.",
+      "migration": "SQLite remains v3; no stored content/approvals rewritten. Legacy exact file scope retains internal local-context meaning. New private labels are owner grants; old binaries do not enforce them and are not an approved privacy rollback.",
+      "revisit_when": "Owner approves an authoritative secret inventory/vault, stricter data-admission protocol or explicit acceptance revision after reviewing residual risks."
     }
   ]
 }

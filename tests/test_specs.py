@@ -16,6 +16,31 @@ from personal_agent.ports import ToolRequest, ToolResult  # noqa: E402
 
 
 class SpecTests(unittest.TestCase):
+    def test_semantic_security_deadlock_without_work_dag_cycle(self):
+        def mutated(path):
+            value = load(path)
+            if path == "spec/tasks.json":
+                task = next(t for t in value["tasks"] if t["id"] == "TASK-044")
+                task["depends_on"].append("TASK-026")
+            return value
+        with patch("validate_specs.load", side_effect=mutated):
+            errors = check()
+        self.assertTrue(any("acceptance dependency cycle" in e for e in errors), errors)
+        self.assertFalse(any(e.startswith("task dependency cycle") for e in errors), errors)
+
+    def test_security_gate_is_independently_startable_and_completion_is_not_a_status_shortcut(self):
+        tasks = {t["id"]: t for t in load("spec/tasks.json")["tasks"]}
+        self.assertEqual(set(tasks["TASK-044"]["depends_on"]), {"TASK-004", "TASK-005"})
+        self.assertTrue(all(tasks[t]["status"] == "done" for t in tasks["TASK-044"]["depends_on"]))
+        self.assertEqual(tasks["TASK-026"]["acceptance_depends_on"], ["TASK-044"])
+        def mutated(path):
+            value = load(path)
+            if path == "spec/tasks.json":
+                next(t for t in value["tasks"] if t["id"] == "TASK-026")["status"] = "done"
+            return value
+        with patch("validate_specs.load", side_effect=mutated):
+            self.assertIn("TASK-026: done before acceptance gate", check())
+
     def test_milestone_cannot_be_completed_with_unimplemented_p0(self):
         def mutated(path):
             value = load(path)

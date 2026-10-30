@@ -115,8 +115,8 @@ class Store:
                 else:
                     import fcntl
                     fcntl.flock(file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except OSError as exc:
-                raise AgentError("executor_busy") from exc
+            except OSError:
+                raise AgentError("executor_busy") from None
             try:
                 self.executing = True
                 yield

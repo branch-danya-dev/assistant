@@ -221,10 +221,11 @@
         "tests/test_plan_revisions.py",
         "tests/test_bounded.py",
         "docs/engineering/evidence/m1-validation.json",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-security-boundaries.md"
       ],
       "owner": "unassigned",
-      "notes": "Implemented behavior has scoped evidence, but final acceptance is reopened because the TASK-026 security dependency gate remains incomplete. Real Qwen revision evidence is owner/test-harness injected; synthetic providers exercise model-generated revisions."
+      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
     },
     {
       "id": "TASK-010",
@@ -247,10 +248,11 @@
         "docs/engineering/m1-completion.md",
         "tests/test_evidence.py",
         "docs/engineering/evidence/m1-validation.json",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-security-boundaries.md"
       ],
       "owner": "unassigned",
-      "notes": "Implemented behavior has scoped evidence, but final acceptance is reopened because the TASK-026 security dependency gate remains incomplete. Real Qwen revision evidence is owner/test-harness injected; synthetic providers exercise model-generated revisions."
+      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
     },
     {
       "id": "TASK-011",
@@ -579,10 +581,17 @@
         "tests/test_memory.py",
         "tests/test_security.py",
         "tests/test_orchestrator.py",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-security-boundaries.md",
+        "tests/test_data_boundary.py",
+        "tests/test_injection_boundary.py",
+        "tests/test_specs.py"
       ],
       "owner": "unassigned",
-      "notes": "Scoped retrieval is verified. The broad secrets/injection acceptance is not complete; no blanket prompt/log/argument secret protection is claimed. Gate TASK-044 remains open."
+      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut.",
+      "acceptance_depends_on": [
+        "TASK-044"
+      ]
     },
     {
       "id": "TASK-027",
@@ -899,10 +908,11 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_memory.py",
         "tests/test_cli.py",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-security-boundaries.md"
       ],
       "owner": "unassigned",
-      "notes": "Implemented behavior has scoped evidence, but final acceptance is reopened because the TASK-026 security dependency gate remains incomplete. Real Qwen revision evidence is owner/test-harness injected; synthetic providers exercise model-generated revisions."
+      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
     },
     {
       "id": "TASK-042",
@@ -956,12 +966,12 @@
     {
       "id": "TASK-044",
       "title": "Close unchanged M1 P0 injection and secret/egress acceptance",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
         "TASK-005",
-        "TASK-026"
+        "TASK-004"
       ],
       "requirement_ids": [
         "REQ-017",
@@ -973,9 +983,14 @@
         "Only close the M1 gate after traceable review and Windows/Ubuntu evidence; do not lower priority or silently defer P0 acceptance."
       ],
       "evidence": [
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-security-boundaries.md",
+        "tests/test_data_boundary.py",
+        "tests/test_injection_boundary.py",
+        "tests/test_specs.py"
       ],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
     },
     {
       "id": "TASK-045",

@@ -44,3 +44,12 @@ Stop switch immediately blocks new tool execution. It cannot undo operations alr
 ## Security fixtures
 
 See `docs/engineering/threat-fixtures.md` and `spec/scenarios.json` SCN-007/008/010. M0 defines fixtures; M1/M3 must provide executable regressions before unsafe integrations are enabled.
+
+## Current M1 admission (ADR-023)
+
+The implemented closed registry now rechecks file/memory classification and recognizable
+credentials before model, IPC and persistence boundaries; worker environment inheritance and
+public diagnostic codes are closed. Private local context needs an owner grant. See
+[threat model, tests and unmet P0 acceptance](../engineering/m1-security-boundaries.md).
+Arbitrary unlabelled/encoded secrets are not universally recognized. REQ-017/019 remain open;
+synthetic future-source denials do not certify real connector integrations.

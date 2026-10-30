@@ -138,8 +138,8 @@ def pinned_parent(target: Path, binding: list | None = None):
         if opened_path(fds[-1]) != target.parent:
             raise AgentError("opened_parent_changed")
         yield fds, chain, target
-    except OSError as exc:
-        raise AgentError("safe_file_access_denied") from exc
+    except OSError:
+        raise AgentError("safe_file_access_denied") from None
     finally:
         for fd in reversed(fds):
             os.close(fd)
@@ -235,8 +235,8 @@ def create_text(paths: Paths, project: str, relative: str, text: str, binding: l
             if os.name == "nt" and opened_path(fd) != target:
                 raise AgentError("opened_target_changed")
             return _receipt(fd, relative, data)
-        except OSError as exc:
-            raise AgentError("safe_create_failed") from exc
+        except OSError:
+            raise AgentError("safe_create_failed") from None
         finally:
             if fd is not None:
                 os.close(fd)
@@ -264,8 +264,8 @@ def observe(paths: Paths, project: str, relative: str, binding: list | None = No
                 raise AgentError("file_changed_during_read")
             try:
                 text = data.decode("utf-8")
-            except UnicodeError as exc:
-                raise AgentError("utf8_text_required") from exc
+            except UnicodeError:
+                raise AgentError("utf8_text_required") from None
             return {**_receipt(fd, relative, data), "text": text}
         finally:
             os.close(fd)

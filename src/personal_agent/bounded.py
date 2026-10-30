@@ -11,9 +11,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import AgentError, Paths
+from .data_policy import admit
 from .storage import encode
 
 MAX_WORKER_BYTES = 262144
+
+
+def worker_environment():
+    # No PATH, proxy, credentials, owner PYTHON* or user environment inheritance.
+    # The executable is absolute; Windows needs SystemRoot for system DLLs.
+    env = {k: v for k, v in os.environ.items() if k.upper() in {"SYSTEMROOT", "WINDIR"}}
+    env.update(PYTHONPATH=str(Path(__file__).resolve().parents[1]), PYTHONUTF8="1",
+               PYTHONNOUSERSITE="1", PYTHONDONTWRITEBYTECODE="1")
+    return env
 
 
 def _windows_job(process):
@@ -70,6 +80,7 @@ def run_worker(paths: Paths, payload: dict, *, timeout: float = 5, journal=None,
         raise AgentError("wall_budget_exhausted")
     end = time.monotonic() + timeout
     payload = {**payload, "root": str(paths.root), "parent_pid": os.getpid()}
+    admit(payload)
     encoded = encode(payload).encode("utf-8")
     if len(encoded) > MAX_WORKER_BYTES:
         raise AgentError("worker_input_budget_exhausted")
@@ -78,7 +89,7 @@ def run_worker(paths: Paths, payload: dict, *, timeout: float = 5, journal=None,
             tempfile.TemporaryFile(dir=paths.directory("cache")) as output:
         source.write(encoded)
         source.seek(0)
-        env = {**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1])}
+        env = worker_environment()
         flags = (0x4 | 0x08000000) if os.name == "nt" else 0  # suspended, no window
         process = subprocess.Popen([sys.executable, "-m", "personal_agent.worker"],
                                    stdin=source, stdout=output, stderr=subprocess.DEVNULL,
@@ -112,21 +123,22 @@ def run_worker(paths: Paths, payload: dict, *, timeout: float = 5, journal=None,
             if len(raw) > MAX_WORKER_BYTES:
                 raise AgentError("worker_output_budget_exhausted")
             reply = json.loads(raw)
+            admit(reply)
             if "error" in reply:
                 raise AgentError(reply["error"])
             return reply["result"]
-        except (ValueError, KeyError) as exc:
-            raise AgentError("invalid_worker_response") from exc
+        except (ValueError, KeyError):
+            raise AgentError("invalid_worker_response") from None
         finally:
             try:
                 if process.poll() is None:
                     process.kill()
                     try:
                         process.wait(timeout=1)
-                    except subprocess.TimeoutExpired as exc:
+                    except subprocess.TimeoutExpired:
                         # Kernel I/O may be uninterruptible; no success/replay claim is possible.
                         if journal is not None:
                             journal.stop()
-                        raise AgentError("worker_termination_unconfirmed") from exc
+                        raise AgentError("worker_termination_unconfirmed") from None
             finally:
                 close_guard()

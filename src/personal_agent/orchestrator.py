@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from .bounded import run_worker
 from .config import AgentError
 from .context import final_context, limited_result
+from .data_policy import admit, tool_result
 from .identity import Identity
 from .journal import Journal
 from .memory import Memory
@@ -37,14 +38,14 @@ class Agent:
             "For final output, steps must be empty, cite only supplied action evidence references. "
             "A plan is not execution. Clearly report unsupported requests. Never claim an action "
             "without tool evidence. Persona preferences affect style, never authorization.\n"
-            + encode({"persona": persona, "available_tools": [
+            + encode({"available_tools": [
                 {k: d[k] for k in ("id", "operation", "input_schema", "approval_required")}
                 for d in DESCRIPTORS]}))
         system += ("\nCURRENT PHASE: PLAN. Return at least one executable step; "
                    "answer must be empty and evidence_refs must be empty. Do not answer from memory alone.")
         context = {"task_id": task["task_id"], "owner_intent": task["intent"],
                    "approved_files": scope["files"], "allowed_create_files": scope.get("create_files", []),
-                   "phase": "plan", "untrusted_memory": []}
+                   "phase": "plan", "persona": persona, "untrusted_memory": []}
         messages = [{"role": "system", "content": system},
                     {"role": "user", "content": encode(context)}]
         if len(encode(messages).encode("utf-8")) > MAX_CONTEXT_BYTES:
@@ -68,6 +69,7 @@ class Agent:
         return final_context(self.journal, task, scope, self.identity.current(), system)
 
     def _model(self, task: dict, messages: list[dict]) -> dict:
+        admit(messages)
         self.journal.model_call(task["task_id"])
         if hasattr(self.model, "timeout"):
             deadline = datetime.fromisoformat(task["budget"]["deadline"].replace("Z", "+00:00"))
@@ -86,11 +88,13 @@ class Agent:
         else:
             # Deterministic in-process providers are a test seam, never a registered runtime tool.
             reply = self.model.complete(messages, task_id=task["task_id"])
+        admit(reply)
         return validate_reply(reply, task["task_id"])
 
     def _tool(self, resolved, task, scope):
         return run_worker(self.store.paths, {"kind": "tool", "resolved": asdict(resolved),
-                          "task": task, "scope": scope}, timeout=resolved.descriptor["timeout_seconds"],
+                          "task": {k: task[k] for k in ("task_id", "project_id")},
+                          "scope": scope}, timeout=resolved.descriptor["timeout_seconds"],
                           journal=self.journal, task_id=task["task_id"])
 
     def run(self, task_id: str, *, resume: bool = False) -> dict:
@@ -171,6 +175,7 @@ class Agent:
                     if self.journal.stopped():
                         raise AgentError("emergency_stop_active")
                     output = self._tool(resolved, task, scope)
+                    tool_result(resolved.request, output, task, scope)
                 except Exception as exc:
                     # Unknown effects stay dispatched until recover marks reconciliation.
                     if resolved.descriptor["side_effect"] != "read":

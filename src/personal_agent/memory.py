@@ -6,6 +6,7 @@ import re
 from datetime import datetime, timezone
 
 from .config import AgentError, validate
+from .data_policy import admit
 from .storage import Store, encode, now, uid
 
 
@@ -15,6 +16,7 @@ class Memory:
         self.db = store.connection
 
     def add(self, record: dict) -> str:
+        admit(record)
         record = {"sensitivity": "private", "retention_class": "project", **record}
         validate("memory-record", record)
         for field in ("recorded_at", "expires_at", "valid_from", "valid_to"):
@@ -89,6 +91,7 @@ class Memory:
                 "json_extract(document,'$.supersedes')) AS s WHERE s.value=?",
                 (project_id, *allowed_classes, now(), record["id"])).fetchall()
             record["superseded_by"] = [row[0] for row in successors]
+        admit(records)
         return records
 
     def remove_from_retrieval(self, record_id: str, *, project_id: str):

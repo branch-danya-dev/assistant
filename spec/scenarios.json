@@ -201,9 +201,12 @@
         "tests/test_orchestrator.py",
         "docs/engineering/m1-completion.md",
         "docs/engineering/evidence/m1-validation.json",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-security-boundaries.md",
+        "tests/test_data_boundary.py",
+        "tests/test_injection_boundary.py"
       ],
-      "verification_scope": "PARTIAL: project/sensitivity filtering and denial of synthetic unauthorized tool intents are tested. Broad source-instruction and secret handling acceptance stays open under REQ-017/019 and TASK-044."
+      "verification_scope": "Current supported M1 paths tested with a deliberately persuaded synthetic provider after actual hostile file/memory retrieval. Future connector admission is synthetic fail-closed only; unchanged REQ-017/019 acceptance remains open."
     },
     {
       "id": "SCN-008",
@@ -389,6 +392,38 @@
         "tests/test_previews.py"
       ],
       "verification_scope": "Scoped runtime regression; does not certify all REQ-017/019 acceptance."
+    },
+    {
+      "id": "SCN-014",
+      "title": "M1 classified data admission and hostile supported-operation intents",
+      "target_milestone": "M1",
+      "status": "verified",
+      "requirement_ids": [
+        "REQ-017",
+        "REQ-019"
+      ],
+      "capability_ids": [
+        "CAP-002",
+        "CAP-005",
+        "CAP-007",
+        "CAP-008"
+      ],
+      "preconditions": [
+        "Isolated synthetic runtime; no production data or external sends"
+      ],
+      "expected_artifacts": [
+        "Payload-free denial events",
+        "Scoped model captures and child environment",
+        "Unchanged source and approval state"
+      ],
+      "acceptance": "Execute adversarial file/memory retrieval, deny supported-operation scope/role/approval/result forgery, enforce private/restricted labels and known-credential admission before IPC/model/persistence, and preserve original regression invariants. Record the opaque-secret residual rather than claiming universal detection.",
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-security-boundaries.md",
+        "tests/test_data_boundary.py",
+        "tests/test_injection_boundary.py"
+      ],
+      "verification_scope": "Narrow executable policy scenario only. Does not close REQ-017/019 or certify real external adapters."
     }
   ]
 }

@@ -6,6 +6,7 @@ import json
 from datetime import datetime, timedelta, timezone
 
 from .config import AgentError, safe_relative, validate
+from .data_policy import admit, validate_scope
 from .evidence import project_result, redact, text_receipt
 from .plans import Plans
 from .storage import Store, encode, now, uid
@@ -56,6 +57,7 @@ class Journal:
 
     def _event(self, task_id: str, kind: str, payload: dict | None = None,
                refs: tuple[str, ...] = (), actor: str = "system", key: str | None = None):
+        admit(payload)
         task = self.get(task_id)
         seq = task.get("last_event_sequence", 0) + 1
         event = dict(event_id=uid(), task_id=task_id, sequence=seq, kind=kind,
@@ -85,6 +87,8 @@ class Journal:
             self._transition(task_id, state, reason)
 
     def create(self, intent: str, project_id: str, scope: dict, *, budget: dict | None = None) -> str:
+        admit(intent)
+        validate_scope(scope)
         if not isinstance(intent, str) or not intent.strip() or len(intent) > 8000:
             raise AgentError("invalid_intent")
         self.store.paths.project_workspace(project_id)
@@ -117,6 +121,7 @@ class Journal:
         return task_id
 
     def set_plan(self, task_id: str, requests: list[dict]):
+        admit(requests)
         if not isinstance(requests, list) or len(requests) > 40:
             raise AgentError("plan_budget_exceeded")
         for request in requests:
@@ -308,6 +313,7 @@ class Journal:
             self._event(action["task_id"], "checkpointed", {"dispatch": action_id}, key=action_id)
 
     def finish(self, action_id: str, result: dict):
+        admit(result)
         with self.store.transaction():
             action = self.action(action_id)
             if action["status"] != "dispatched":
@@ -355,6 +361,7 @@ class Journal:
             self._transition(action["task_id"], "blocked", "reconciled_create_new_task")
 
     def complete(self, task_id: str, result: dict, *, partial: bool = False):
+        admit(result)
         """Finalize verified actions; partial explicitly does not certify the owner's whole goal."""
         with self.store.transaction():
             if self.stopped():
@@ -393,16 +400,21 @@ class Journal:
             if "text" in args:
                 args["text"] = text_receipt(args["text"])
             if "query" in args:
-                args["query"] = redact(args["query"], 1000)
+                args["query"] = text_receipt(args["query"])
             if action["status"] == "verified":
                 action["evidence_ref"] = f"action:{action['id']}"
                 action["evidence"] = self.evidence(task_id, action["evidence_ref"], task["project_id"])
         row = self.db.execute("SELECT result FROM tasks WHERE id=?", (task_id,)).fetchone()
         result = json.loads(row[0]) if row[0] else None
         if result and "answer" in result:
-            result["answer"] = redact(result["answer"], 4000)
+            scope = self.scope(task_id)
+            result["answer"] = ("[private task summary withheld from diagnostics]"
+                if scope.get("private_files") or "private" in scope.get("memory_classes", [])
+                else redact(result["answer"], 4000))
         task["intent"] = redact(task["intent"])
         plan = self.plans.current(task_id)
+        if "reason" in plan:
+            plan["reason"] = text_receipt(plan["reason"])
         visible_steps = [{k: v for k, v in s.items() if k != "request"} for s in plan["steps"]]
         return {"task": task, "actions": actions, "events": self.events(task_id)[-100:],
                 "result": result, "plan": {**plan, "steps": visible_steps},

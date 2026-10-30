@@ -262,12 +262,15 @@
         "Webpage, document and message instructions cannot escalate privileges or override owner policy."
       ],
       "owner": "project",
-      "notes": "P0/M1 acceptance remains OPEN, not certified by closed-registry tests. Priority, target milestone and acceptance unchanged. TASK-026 and TASK-044 retain the remaining gate; see review remediation report.",
+      "notes": "Original P0/M1 acceptance unchanged and still OPEN. Current file/memory/tool/model boundaries have executable policy tests, not universal protection. See m1-security-boundaries.md for exact supported paths, synthetic-only future connector contracts and R-M1-SECRET-OPAQUE/R-M1-LEGACY residual risks and required owner decisions.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
         "tests/test_models.py",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-security-boundaries.md",
+        "tests/test_data_boundary.py",
+        "tests/test_injection_boundary.py"
       ]
     },
     {
@@ -298,12 +301,15 @@
         "No secrets in prompts/logs/repo; unauthorized cloud egress rejected."
       ],
       "owner": "project",
-      "notes": "P0/M1 acceptance remains OPEN, not certified by closed-registry tests. Priority, target milestone and acceptance unchanged. TASK-026 and TASK-044 retain the remaining gate; see review remediation report.",
+      "notes": "Original P0/M1 acceptance unchanged and still OPEN. Current file/memory/tool/model boundaries have executable policy tests, not universal protection. See m1-security-boundaries.md for exact supported paths, synthetic-only future connector contracts and R-M1-SECRET-OPAQUE/R-M1-LEGACY residual risks and required owner decisions.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
         "tests/test_models.py",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-security-boundaries.md",
+        "tests/test_data_boundary.py",
+        "tests/test_injection_boundary.py"
       ]
     },
     {

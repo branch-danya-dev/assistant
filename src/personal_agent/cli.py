@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 from .config import AgentError, Paths, safe_relative
+from .data_policy import admit
 from .demo import run_demo
 from .identity import Identity
 from .journal import Journal
@@ -19,8 +20,14 @@ from .previews import Previews
 from .storage import Store
 
 
+class OwnerParser(argparse.ArgumentParser):
+    def error(self, message):
+        # argparse's default diagnostic embeds unknown arguments/choice values.
+        raise AgentError("invalid_cli_arguments")
+
+
 def parser() -> argparse.ArgumentParser:
-    root = argparse.ArgumentParser(description="Local personal agent (M1)")
+    root = OwnerParser(description="Local personal agent (M1)")
     root.add_argument("--root", help="Explicit ASSISTANT_ROOT override; default G:\\Assistant on Windows")
     commands = root.add_subparsers(dest="command", required=True)
     commands.add_parser("cleanup-previews", help="Remove expired registered approval previews only")
@@ -33,6 +40,8 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--allow-create", action="append", default=[],
                      help="Exact NEW file in existing project directories; separate approval is still required")
     run.add_argument("--include-private", action="store_true", help="Explicit local-only private memory scope")
+    run.add_argument("--allow-private-file", action="append", default=[],
+                     help="Exact private file authorized for local tool IPC and Ollama context")
     for command in ("show", "resume", "cancel"):
         commands.add_parser(command).add_argument("task_id")
     evidence = commands.add_parser("show-evidence")
@@ -133,7 +142,10 @@ def execute(args) -> dict:
             return journal.inspect(args.task_id)
         if args.command == "run":
             paths.project_workspace(args.project)
-            scope = {"files": [safe_relative(p) for p in args.allow_file],
+            private_files = [safe_relative(p) for p in args.allow_private_file]
+            scope = {"files": [safe_relative(p) for p in args.allow_file] + private_files,
+                     "file_classes": {p: "private" for p in private_files},
+                     "private_files": private_files,
                      "create_files": [safe_relative(p) for p in args.allow_create], "memory_classes":
                      ["public", "internal", *(["private"] if args.include_private else [])]}
             task_id = journal.create(args.intent, args.project, scope)
@@ -169,8 +181,8 @@ def execute(args) -> dict:
                     raise AgentError("plan_input_budget_exhausted")
                 try:
                     proposal = json.loads(raw)
-                except ValueError as exc:
-                    raise AgentError("invalid_plan_revision") from exc
+                except ValueError:
+                    raise AgentError("invalid_plan_revision") from None
                 journal.plans.revise(args.task_id, proposal, Agent(store, Ollama()).registry)
                 return journal.inspect(args.task_id)
             if args.command == "recover":
@@ -201,6 +213,7 @@ def main(argv=None) -> int:
         sys.stdout.reconfigure(encoding="utf-8")
     try:
         result = execute(parser().parse_args(argv))
+        admit(result)
         rendered = json.dumps(result, ensure_ascii=False, indent=2)
         if len(rendered.encode("utf-8")) > 65536:
             # Source metadata can still be large. Keep the state readable, and make truncation explicit.

@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 
 from .config import AgentError, validate
+from .data_policy import admit
 from .storage import encode, now
 
 MAX_REVISIONS = 3
@@ -37,6 +38,7 @@ class Plans:
 
     def revise(self, task_id, proposal, registry, *, actor="owner"):
         from .journal import digest
+        admit(proposal)
         if (not isinstance(proposal, dict)
                 or set(proposal) not in ({"base_digest", "reason", "steps"},
                                          {"base_digest", "reason", "steps", "mode"})
