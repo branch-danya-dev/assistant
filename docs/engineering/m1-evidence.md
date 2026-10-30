@@ -1,5 +1,8 @@
 # First M1 implementation — verification evidence (2026-10-30)
 
+Historical PR #4 checkpoint. The current stacked implementation and its acceptance gates
+are tracked in [M1 completion evidence](m1-completion.md); limitations below describe PR #4.
+
 **Working local read-only slice; M1 is still partial.** Started from accepted baseline
 `c1a0079d81b4b641568536ef8bc6d16ea8d65c22`. All fixtures and committed reports are synthetic.
 

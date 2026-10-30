@@ -145,10 +145,11 @@
         "Agent builds executable plan with dependencies and can revise it with audit."
       ],
       "owner": "project",
-      "notes": "Partial: bounded sequential plans are implemented; audited in-task revision remains open in TASK-009.",
+      "notes": "Implemented in completion candidate; final validation pending. See ADR-021 for Linux trusted-root boundary.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_orchestrator.py"
+        "tests/test_orchestrator.py",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -164,7 +165,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -180,7 +182,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -197,7 +200,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -273,7 +277,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -380,10 +385,11 @@
         "Read/write only approved test workspace and reject traversal/unsafe targets."
       ],
       "owner": "project",
-      "notes": "Partial: exact scoped reads implemented. Safe workspace creation remains TASK-043; overwrite/delete unsupported.",
+      "notes": "Implemented in completion candidate; final validation pending. See ADR-021 for Linux trusted-root boundary.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_security.py"
+        "tests/test_security.py",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -672,7 +678,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-completion.md"
       ]
     },
     {

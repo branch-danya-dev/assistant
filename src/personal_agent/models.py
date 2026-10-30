@@ -69,13 +69,17 @@ def reply_schema(phase: str | None = None, *, constrain_tools: bool = False,
                 "answer": {"type": "string", "maxLength": 12000},
                 "evidence_refs": {"type": "array", "maxItems": 40,
                                   "items": {"type": "string", "maxLength": 200}}}}
+    schema["properties"]["revision"] = specification("schemas/plan-revision.schema.json")
+    schema["properties"]["revision"]["properties"]["steps"]["items"]["properties"]["request"] = (
+        specification("schemas/tool-invocation.schema.json"))
     if phase == "plan":
         schema["properties"]["steps"]["minItems"] = 1
         schema["properties"]["answer"]["maxLength"] = 0
         schema["properties"]["evidence_refs"]["maxItems"] = 0
+        del schema["properties"]["revision"]
     elif phase == "final":
         schema["properties"]["steps"]["maxItems"] = 0
-        schema["properties"]["answer"]["minLength"] = 1
+        # A revision is a continuation, not a completion claim. Journal enforces final evidence.
     if constrain_tools:
         variants = []
         for definition in DESCRIPTORS:
@@ -87,6 +91,9 @@ def reply_schema(phase: str | None = None, *, constrain_tools: bool = False,
                 invocation["properties"]["task_id"] = {"const": task_id}
             variants.append(invocation)
         schema["properties"]["steps"]["items"] = {"oneOf": variants}
+        if "revision" in schema["properties"]:
+            schema["properties"]["revision"]["properties"]["steps"]["items"]["properties"]["request"] = {
+                "oneOf": variants}
     return schema
 
 

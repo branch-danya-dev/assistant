@@ -216,10 +216,11 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
-        "docs/engineering/evidence/windows-host.json"
+        "docs/engineering/evidence/windows-host.json",
+        "docs/engineering/m1-completion.md"
       ],
       "owner": "unassigned",
-      "notes": "Linear plan/execute/verify and SCN-004/005 pass. Audited plan revision with preserved completed steps remains open (REQ-010)."
+      "notes": "Implementation and targeted tests added on stacked PR; final CI and current host acceptance pending. Linux trusted environment per ADR-021."
     },
     {
       "id": "TASK-010",
@@ -238,10 +239,11 @@
       ],
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_cli.py"
+        "tests/test_cli.py",
+        "docs/engineering/m1-completion.md"
       ],
       "owner": "unassigned",
-      "notes": "CLI and task/evidence inspection verified; final gate follows completion of TASK-009."
+      "notes": "Implementation and targeted tests added on stacked PR; final CI and current host acceptance pending. Linux trusted environment per ADR-021."
     },
     {
       "id": "TASK-011",
@@ -914,7 +916,7 @@
     {
       "id": "TASK-043",
       "title": "Complete scoped create-only workspace writes",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -930,9 +932,11 @@
         "Reject overwrite, traversal, junction/symlink and parent-swap races; no unapproved existing-file changes.",
         "Crash/stop fixtures prove no uncertain mutation is replayed."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-completion.md"
+      ],
       "owner": "unassigned",
-      "notes": "First read-only slice covers TASK-007; this explicit remaining gate covers the write half of REQ-025."
+      "notes": "Implementation and targeted tests added on stacked PR; final CI and current host acceptance pending. Linux trusted environment per ADR-021."
     }
   ]
 }

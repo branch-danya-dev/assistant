@@ -67,10 +67,10 @@
         "REQ-009",
         "REQ-010"
       ],
-      "adapter": "personal_agent.memory / journal / orchestrator",
-      "verification": "Lexical scoped retrieval and linear task orchestration verified; semantic retrieval / plan revision remain tracked separately.",
+      "adapter": "personal_agent.plans / journal / safe_fs / bounded",
+      "verification": "docs/engineering/m1-completion.md",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-completion.md"
       ]
     },
     {
@@ -131,12 +131,15 @@
       "side_effect": "workspace_write",
       "scope": "approved_paths",
       "policy": "scoped",
-      "status": "planned",
+      "status": "in_progress",
       "requirement_ids": [
         "REQ-025"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.plans / journal / safe_fs / bounded",
+      "verification": "docs/engineering/m1-completion.md",
+      "evidence": [
+        "docs/engineering/m1-completion.md"
+      ]
     },
     {
       "id": "CAP-009",

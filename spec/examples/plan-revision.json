@@ -1,0 +1,12 @@
+{
+  "base_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "reason": "Synthetic additional observation",
+  "steps": [
+    {"ordinal": 0, "action_id": "synthetic-task:0", "depends_on": [],
+     "request": {"task_id": "synthetic-task", "capability_id": "CAP-007", "operation": "read_text",
+                 "arguments": {"path": "note.txt"}}},
+    {"ordinal": 1, "action_id": "synthetic-task:1", "depends_on": ["synthetic-task:0"],
+     "request": {"task_id": "synthetic-task", "capability_id": "CAP-002", "operation": "search_memory",
+                 "arguments": {"query": "colour"}}}
+  ]
+}

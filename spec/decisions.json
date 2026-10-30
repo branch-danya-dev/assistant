@@ -200,6 +200,16 @@
       "status": "accepted",
       "recorded_on": "2026-10-30",
       "owner": "project owner via requested doc-gap closure"
+    },
+    {
+      "id": "ADR-021",
+      "title": "Windows primary; Linux create-only tools in trusted environment",
+      "status": "accepted",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner (explicit M1 implementation clarification)",
+      "context": "Unprivileged Linux directory descriptors do not prohibit another owner process from renaming the authority root. Windows can pin the ancestor handle chain.",
+      "decision": "Keep Windows the primary target. On Linux trust the application and project-root anchors; require no-follow handle traversal, O_TMPFILE, exclusive publication and Landlock ABI 3+ for nested paths. Fail closed when required mechanisms are unavailable. Never claim isolation from malicious same-account root relocation.",
+      "revisit_when": "Linux needs hostile-root isolation or a different filesystem/OS backend; requires a reviewed design, not a pathname fallback."
     }
   ]
 }

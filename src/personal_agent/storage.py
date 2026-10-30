@@ -46,6 +46,11 @@ MIGRATIONS = [
     CREATE VIRTUAL TABLE memory_fts USING fts5(id UNINDEXED, statement, tokenize='unicode61');
     CREATE TABLE memory_events(id TEXT PRIMARY KEY, kind TEXT NOT NULL, record_id TEXT NOT NULL,
                                timestamp TEXT NOT NULL);
+    """,
+    """
+    CREATE TABLE plan_revisions(task_id TEXT NOT NULL REFERENCES tasks(id),
+                                revision INTEGER NOT NULL, document TEXT NOT NULL,
+                                PRIMARY KEY(task_id,revision));
     """
 ]
 

@@ -120,7 +120,8 @@
     "docs/engineering/m1-evidence.md",
     "docs/engineering/runbook.md",
     "tools/verify_host.py",
-    "tools/configure-ollama-storage.ps1"
+    "tools/configure-ollama-storage.ps1",
+    "docs/engineering/m1-completion.md"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
@@ -129,8 +130,9 @@
     "spec/schemas/approval-request.schema.json",
     "spec/schemas/task-state.schema.json",
     "spec/schemas/tool-invocation.schema.json",
-    "spec/schemas/persona.schema.json"
+    "spec/schemas/persona.schema.json",
+    "spec/schemas/plan-revision.schema.json"
   ],
   "agent_read_strategy": "Read AGENTS + manifest then only ID-matched records and relevant topic docs. Do not paste entire repository into LLM context.",
-  "implementation_warning": "M0 complete; local M1 read-only vertical slice verified. M1 remains partial; see TASK-009/010/043 and m1-evidence.md."
+  "implementation_warning": "M0 complete; M1 completion candidate with bounded revisions and create-only tools. Final CI/host acceptance pending; see m1-completion.md and ADR-021."
 }

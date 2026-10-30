@@ -7,7 +7,7 @@ from unittest.mock import patch
 from support import RuntimeCase
 
 from personal_agent.config import AgentError, Paths
-from personal_agent.storage import Store
+from personal_agent.storage import MIGRATIONS, Store
 
 
 class StorageTests(RuntimeCase):
@@ -39,7 +39,7 @@ class StorageTests(RuntimeCase):
 
     def test_migration_is_idempotent_and_future_schema_rejected(self):
         with Store(self.paths) as second:
-            self.assertEqual(second.connection.execute("PRAGMA user_version").fetchone()[0], 1)
+            self.assertEqual(second.connection.execute("PRAGMA user_version").fetchone()[0], len(MIGRATIONS))
             second.connection.execute("PRAGMA user_version=999")
         with self.assertRaises(AgentError):
             Store(self.paths)

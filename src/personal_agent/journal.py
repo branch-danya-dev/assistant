@@ -5,7 +5,9 @@ import hashlib
 import json
 from datetime import datetime, timedelta, timezone
 
-from .config import AgentError, validate
+from .config import AgentError, safe_relative, validate
+from .evidence import project_result, redact, text_receipt
+from .plans import Plans
 from .storage import Store, encode, now, uid
 
 TRANSITIONS = {
@@ -30,6 +32,7 @@ class Journal:
     def __init__(self, store: Store):
         self.store = store
         self.db = store.connection
+        self.plans = Plans(self)
 
     def get(self, task_id: str) -> dict:
         row = self.db.execute("SELECT document FROM tasks WHERE id=?", (task_id,)).fetchone()
@@ -85,6 +88,14 @@ class Journal:
         if not isinstance(intent, str) or not intent.strip() or len(intent) > 8000:
             raise AgentError("invalid_intent")
         self.store.paths.project_workspace(project_id)
+        scope = json.loads(encode(scope))
+        if scope.get("create_files"):
+            from .bounded import run_worker
+            scope["create_files"] = [safe_relative(p) for p in scope["create_files"]]
+            if len(scope["create_files"]) > 40:
+                raise AgentError("scope_budget_exhausted")
+            scope["create_bindings"] = run_worker(self.store.paths, {
+                "kind": "snapshot", "project": project_id, "files": scope["create_files"]})
         limits = dict(model_limit=20, tool_limit=40, wall_seconds=900,
                       model_calls=0, tool_calls=0, deadline=None, cloud_cost_limit=0)
         if budget:
@@ -119,6 +130,7 @@ class Journal:
             task["step_ids"] = [f"{task_id}:{i}" for i in range(len(requests))]
             self._save(task)
             self.db.execute("UPDATE tasks SET plan=? WHERE id=?", (encode(requests), task_id))
+            self.plans.initial(task_id)
             self._event(task_id, "planned", {"steps": len(requests), "plan_digest": digest(requests)})
 
     def plan(self, task_id: str) -> list[dict]:
@@ -131,6 +143,21 @@ class Journal:
     def stop(self, stopped: bool = True):
         with self.store.transaction():
             self.db.execute("UPDATE controls SET value=? WHERE name='stopped'", (str(int(stopped)),))
+
+    def cancel_requested(self, task_id: str) -> bool:
+        return self.db.execute("SELECT 1 FROM controls WHERE name=? AND value='1'",
+                               (f"cancel:{task_id}",)).fetchone() is not None
+
+    def cancel(self, task_id: str):
+        with self.store.transaction():
+            task = self.get(task_id)
+            if task["state"] == "running":
+                self.db.execute("INSERT OR REPLACE INTO controls VALUES (?, '1')", (f"cancel:{task_id}",))
+                self._event(task_id, "cancellation_requested", actor="owner")
+            elif task["state"] == "needs_reconciliation":
+                raise AgentError("unresolved_effects")
+            else:
+                self._transition(task_id, "cancelled")
 
     def start(self, task_id: str, *, resume: bool = False):
         with self.store.transaction():
@@ -157,6 +184,8 @@ class Journal:
         task = self.get(task_id)
         if self.stopped():
             raise AgentError("emergency_stop_active")
+        if self.cancel_requested(task_id):
+            raise AgentError("task_cancel_requested")
         if task["state"] != "running":
             raise AgentError("task_not_running")
         budget = task["budget"]
@@ -175,6 +204,10 @@ class Journal:
 
     def prepare(self, task_id: str, ordinal: int, request: dict, effect: str, resource: str) -> str:
         action_id = f"{task_id}:{ordinal}"
+        planned = next((s for s in self.plans.current(task_id)["steps"]
+                        if s["action_id"] == action_id), None)
+        if not planned or planned["request"] != request:
+            raise AgentError("action_not_in_current_plan")
         fingerprint = digest(dict(request=request, effect=effect, resource=resource,
                                   scope=self.scope(task_id)))
         with self.store.transaction():
@@ -203,6 +236,8 @@ class Journal:
             action = self.action(action_id)
             if action["status"] != "pending":
                 raise AgentError("action_not_pending")
+            if action["approval_id"]:
+                raise AgentError("approval_already_bound")
             approval_id = uid()
             request = json.loads(action["request"])
             approval = dict(approval_id=approval_id, task_id=action["task_id"],
@@ -241,6 +276,12 @@ class Journal:
             action = self.action(action_id)
             if action["status"] != "pending":
                 raise AgentError("action_not_replayable")
+            step = next((s for s in self.plans.current(action["task_id"])["steps"]
+                         if s["action_id"] == action_id), None)
+            if step is None or any(self.action(d)["status"] != "verified" for d in step["depends_on"]):
+                raise AgentError("unresolved_plan_dependencies")
+            if action["effect"] != "read" and action["attempts"]:
+                raise AgentError("non_idempotent_replay_denied")
             task = self._check_budget(action["task_id"], "tool")
             if action["attempts"] >= 3:
                 raise AgentError("read_retry_budget_exhausted")
@@ -313,15 +354,23 @@ class Journal:
         with self.store.transaction():
             if self.stopped():
                 raise AgentError("emergency_stop_active")
+            if self.cancel_requested(task_id):
+                raise AgentError("task_cancel_requested")
             task = self.get(task_id)
             if task["budget"]["deadline"] and now() >= task["budget"]["deadline"]:
                 raise AgentError("wall_budget_exhausted")
             rows = self.db.execute("SELECT id,status FROM actions WHERE task_id=?", (task_id,)).fetchall()
-            if (len(rows) != len(task["step_ids"]) or any(r["status"] != "verified" for r in rows)):
+            active = [r for r in rows if r["id"] in task["step_ids"]]
+            if (len(active) != len(task["step_ids"]) or any(r["status"] != "verified" for r in active)):
                 raise AgentError("unverified_steps")
-            refs = [f"action:{r['id']}" for r in rows]
-            if not set(result.get("evidence_refs", [])) <= set(refs):
+            refs = [f"action:{r['id']}" for r in active]
+            provided = result.get("evidence_refs")
+            if not isinstance(provided, list) or any(not isinstance(r, str) for r in provided):
+                raise AgentError("invalid_evidence_references")
+            if not set(provided) <= set(refs):
                 raise AgentError("fabricated_evidence_reference")
+            if set(provided) != set(refs) or len(provided) != len(refs):
+                raise AgentError("missing_or_duplicate_evidence_references")
             task["result_refs"] = refs
             self._save(task)
             self.db.execute("UPDATE tasks SET result=? WHERE id=?", (encode(result), task_id))
@@ -334,6 +383,34 @@ class Journal:
             " ORDER BY ordinal", (task_id,))]
         for action in actions:
             action["request"] = json.loads(action["request"])
+            args = action["request"]["arguments"]
+            if "text" in args:
+                args["text"] = text_receipt(args["text"])
+            if "query" in args:
+                args["query"] = redact(args["query"], 1000)
+            if action["status"] == "verified":
+                action["evidence_ref"] = f"action:{action['id']}"
+                action["evidence"] = self.evidence(task_id, action["evidence_ref"], task["project_id"])
         row = self.db.execute("SELECT result FROM tasks WHERE id=?", (task_id,)).fetchone()
-        return {"task": task, "actions": actions, "events": self.events(task_id),
-                "result": json.loads(row[0]) if row[0] else None}
+        result = json.loads(row[0]) if row[0] else None
+        if result and "answer" in result:
+            result["answer"] = redact(result["answer"], 4000)
+        task["intent"] = redact(task["intent"])
+        plan = self.plans.current(task_id)
+        visible_steps = [{k: v for k, v in s.items() if k != "request"} for s in plan["steps"]]
+        return {"task": task, "actions": actions, "events": self.events(task_id)[-100:],
+                "result": result, "plan": {**plan, "steps": visible_steps},
+                "plan_history": [{k: v for k, v in p.items() if k not in ("steps", "reason")}
+                                 for p in self.plans.history(task_id)]}
+
+    def evidence(self, task_id: str, ref: str, project: str) -> dict:
+        task = self.get(task_id)
+        if task["project_id"] != project or not ref.startswith("action:"):
+            raise AgentError("evidence_scope_mismatch")
+        action = self.action(ref.removeprefix("action:"))
+        if action["task_id"] != task_id or action["status"] != "verified" or not action["result"]:
+            raise AgentError("evidence_scope_mismatch")
+        result = json.loads(action["result"])
+        return {"evidence_ref": ref, "result_digest": digest(result), "status": "verified",
+                "output": project_result(json.loads(action["request"]), result, project, self.scope(task_id)),
+                "view": "bounded_metadata_source_content_withheld"}

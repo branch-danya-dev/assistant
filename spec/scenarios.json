@@ -103,7 +103,8 @@
       "automated": "implemented",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_memory.py"
+        "tests/test_memory.py",
+        "docs/engineering/m1-completion.md"
       ],
       "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
@@ -136,7 +137,8 @@
       "automated": "implemented",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_orchestrator.py"
+        "tests/test_orchestrator.py",
+        "docs/engineering/m1-completion.md"
       ],
       "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
@@ -192,7 +194,8 @@
       "automated": "implemented",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_orchestrator.py"
+        "tests/test_orchestrator.py",
+        "docs/engineering/m1-completion.md"
       ],
       "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
@@ -246,7 +249,8 @@
       "automated": "implemented",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_storage.py"
+        "tests/test_storage.py",
+        "docs/engineering/m1-completion.md"
       ],
       "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
@@ -278,7 +282,8 @@
       "automated": "implemented",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_journal.py"
+        "tests/test_journal.py",
+        "docs/engineering/m1-completion.md"
       ],
       "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     },
@@ -307,7 +312,8 @@
       "automated": "implemented",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "tests/test_orchestrator.py"
+        "tests/test_orchestrator.py",
+        "docs/engineering/m1-completion.md"
       ],
       "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
     }
