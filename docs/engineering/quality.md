@@ -1,5 +1,9 @@
 # Quality, evaluation and evidence
 
+## Architecture-baseline verification
+
+M0 checks every non-deprecated requirement maps to a task, that P0 requirements are scheduled no later than their milestone, IDs and dependency DAG resolve, and the selected Qwen3.5 / G-drive owner decisions remain intact. JSON Schema 2020-12 examples are validated using `jsonschema` and synthetic adversarial fixtures are documented in `docs/engineering/threat-fixtures.md`. Windows and Ubuntu GitHub Actions are **contract tests** only; real GPU, G-drive, prompt-injection resistance and external action correctness require future runtime/host verification.
+
 ## Test layers
 1. Spec validation: JSON parse, unique IDs, cross-links, statuses, file map and safety invariants.
 2. Unit: deterministic routing/policy, typed tool args, numerical correctness, memory conflict rules.

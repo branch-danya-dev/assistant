@@ -39,7 +39,7 @@ Desktop / API / Telegram (later) / Voice (later)
 `core`, `orchestration`, `models`, `memory`, `identity`, `tools`, `security`, `evolution`, `api`, `infrastructure`, `interfaces`. All are future modules; the existing `src/personal_agent/ports.py` is only a starter contract.
 
 ## Architectural constraints
-Host initially Windows, Python 3.12+, single user, SQLite starting point. Provider names and UI stack are provisional; no assumptions of universal tool support or identical model capabilities.
+Host initially Windows, Python 3.12+, single user, SQLite starting point. Primary local model/provider is selected by ADR-015 (Ollama `qwen3.5:9b`); UI stack remains provisional; no assumptions of universal tool support or identical model capabilities.
 
 ## Binding implementation baseline (ADR-002/003/004/005/006/007/012/014/017/018/019/020)
 

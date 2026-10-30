@@ -5,13 +5,13 @@
       "id": "M0",
       "name": "Specification and bootstrap",
       "status": "specified",
-      "exit_gate": "docs/tests/tracers exist, validator passes; no runtime claims"
+      "exit_gate": "All active requirements trace to tasks, accepted core ADRs and synthetic threat fixtures documented; JSON Schema examples and traceability checks pass on Windows and Linux."
     },
     {
       "id": "M1",
       "name": "Local agent core",
       "status": "planned",
-      "exit_gate": "safe read-only end-to-end task with local LLM, memory, approvals and audit"
+      "exit_gate": "Verified Qwen3.5 local read-only end-to-end workflow, versioned identity, private scoped memory, authorization, durable journal, restart-safe needs_reconciliation, and single-root G path resolver (SCN-004/005/007/009/010/011)."
     },
     {
       "id": "M2",
@@ -23,7 +23,7 @@
       "id": "M3",
       "name": "Persistence and integrations",
       "status": "planned",
-      "exit_gate": "durable scheduled tasks, safe restarts, approval-gated communication"
+      "exit_gate": "Durable scheduler, connector-specific reconciliation, gated remote communications, scoped concurrency and skill candidate records; no automated risky sends."
     },
     {
       "id": "M4",

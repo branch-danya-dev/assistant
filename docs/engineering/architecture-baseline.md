@@ -12,12 +12,11 @@
 | ADR-004/007 | Versioned persona and scoped sourced memory, independent of any LLM |
 | ADR-005/015 | Local-first inference, Ollama `qwen3.5:9b`, no comparative LLM tests, consent-gated cloud |
 | ADR-006/014/017 | Trusted registry derives actual risk by operation+target; external mutations require exact approval |
-| ADR-008 (provisional) | Skill proposals cannot silently modify core code or promote themselves |
 | ADR-012/020 | Machine-readable IDs, full requirement-to-task coverage and schema/CI verification |
 | ADR-016/019 | `G:\Assistant` default root, only `ASSISTANT_ROOT` is the app-root variable; no fallback |
 | ADR-018 | M1 journal, approval consumption, crash-safe needs_reconciliation state |
 
-Changes to accepted decisions require a superseding ADR and migration/compatibility plan. Other provisional ADRs remain implementation proposals, not automatic mandates.
+Changes to accepted decisions require a superseding ADR and migration/compatibility plan. ADR-008's proposed skill-evolution governance remains provisional, although the independently accepted security invariant forbids silent self-modifying core and unapproved tool activation. Other provisional ADRs remain implementation proposals, not automatic mandates.
 
 ## M0 exit criteria before M1 work
 
