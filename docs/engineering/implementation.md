@@ -23,7 +23,7 @@ python -m unittest discover -s tests -v
 Load manifest -> choose lowest unblocked `TASK-###` in current milestone -> read related REQ/CAP/SCN/ADR entries -> implement one task -> tests and traceability -> submit PR with evidence. Do not start future milestones prematurely.
 
 ## Dependencies
-Keep runtime dependency set empty until a task justifies packages and version constraints. Pin versions after selected adapters are benchmarked. Avoid installing unverified plugins or exposing local services to the public internet.
+Keep runtime dependency set empty until a task justifies packages and version constraints. Pin runtime dependencies as soon as selected adapters are implemented and validated; do not require comparing alternative LLMs (ADR-015). Avoid installing unverified plugins or exposing local services to the public internet.
 
 ## Changes in this repo
 Specification changes must update the machine-readable records first and then explanatory Markdown. Changed decisions should be added as new ADR entries or explicitly marked superseded. The owner makes the final decision on unresolved architecture trade-offs.

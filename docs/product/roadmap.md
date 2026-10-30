@@ -10,7 +10,7 @@ The canonical status is in `spec/milestones.json`; this document is explanatory.
 
 **M3 — persistence and integrations:** scheduler, retry/recovery, Telegram bot, approved project workflows and notification drafts; test safe restart and external-action approval.
 
-**M4 — advanced agent:** Windows desktop adapter, vision, expanded project integrations, voice, remote access, reviewed skill lifecycle and optional cloud model routing. Later additions require benchmark evidence.
+**M4 — advanced agent:** Windows desktop adapter, vision, expanded project integrations, voice, remote access, reviewed skill lifecycle and optional cloud model routing. Later additions require functional acceptance and safety evidence, not comparative LLM benchmarks (ADR-015).
 
 ### Release policy
 A release requires scenario pass rates, safety regression results, user-visible evidence and machine-readable completion records. No claim of completeness from a single happy-path demonstration. The owner decides whether to promote a milestone.

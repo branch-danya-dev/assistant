@@ -252,15 +252,16 @@
     {
       "id": "REQ-020",
       "domain": "models",
-      "title": "Local LLM adapter",
+      "title": "Qwen3.5 9B local inference via Ollama",
       "priority": "P0",
       "target_milestone": "M1",
       "status": "specified",
       "acceptance": [
-        "Run a verified tool-using local model with measured VRAM footprint on host."
+        "Given an installed Ollama and qwen3.5:9b, adapter responds to a text prompt and produces a valid structured tool call.",
+        "Model name and provider are read from configuration; runtime status is reported accurately."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Owner selected qwen3.5:9b (ADR-015); no comparative LLM benchmarking. Runtime adapter is not implemented."
     },
     {
       "id": "REQ-021",
@@ -655,7 +656,7 @@
     {
       "id": "REQ-051",
       "domain": "quality",
-      "title": "Versioned objective scenario benchmarks",
+      "title": "Versioned functional acceptance scenarios",
       "priority": "P0",
       "target_milestone": "M0",
       "status": "specified",
@@ -663,7 +664,7 @@
         "Five reproducible scenario specs exist with expected artifacts and safety checks."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Task correctness and security checks are required; comparative model benchmarks are not part of the approved scope (ADR-015)."
     },
     {
       "id": "REQ-052",

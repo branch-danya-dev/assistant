@@ -4,6 +4,10 @@
 
 Build a reliable, local-first Windows personal agent, not a chatbot wrapper. User goals: file/document/Excel work, calculations, research and browser automation, procurement research, project continuity, Telegram, and eventual autonomous skill acquisition. Maintain stable personality and memory **outside** any one LLM. Security and auditability outrank opaque autonomy.
 
+## Owner-approved model selection
+
+`ADR-015` and `spec/model-config.json` select **Ollama `qwen3.5:9b`** for initial local inference. Do not start a model comparison, evaluation tournament or switch to another model without new owner instruction. Keep provider adapters replaceable, but prioritize this one implementation. Run only functional smoke, integration, safety and acceptance checks needed to establish that the system works; do not confuse the model choice with an installed runtime.
+
 ## Required startup sequence
 
 1. Read `README.md` and `spec/manifest.json`.
