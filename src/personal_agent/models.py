@@ -12,6 +12,7 @@ from jsonschema import Draft202012Validator
 
 from .config import AgentError, specification
 from .storage import encode
+from .tools import DESCRIPTORS
 
 # Conservative UTF-8 byte ceiling leaves room for framing and 1024 output tokens in 8192.
 # Tokenizer-specific packing is intentionally deferred, never silently truncate source data.
@@ -59,7 +60,8 @@ class _DeadlineSocket:
         self.sock.sendall(data)
 
 
-def reply_schema(phase: str | None = None) -> dict:
+def reply_schema(phase: str | None = None, *, constrain_tools: bool = False,
+                 task_id: str | None = None) -> dict:
     schema = {"type": "object", "additionalProperties": False,
             "required": ["steps", "answer", "evidence_refs"], "properties": {
                 "steps": {"type": "array", "maxItems": 8,
@@ -74,6 +76,17 @@ def reply_schema(phase: str | None = None) -> dict:
     elif phase == "final":
         schema["properties"]["steps"]["maxItems"] = 0
         schema["properties"]["answer"]["minLength"] = 1
+    if constrain_tools:
+        variants = []
+        for definition in DESCRIPTORS:
+            invocation = specification("schemas/tool-invocation.schema.json")
+            invocation["properties"]["capability_id"] = {"const": definition["id"]}
+            invocation["properties"]["operation"] = {"const": definition["operation"]}
+            invocation["properties"]["arguments"] = definition["input_schema"]
+            if task_id:
+                invocation["properties"]["task_id"] = {"const": task_id}
+            variants.append(invocation)
+        schema["properties"]["steps"]["items"] = {"oneOf": variants}
     return schema
 
 
@@ -153,14 +166,15 @@ class Ollama:
                 "digest": selected.get("digest") if selected else None,
                 "quantization": selected.get("details", {}).get("quantization_level") if selected else None}
 
-    def _chat(self, messages: list[dict], *, structured: bool, phase: str | None = None) -> str:
+    def _chat(self, messages: list[dict], *, structured: bool, phase: str | None = None,
+              task_id: str | None = None) -> str:
         if len(encode(messages).encode("utf-8")) > MAX_CONTEXT_BYTES:
             raise AgentError("context_budget_exhausted")
         payload = {"model": self.config["model"], "messages": messages, "stream": False, "think": False,
                    "keep_alive": "5m", "options": {"num_ctx": self.config["context_tokens_initial"],
                                                      "num_predict": 1024, "temperature": 0}}
         if structured:
-            payload["format"] = reply_schema(phase)
+            payload["format"] = reply_schema(phase, constrain_tools=True, task_id=task_id)
         response = self._request("/api/chat", payload)
         if response.get("model") != self.config["model"]:
             raise AgentError("ollama_model_mismatch")
@@ -182,13 +196,13 @@ class Ollama:
                 phase = context.get("phase")
         except (ValueError, KeyError, TypeError):
             pass
-        content = self._chat(messages, structured=True, phase=phase)
+        content = self._chat(messages, structured=True, phase=phase, task_id=task_id)
         try:
             result = json.loads(content)
         except ValueError as exc:
             raise AgentError("invalid_model_json") from exc
         validate_reply(result, task_id)
-        if not Draft202012Validator(reply_schema(phase)).is_valid(result):
+        if not Draft202012Validator(reply_schema(phase, constrain_tools=True, task_id=task_id)).is_valid(result):
             raise AgentError("model_reply_wrong_phase")
         return result
 

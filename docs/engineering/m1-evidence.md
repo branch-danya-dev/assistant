@@ -5,7 +5,7 @@
 
 ## Observed results
 
-- Windows Python 3.12.10: specification validator PASS, 49 unittest tests PASS, Ruff PASS.
+- Windows Python 3.12.10: specification validator PASS, 50 unittest tests PASS, Ruff PASS.
 - [Windows and Ubuntu runtime CI](https://github.com/branch-danya-dev/assistant/actions/runs/41044959185):
   both matrix jobs passed for implementation commit `fb59a917b3acdc24bf77c0587fd1ce7827dbd701`.
 - Wheel builds with canonical schemas/configuration; separate package verification runs the
@@ -21,6 +21,11 @@
 
 An early live run was blocked because the model attempted a final answer before executing a
 plan. Separate plan/final schemas now reject that path; the regression is in test_models.py.
+A later run mixed the arguments of two read operations and was blocked before execution.
+The generation schema now uses the trusted registry's per-operation argument schemas, with
+the task ID fixed in each variant. Both local validation and a regression test reject mixed
+arguments; the live scenario passed after this change. Tool authorization remains independent
+of the model's schema or output.
 An initial unprivileged probe could not reach loopback; a host-network check established that
 Ollama was already running. Neither initial failure is presented as a successful check.
 

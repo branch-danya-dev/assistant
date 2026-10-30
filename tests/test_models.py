@@ -8,9 +8,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 
 import support  # noqa: F401
+from jsonschema import Draft202012Validator
 
 from personal_agent.config import AgentError
-from personal_agent.models import Ollama
+from personal_agent.models import Ollama, reply_schema
 
 
 @contextmanager
@@ -130,3 +131,17 @@ class ModelTests(unittest.TestCase):
             with self.assertRaisesRegex(AgentError, "model_reply_wrong_phase"):
                 Ollama(endpoint=endpoint).complete(
                     [{"role": "user", "content": '{"phase":"plan"}'}], task_id="test")
+
+    def test_generation_schema_cannot_mix_operation_arguments(self):
+        validator = Draft202012Validator(reply_schema("plan", constrain_tools=True, task_id="test"))
+        step = {"task_id": "test", "capability_id": "CAP-007", "operation": "read_text",
+                "arguments": {"path": "note.txt"}}
+        reply = {"steps": [step], "answer": "", "evidence_refs": []}
+        self.assertTrue(validator.is_valid(reply))
+        step["arguments"]["query"] = "colour"
+        self.assertFalse(validator.is_valid(reply))
+        with ollama_stub(lambda path, body: (200, chat_response(reply))) as (endpoint, requests):
+            with self.assertRaisesRegex(AgentError, "model_reply_wrong_phase"):
+                Ollama(endpoint=endpoint).complete(
+                    [{"role": "user", "content": '{"phase":"plan"}'}], task_id="test")
+            self.assertIn("oneOf", requests[0][1]["format"]["properties"]["steps"]["items"])
