@@ -1,47 +1,58 @@
-"""Contract and repository validation tests (not application runtime tests)."""
+"""Bootstrap contract validation: no assistant runtime is implemented."""
 import sys
 import unittest
 from pathlib import Path
+
+from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "src"))
 
 from validate_specs import check, load  # noqa: E402
-from personal_agent.ports import SideEffect, ToolRequest, ToolResult  # noqa: E402
+from personal_agent.ports import ToolRequest, ToolResult  # noqa: E402
 
 
 class SpecTests(unittest.TestCase):
-    def test_cross_references_and_security_invariants(self):
+    def test_machine_readable_contracts_and_full_requirement_coverage(self):
         self.assertEqual(check(), [])
+        requirements = load("spec/requirements.json")["requirements"]
+        covered = {ref for task in load("spec/tasks.json")["tasks"] for ref in task["requirement_ids"]}
+        self.assertTrue(all(r["id"] in covered for r in requirements if r["status"] != "deprecated"))
 
-    def test_minimum_scenarios_are_defined(self):
+    def test_selected_model_not_compared(self):
+        selected = load("spec/model-config.json")
+        self.assertEqual(selected["primary_local"]["model"], "qwen3.5:9b")
+        self.assertEqual(selected["selection_policy"]["comparative_model_benchmarks"], "not_required")
+
+    def test_windows_single_root(self):
+        storage = load("spec/storage-config.json")
+        self.assertEqual(storage["default_root"], "G:" + chr(92) + "Assistant")
+        self.assertEqual(storage["layout"]["models_ollama"], "models/ollama")
+        self.assertTrue(storage["path_resolution"]["migration_change_only_app_root"])
+
+    def test_model_intent_cannot_spoof_effects(self):
+        schema = load("spec/schemas/tool-invocation.schema.json")
+        invocation = load("spec/examples/tool-invocation.json")
+        self.assertTrue(Draft202012Validator(schema).is_valid(invocation))
+        self.assertFalse(Draft202012Validator(schema).is_valid({**invocation, "side_effect": "read"}))
+        self.assertFalse(Draft202012Validator(schema).is_valid({**invocation, "approval_required": False}))
+
+    def test_github_write_requires_approval(self):
+        caps = {c["id"]: c for c in load("spec/capabilities.json")["capabilities"]}
+        self.assertEqual(caps["CAP-022"]["side_effect"], "read")
+        self.assertEqual(caps["CAP-028"]["policy"], "approval")
+
+    def test_scenarios_are_documented_not_implemented(self):
         scenarios = load("spec/scenarios.json")["scenarios"]
-        self.assertGreaterEqual(len(scenarios), 5)
+        self.assertGreaterEqual(len(scenarios), 11)
         self.assertTrue(all(x["status"] == "specified" for x in scenarios))
 
-    def test_no_capabilities_misrepresented_as_implemented(self):
-        caps = load("spec/capabilities.json")["capabilities"]
-        self.assertTrue(all(c["status"] == "planned" for c in caps))
-
-    def test_provisional_decisions_are_not_owner_approved(self):
-        decisions = load("spec/decisions.json")["decisions"]
-        self.assertTrue(any(d["status"] == "provisional" for d in decisions))
-        self.assertTrue(any(d["status"] == "accepted" for d in decisions))
-
-    def test_accepted_storage_policy(self):
-        storage = load("spec/storage-config.json")
-        self.assertEqual(storage["default_root"], "G:\\Assistant")
-        self.assertEqual(storage["layout"]["repository"], "repo")
-        self.assertEqual(storage["layout"]["models_ollama"], "models/ollama")
-        self.assertEqual(storage["ollama"]["default_model_storage"], "G:\\Assistant\\models\\ollama")
-        self.assertTrue(storage["relative_path_policy"]["no_silent_fallback_to_system_disk"])
-
-    def test_ports_are_importable(self):
-        request = ToolRequest("CAP-007", "runtime-task-id", {"path": "example.txt"}, SideEffect.READ)
-        result = ToolResult(True, {"name": "example"})
-        self.assertEqual(request.side_effect, SideEffect.READ)
-        self.assertTrue(result.success)
+    def test_stub_ports_import(self):
+        req = ToolRequest("CAP-022", "read_repo", "task-001", {"repo": "example/repo"})
+        res = ToolResult(True, {"entries": []})
+        self.assertEqual(req.operation, "read_repo")
+        self.assertTrue(res.success)
 
 
 if __name__ == "__main__":

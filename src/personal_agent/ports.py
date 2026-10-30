@@ -1,7 +1,7 @@
-"""Minimal architecture ports for future adapters. No implementations are implied.
+"""Minimal trusted boundaries for future adapters. No runtime implementation exists.
 
-Keep authorization outside model-generated content. Later versions will define
-validated request/response DTOs in separate modules and enforce boundaries.
+The model supplies an untrusted action *intent*. Only the trusted ToolRegistry/
+AuthorizationPort may resolve effective side effects, scope and approval.
 """
 
 from dataclasses import dataclass
@@ -20,9 +20,10 @@ class SideEffect(StrEnum):
 @dataclass(frozen=True)
 class ToolRequest:
     capability_id: str
+    operation: str
     task_id: str
     arguments: Mapping[str, Any]
-    side_effect: SideEffect
+    # NEVER accept model-provided side_effect/approval_required fields as authority.
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,7 @@ class ToolResult:
 
 class AuthorizationPort(Protocol):
     def authorize(self, request: ToolRequest) -> str: ...
+    # Implementation resolves trusted capability metadata + actual args before approval.
 
 
 class ToolExecutionPort(Protocol):
