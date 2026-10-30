@@ -35,8 +35,8 @@ def check() -> list[str]:
     if not required.issubset(layout):
         errors.append("storage-config: missing directories")
     for label, path in layout.items():
-        if (not isinstance(path, str) or not path or path.startswith(("/", "\\\\")) or
-                ":" in path or ".." in path.replace("\\\\", "/").split("/")):
+        if (not isinstance(path, str) or not path or path.startswith(("/", chr(92))) or
+                ":" in path or ".." in path.replace(chr(92), "/").split("/")):
             errors.append(f"storage-config: unsafe relative directory {label}")
     if storage.get("ollama", {}).get("default_model_storage") != "G:\\Assistant\\models\\ollama":
         errors.append("storage-config: Ollama storage mismatch")
