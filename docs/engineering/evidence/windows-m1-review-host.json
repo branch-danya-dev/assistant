@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-10-30T20:09:39.039633Z",
+  "source_revision": {
+    "commit": "a204fa0a6cba9758add50ef3ad36db43a430fc90",
+    "dirty": false
+  },
+  "runtime_source_fingerprint": "0315706e877d8513f78a6097ca38dc6cdce9b6c41e83a0df627eb0ce423d9ad0",
+  "synthetic_only": true,
+  "attempted": true,
+  "passed": false,
+  "status": "live_check_unavailable",
+  "error_code": "ollama_unavailable_or_invalid_response",
+  "observed_failure": "Ollama loopback connection unavailable during initial smoke; no synthetic task was dispatched.",
+  "current_model_hashes_checked": false,
+  "production_database_modified": false,
+  "model_comparisons": 0,
+  "live_model_generated_revision_tested": false,
+  "historical_evidence": "docs/engineering/evidence/windows-m1-completion.json",
+  "historical_revision_provenance": "owner/test-harness injected, not live model-generated",
+  "report_type": "availability_failure_record",
+  "recording_method": "Payload-free wrapper around tools/verify_host.py verify(); records failure before its normal host report could be produced."
+}

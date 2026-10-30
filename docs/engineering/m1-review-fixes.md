@@ -93,6 +93,13 @@ source commit/dirty state alongside the runtime fingerprint. Synthetic providers
 exercise model-generated revisions; a regression verifies that the harness cannot certify
 live model revision just because its own injected revision succeeded.
 
+The current host attempt on clean `a204fa0a6cba9758add50ef3ad36db43a430fc90` could not
+reach Ollama during initial smoke (`ollama_unavailable_or_invalid_response`); no task was
+dispatched, no current model hashes were checked and the production database was not opened.
+The [availability failure record](evidence/windows-m1-review-host.json) is not a successful live
+acceptance report. Qwen behavior evidence therefore remains historical; no new live revision
+claim is made.
+
 The current check results, exact tested commit, host report and CI links are in
 [m1-review-validation.json](evidence/m1-review-validation.json). Historical reports apply only
 to their original fingerprints/commits, not automatically to these fixes.
@@ -106,3 +113,8 @@ to their original fingerprints/commits, not automatically to these fixes.
    Retargeting/rebasing does not close REQ-017/019 or the M1 gate by itself.
 4. Merge PR #5 only after owner review and explicit instruction; back up production state
    before deployment, then run recovery/doctor and a synthetic host check.
+
+Validation steps passed on Windows and Ubuntu at `a204fa0`: 104 tests per OS; Windows 102 pass/2
+Linux-only skips, Ubuntu 100 pass/4 Windows-only skips. Contracts, Ruff, wheel and actual pip
+installation into an isolated directory followed by execution outside checkout passed.
+[CI runtime validation](https://github.com/branch-danya-dev/assistant/actions/runs/41120999267).
