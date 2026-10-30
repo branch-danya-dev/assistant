@@ -1,0 +1,92 @@
+{
+  "recorded_at": "2026-10-30T20:48:15.616156Z",
+  "tested_commit": "12e0d2a5f2435959e124e73198a34dd45bf917c7",
+  "runtime_source_fingerprint": "fefe2b006fc584780d2b1f8292721c6ad708659fb84c32445c4b575f35345cfd",
+  "stacked_pr": "https://github.com/branch-danya-dev/assistant/pull/6",
+  "base_branch": "feat/m1-safe-create-revisions",
+  "base_sha": "62df23f2e49c6f90134d6d7ad46c7fc284d77696",
+  "ci": {
+    "url": "https://github.com/branch-danya-dev/assistant/actions/runs/41125788434",
+    "status": "success",
+    "python": "3.12",
+    "windows": {
+      "discovered": 120,
+      "passed": 118,
+      "skipped": 2,
+      "job_id": 124303834583,
+      "skip_scope": [
+        "Linux Landlock publication race",
+        "Linux flat-create restriction"
+      ]
+    },
+    "ubuntu": {
+      "discovered": 120,
+      "passed": 116,
+      "skipped": 4,
+      "job_id": 124303834129,
+      "skip_scope": [
+        "Windows nested outputs",
+        "Windows ancestor sharing semantics",
+        "Windows preview ancestor pinning",
+        "Windows DACL inspection"
+      ]
+    },
+    "checks": [
+      "JSON Schema, references, coverage and combined work/acceptance DAG",
+      "unit/security/crash/HTTP integration",
+      "Ruff",
+      "wheel build",
+      "actual isolated pip installation and offline execution outside checkout"
+    ]
+  },
+  "local_windows": {
+    "python": "3.12.10",
+    "full_suite": {
+      "discovered": 120,
+      "passed": 118,
+      "skipped": 2
+    },
+    "final_changed_area": {
+      "discovered": 13,
+      "passed": 13,
+      "skipped": 0
+    },
+    "wheel_and_installed_package": "passed",
+    "environment": "isolated declared-dependency venv in work; production installation unchanged",
+    "provenance": "Local working-tree checks preceded commit; both-OS CI above confirms the clean tested commit. The initial restricted execution environment denied local sockets/junction fixtures; the authorized host run passed."
+  },
+  "regression": [
+    "exactly-once create and independent side-effect-free observation",
+    "owner argument digest, expiry and one-use approval",
+    "immutable plan revisions and no automatic replay",
+    "needs_reconciliation after uncertain effects",
+    "8/32 KiB evidence and honest partial",
+    "preview Windows ACL / POSIX mode, TTL and safe cleanup",
+    "SQLite v1/v2 to v3 with pending approval and identity compatibility",
+    "G:\\Assistant single root and relocation",
+    "Linux ADR-021 trusted-root flat-create and Landlock"
+  ],
+  "host_report": "docs/engineering/evidence/windows-m1-security-host.json",
+  "fresh_live_qwen": "unavailable: loopback connection refused, WinError 10061; no historical success reused",
+  "open_gate": {
+    "M1": "in_progress",
+    "REQ-017": "specified, P0, M1; unchanged",
+    "REQ-019": "specified, P0, M1; unchanged",
+    "TASK-044": "in_progress",
+    "TASK-026": "in_progress",
+    "unmet": [
+      "R-M1-SECRET-OPAQUE: unknown/encoded or owner-misclassified secret content",
+      "R-M1-LEGACY: vault/retention and universal repository protection not established",
+      "R-M1-INTEGRATIONS: future real connectors not implemented/certified",
+      "R-M1-HOST: fresh live selected-Qwen run unavailable"
+    ]
+  },
+  "history": {
+    "pr4_retained": true,
+    "pr5_retained": true,
+    "merged": false,
+    "retargeted": false,
+    "production_deployed": false
+  },
+  "evidence_commit_policy": "This report is added in a subsequent documentation/evidence-only commit. Its runtime fingerprint must remain identical; final HEAD CI is linked in PR #6 after completion."
+}

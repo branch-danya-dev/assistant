@@ -421,7 +421,8 @@
       "evidence": [
         "docs/engineering/m1-security-boundaries.md",
         "tests/test_data_boundary.py",
-        "tests/test_injection_boundary.py"
+        "tests/test_injection_boundary.py",
+        "docs/engineering/evidence/m1-security-validation.json"
       ],
       "verification_scope": "Narrow executable policy scenario only. Does not close REQ-017/019 or certify real external adapters."
     }

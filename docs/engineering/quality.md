@@ -20,3 +20,10 @@ Use fixture-based expected outputs; evaluate Excel formulas *and* computed value
 
 ## Selected-model smoke and functional checks (ADR-015)
 The owner selected `qwen3.5:9b` without comparative LLM testing. Do **not** require A/B model comparisons or automated model rankings. Test that the selected Ollama adapter can load, complete a prompt and produce a parseable synthetic tool call. Continue to validate task outputs, authorization, numerical correctness and security with `spec/scenarios.json`. Record selected model/tag, resolved digest/quantization when installed, and environment details only for reproducibility. Functional acceptance and security regression are mandatory even though model selection comparisons are not.
+
+## Current runtime evidence
+
+Windows/Ubuntu CI now runs the real local runtime, adversarial policy, recovery and installed-wheel
+checks, in addition to contracts. It does not certify physical GPU behaviour or absent external
+connectors. The combined work/acceptance dependency graph also rejects semantic gate deadlocks.
+See [M1 security evidence](m1-security-boundaries.md); M1 and unchanged REQ-017/019 remain open.

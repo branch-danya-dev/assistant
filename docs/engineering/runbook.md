@@ -173,7 +173,8 @@ Migration is transactional;
 newer unknown schema versions are rejected. Rollback restores a backup with matching code,
 not a destructive down migration. A G: backup is not disaster recovery; retain an encrypted
 off-disk copy separately.
-# M1 data admission update
+
+## M1 data admission update
 
 Read [current security boundaries](m1-security-boundaries.md) before using private sources.
 `--allow-file` is an explicit internal-file local-context grant, not a secret-free certificate.

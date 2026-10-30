@@ -126,7 +126,9 @@
     "docs/engineering/m1-review-fixes.md",
     "docs/engineering/evidence/m1-review-validation.json",
     "docs/engineering/evidence/windows-m1-review-host.json",
-    "docs/engineering/m1-security-boundaries.md"
+    "docs/engineering/m1-security-boundaries.md",
+    "docs/engineering/evidence/m1-security-validation.json",
+    "docs/engineering/evidence/windows-m1-security-host.json"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
