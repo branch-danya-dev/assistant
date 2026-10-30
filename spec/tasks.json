@@ -39,7 +39,7 @@
     },
     {
       "id": "TASK-003",
-      "title": "Define functional acceptance fixtures and verification rubric",
+      "title": "Specify functional verification fixtures and acceptance rubric",
       "status": "todo",
       "priority": "P0",
       "milestone": "M0",
@@ -50,7 +50,7 @@
         "REQ-051"
       ],
       "acceptance": [
-        "All SCN-001..005 fixtures, expected artifacts and safety assertions specified without comparative LLM benchmarks."
+        "Each SCN-001..005 has expected outputs, authorization gates and failure fixtures; no comparative local model testing."
       ],
       "evidence": [],
       "owner": "unassigned"
@@ -167,7 +167,11 @@
         "TASK-005",
         "TASK-006",
         "TASK-007",
-        "TASK-008"
+        "TASK-008",
+        "TASK-025",
+        "TASK-026",
+        "TASK-029",
+        "TASK-041"
       ],
       "requirement_ids": [
         "REQ-010",
@@ -297,19 +301,21 @@
     },
     {
       "id": "TASK-016",
-      "title": "Persist scheduler, retries and non-idempotent reconciliation",
+      "title": "Implement durable scheduler and connector-specific reconciliation",
       "status": "todo",
       "priority": "P1",
       "milestone": "M3",
       "depends_on": [
-        "TASK-009"
+        "TASK-009",
+        "TASK-029"
       ],
       "requirement_ids": [
         "REQ-013",
         "REQ-015"
       ],
       "acceptance": [
-        "Restart does not send/modify twice; uncertainty blocks."
+        "Persist triggers and bounded retries through restart; connector-specific non-idempotent outcomes require reconciliation.",
+        "Scheduler builds on M1 action journal and never auto-replays uncertain effects."
       ],
       "evidence": [],
       "owner": "unassigned"
@@ -466,6 +472,351 @@
         "Resolve all configured dirs under ASSISTANT_ROOT; enforce root containment, reject missing G: or denied writes, no fallback.",
         "Provide explicit bootstrap and Windows Ollama env setup flow, with safe migration and DB backup guidance.",
         "CI unit tests cover root override, traversal, directory layout and model path mapping."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-025",
+      "title": "Implement stable versioned persona outside model weights",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-004",
+        "TASK-006"
+      ],
+      "requirement_ids": [
+        "REQ-001"
+      ],
+      "acceptance": [
+        "Persona+preference records persist across restart and mock provider replacement.",
+        "Persona prompt assembly reads versioned identity without rewriting facts."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-026",
+      "title": "Implement memory scope, sensitivity and export/egress enforcement",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-004",
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-008",
+        "REQ-017",
+        "REQ-019"
+      ],
+      "acceptance": [
+        "Cross-project and private/restricted records are never retrievable through unauthorized task scope.",
+        "No private memory or secrets appear in cloud requests, tool arguments or diagnostic logs without approved policy."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-027",
+      "title": "Implement scoped hybrid lexical and semantic retrieval",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "TASK-008",
+        "TASK-026"
+      ],
+      "requirement_ids": [
+        "REQ-006"
+      ],
+      "acceptance": [
+        "Project filter applied before ranked retrieval; provenance and latest/previous decisions returned.",
+        "Embedding index may be rebuilt without loss of canonical SQLite evidence."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-028",
+      "title": "Implement versioned persona editor and contextual response styles",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-025",
+        "TASK-010"
+      ],
+      "requirement_ids": [
+        "REQ-002",
+        "REQ-003"
+      ],
+      "acceptance": [
+        "Owner edits/restores persona with audit, without rewriting immutable history.",
+        "Context-based work/conversation styles retain shared identity and never modify numeric results."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-029",
+      "title": "Implement M1 restart-safe action journal and reconciliation block",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-004",
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-013",
+        "REQ-009",
+        "REQ-018"
+      ],
+      "acceptance": [
+        "Crash between dispatch and acknowledgment cannot replay side effect automatically.",
+        "Persist approval consumption, operation id and needs_reconciliation state with evidence."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-030",
+      "title": "Implement bounded independent task concurrency",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-009",
+        "TASK-016"
+      ],
+      "requirement_ids": [
+        "REQ-014"
+      ],
+      "acceptance": [
+        "Two independent read-only tasks run without race; conflicting resource writes serialize.",
+        "GPU inference queue and concurrency limits persist across restart."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-031",
+      "title": "Implement runtime GPU/CPU/model cost accounting",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-006",
+        "TASK-009"
+      ],
+      "requirement_ids": [
+        "REQ-023"
+      ],
+      "acceptance": [
+        "Record token throughput, model residency, p95 latency and GPU memory where available without private payload logging.",
+        "Idle model unloading does not interrupt pending approvals or durable tasks."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-032",
+      "title": "Implement approval-gated browser mutations",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-014",
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-030"
+      ],
+      "acceptance": [
+        "Browser form submit is blocked until approved with origin, recipient and exact normalized arguments.",
+        "Synthetic hostile page cannot trigger state-changing operation."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-033",
+      "title": "Implement email read/draft and approval-gated send",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-005",
+        "TASK-016"
+      ],
+      "requirement_ids": [
+        "REQ-035"
+      ],
+      "acceptance": [
+        "Owner-authorized inbox search/drafts work; send requires operation-specific approval.",
+        "Retries after uncertain sending do not duplicate messages."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-034",
+      "title": "Implement procurement request drafts from verified supplier evidence",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-014",
+        "TASK-013"
+      ],
+      "requirement_ids": [
+        "REQ-038"
+      ],
+      "acceptance": [
+        "Prepare supplier outreach drafts with verified source links, units and unknowns.",
+        "No outbound messages, purchase or payment without human authorization."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-035",
+      "title": "Implement screen perception and gated desktop UI actions",
+      "status": "todo",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "TASK-022",
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-032"
+      ],
+      "acceptance": [
+        "Screen parsing and element targeting run on fixture without unauthorized clicks.",
+        "Mutation/privileged operations are classified using actual target and action."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-036",
+      "title": "Implement scoped personal Telegram integration",
+      "status": "todo",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "TASK-017",
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-034"
+      ],
+      "acceptance": [
+        "Authorized personal-account sessions are isolated; read permission does not grant sending.",
+        "Sending is blocked pending target-specific approval and logged."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-037",
+      "title": "Implement calendar reading and approval-gated event changes",
+      "status": "todo",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "TASK-016",
+        "TASK-005"
+      ],
+      "requirement_ids": [
+        "REQ-036"
+      ],
+      "acceptance": [
+        "Read-only availability works in fixtures; creating/modifying events requires confirmation.",
+        "Time zones and duplicate effects are verified."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-038",
+      "title": "Document optional future offline fine-tuning feasibility",
+      "status": "todo",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "TASK-015"
+      ],
+      "requirement_ids": [
+        "REQ-046"
+      ],
+      "acceptance": [
+        "Document opt-in only procedure with curated dataset, independent regression checks, reversible promotion and consent.",
+        "No training jobs or model changes are initiated by default."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-039",
+      "title": "Validate examples against JSON Schema and run CI on Windows",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M0",
+      "depends_on": [
+        "TASK-001"
+      ],
+      "requirement_ids": [
+        "REQ-050",
+        "REQ-052"
+      ],
+      "acceptance": [
+        "Schema examples validated using a JSON Schema 2020-12 implementation.",
+        "CI passes on ubuntu-latest and windows-latest and checks required task coverage."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-040",
+      "title": "Define adversarial tool and prompt injection test fixtures",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M0",
+      "depends_on": [
+        "TASK-002"
+      ],
+      "requirement_ids": [
+        "REQ-017",
+        "REQ-019",
+        "REQ-016"
+      ],
+      "acceptance": [
+        "Threat cases include forged side effects, GitHub mutation through read intent, browser injection and private memory leakage.",
+        "Each threat references an executable future security regression fixture."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-041",
+      "title": "Implement memory lifecycle and archival defaults",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-004",
+        "TASK-026"
+      ],
+      "requirement_ids": [
+        "REQ-054"
+      ],
+      "acceptance": [
+        "Temporary retrieval cache can expire while canonical decisions remain verifiable.",
+        "Owner-scoped retention and rebuildable indexes defined and tested."
       ],
       "evidence": [],
       "owner": "unassigned"

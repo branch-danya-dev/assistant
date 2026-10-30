@@ -162,14 +162,15 @@
       "id": "REQ-013",
       "domain": "orchestration",
       "title": "Safe recovery and idempotency",
-      "priority": "P1",
-      "target_milestone": "M3",
+      "priority": "P0",
+      "target_milestone": "M1",
       "status": "specified",
       "acceptance": [
-        "Restart does not duplicate message/payment/file-mutating operations."
+        "After crash/restart, previously authorized side effects are not replayed without reconciliation; uncertain operations remain blocked with recorded reason and operation key.",
+        "Task state/approval/action journal persists across restart."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "M1 minimal durable safety baseline (ADR-018); M3 adds scheduler and connector reconciliation."
     },
     {
       "id": "REQ-014",
@@ -688,12 +689,27 @@
       "status": "specified",
       "acceptance": [
         "Owner Windows default root is G:\\Assistant with repo, models/ollama, data/db, data/history, data/memory, data/identity, data/skills, workspace, logs, backups and cache in separate root-relative directories.",
-        "Missing or inaccessible G: produces an explicit error; no fallback to C:. Changing ASSISTANT_ROOT migrates application-owned paths without code modification.",
+        "Missing or inaccessible G: produces an explicit error; no fallback to C:. Changing only ASSISTANT_ROOT relocates all application-owned paths without modifying other env variables.",
         "Ollama models use OLLAMA_MODELS bound to effective root before first model pull; restart and path access are checked.",
         "Private state remains outside git; safe consistent SQLite backup and restoration are documented and tested."
       ],
       "owner": "project",
       "notes": "Accepted owner decision ADR-016; directory provisioning remains planned."
+    },
+    {
+      "id": "REQ-054",
+      "domain": "memory",
+      "title": "Memory retention and lifecycle policy",
+      "priority": "P0",
+      "target_milestone": "M1",
+      "status": "specified",
+      "acceptance": [
+        "Classify durable facts/decisions versus temporary caches and archived source records; user can prevent automatic remembering and request record removal.",
+        "Retention/compaction never destroys sourced decisions without explicit policy and auditable evidence.",
+        "Local indexes are rebuildable from retained canonical records."
+      ],
+      "owner": "project",
+      "notes": "M1 minimal implementation; user-facing deletion/export features expand in M3."
     }
   ]
 }

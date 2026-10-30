@@ -14,62 +14,62 @@
     {
       "id": "ADR-002",
       "title": "Single-user modular monolith on Windows",
-      "status": "provisional",
-      "context": "Lower operational cost than microservices for one host and user.",
+      "status": "accepted",
+      "context": "Lower operational cost than microservices for one host and user. Baseline adopted for initial implementation; future changes require superseding ADR and compatible migration.",
       "decision": "Python application with clean ports; workers logical.",
       "revisit_when": "Multiple independent users or remote deployment needs arise.",
       "recorded_on": "2026-10-29",
-      "owner": "proposed for owner review"
+      "owner": "project owner (architecture baseline review 2026-10-30)"
     },
     {
       "id": "ADR-003",
       "title": "SQLite with FTS5 as initial durable store",
-      "status": "provisional",
-      "context": "Local low-administration default with versioned migrations.",
+      "status": "accepted",
+      "context": "Local low-administration default with versioned migrations. Baseline adopted for initial implementation; future changes require superseding ADR and compatible migration.",
       "decision": "Use abstraction for semantic index and potential PostgreSQL replacement.",
       "revisit_when": "Concurrency, scale or retrieval benchmark fails.",
       "recorded_on": "2026-10-29",
-      "owner": "proposed for owner review"
+      "owner": "project owner (architecture baseline review 2026-10-30)"
     },
     {
       "id": "ADR-004",
       "title": "LLM/provider-agnostic identity and model router",
-      "status": "provisional",
-      "context": "Preserve user continuity across local and cloud models.",
+      "status": "accepted",
+      "context": "Preserve user continuity across local and cloud models. Baseline adopted for initial implementation; future changes require superseding ADR and compatible migration.",
       "decision": "Never store identity or task truth in model weights alone.",
       "revisit_when": "No provider-independent evaluation succeeds.",
       "recorded_on": "2026-10-29",
-      "owner": "proposed for owner review"
+      "owner": "project owner (architecture baseline review 2026-10-30)"
     },
     {
       "id": "ADR-005",
       "title": "Local by default; cloud explicit opt-in",
-      "status": "provisional",
-      "context": "Respects privacy and offline utility without giving up quality.",
+      "status": "accepted",
+      "context": "Respects privacy and offline utility without giving up quality. Baseline adopted for initial implementation; future changes require superseding ADR and compatible migration.",
       "decision": "Cloud is gated and task-sensitive.",
       "revisit_when": "Owner supplies different data transfer constraints.",
       "recorded_on": "2026-10-29",
-      "owner": "proposed for owner review"
+      "owner": "project owner (architecture baseline review 2026-10-30)"
     },
     {
       "id": "ADR-006",
       "title": "Tool registry and authorization before execution",
-      "status": "provisional",
-      "context": "Action correctness and side-effect safety cannot be delegated to LLM.",
+      "status": "accepted",
+      "context": "Action correctness and side-effect safety cannot be delegated to LLM. Baseline adopted for initial implementation; future changes require superseding ADR and compatible migration.",
       "decision": "Typed tools, policy gates, audit and verifier.",
       "revisit_when": "Security review finds stronger isolation needed.",
       "recorded_on": "2026-10-29",
-      "owner": "proposed for owner review"
+      "owner": "project owner (architecture baseline review 2026-10-30)"
     },
     {
       "id": "ADR-007",
       "title": "Versioned facts/events and project-scoped retrieval",
-      "status": "provisional",
-      "context": "Source lineage and contradictory decisions must remain inspectable.",
+      "status": "accepted",
+      "context": "Source lineage and contradictory decisions must remain inspectable. Baseline adopted for initial implementation; future changes require superseding ADR and compatible migration.",
       "decision": "Store provenance and supersession, not overwrite summaries.",
       "revisit_when": "Storage benchmark or privacy requirement changes.",
       "recorded_on": "2026-10-29",
-      "owner": "proposed for owner review"
+      "owner": "project owner (architecture baseline review 2026-10-30)"
     },
     {
       "id": "ADR-008",
@@ -114,12 +114,12 @@
     {
       "id": "ADR-012",
       "title": "JSON canonical specs, Markdown explanatory documents",
-      "status": "provisional",
-      "context": "Stable IDs, easy AI indexing and stdlib validation.",
+      "status": "accepted",
+      "context": "Stable IDs, easy AI indexing and stdlib validation. Baseline adopted for initial implementation; future changes require superseding ADR and compatible migration.",
       "decision": "Keep schemas and traceability authoritative.",
       "revisit_when": "Schema complexity warrants another IDL.",
       "recorded_on": "2026-10-29",
-      "owner": "proposed for owner review"
+      "owner": "project owner (architecture baseline review 2026-10-30)"
     },
     {
       "id": "ADR-013",
@@ -134,12 +134,12 @@
     {
       "id": "ADR-014",
       "title": "Conservative action approvals and no automatic external sends",
-      "status": "provisional",
-      "context": "Avoid unapproved communication, purchases and OS changes.",
+      "status": "accepted",
+      "context": "Avoid unapproved communication, purchases and OS changes. Baseline adopted for initial implementation; future changes require superseding ADR and compatible migration.",
       "decision": "Approval bound to concrete effect/recipient/target.",
       "revisit_when": "Owner refines authorization rules.",
       "recorded_on": "2026-10-29",
-      "owner": "proposed for owner review"
+      "owner": "project owner (architecture baseline review 2026-10-30)"
     },
     {
       "id": "ADR-015",
@@ -160,6 +160,46 @@
       "revisit_when": "Owner changes storage or destination disk.",
       "recorded_on": "2026-10-30",
       "owner": "project owner"
+    },
+    {
+      "id": "ADR-017",
+      "title": "Trusted action classification by exact operation and target",
+      "context": "An LLM cannot assign its own privileges, and an integration like GitHub supports both read and externally mutating calls.",
+      "decision": "The trusted registry determines side-effect class, operation identity, resource scope and sensitivity from validated arguments; ToolRequest contains only intent, never authoritative risk class. Separate read and write capabilities; externally mutating GitHub actions require approval. Default deny on ambiguity.",
+      "revisit_when": "Owner approves new bounded policy after threat review.",
+      "status": "accepted",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner via requested doc-gap closure"
+    },
+    {
+      "id": "ADR-018",
+      "title": "Minimal safe idempotent task recovery in M1",
+      "context": "M1 acceptance SCN-005 requires restart-safe state, while original advanced scheduler task was M3.",
+      "decision": "M1 must persist intent, step/action IDs, approval and pre/post side-effect journal, expose blocked/needs_reconciliation, and refuse automatic replay of uncertain effects; M3 implements advanced scheduling and connector-specific reconciliation.",
+      "revisit_when": "M1 acceptance scenarios or connector guarantees change.",
+      "status": "accepted",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner via requested doc-gap closure"
+    },
+    {
+      "id": "ADR-019",
+      "title": "Single runtime root and environment derivation",
+      "context": "Separate absolute G-drive environment paths contradict migration via ASSISTANT_ROOT.",
+      "decision": "ASSISTANT_ROOT is the only canonical absolute application path. Resolve data/db/history/memory/identity/skills/workspace/logs/backups/cache relative to spec/storage-config.json. Generate OLLAMA_MODELS from the effective root at host provisioning, never assume .env controls Ollama Desktop. No fallback to C:.",
+      "revisit_when": "Owner changes workspace policy.",
+      "status": "accepted",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner via requested doc-gap closure"
+    },
+    {
+      "id": "ADR-020",
+      "title": "Architecture baseline v1 gate and contract coverage",
+      "context": "A coding agent can omit untracked requirements or trust syntactically valid but structurally invalid JSON.",
+      "decision": "Every non-deprecated requirement has an implementation or explicitly deferred task and acceptance evidence; enforce relationship in CI. Validate schema fixtures with JSON Schema 2020-12 and run on Windows and Linux. Functional safety checks remain mandatory; do not compare LLM alternatives.",
+      "revisit_when": "Owner changes development process or validation policy.",
+      "status": "accepted",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner via requested doc-gap closure"
     }
   ]
 }
