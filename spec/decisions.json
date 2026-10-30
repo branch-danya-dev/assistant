@@ -232,6 +232,28 @@
       "decision": "Refine ADR-006/017 without changing the baseline: owner-controlled whole-file and memory labels, exact private local-context grants, recursive known-credential denial at runtime sinks, minimal child environment and closed diagnostic codes. Keep opaque or misclassified secrets and unimplemented connectors as unmet P0 acceptance, not lowered requirements.",
       "migration": "SQLite remains v3; no stored content/approvals rewritten. Legacy exact file scope retains internal local-context meaning. New private labels are owner grants; old binaries do not enforce them and are not an approved privacy rollback.",
       "revisit_when": "Owner approves an authoritative secret inventory/vault, stricter data-admission protocol or explicit acceptance revision after reviewing residual risks."
+    },
+    {
+      "id": "ADR-024",
+      "title": "Fail-closed file alias policy for M1 scopes",
+      "status": "accepted",
+      "recorded_on": "2026-10-31",
+      "owner": "project owner via explicit PR #6 alias remediation request",
+      "context": "Case-sensitive scope strings can classify one Windows file inconsistently.",
+      "decision": "Refine ADR-006/017/023: reject duplicate/colliding grants, require exact Windows opened long names and known case-insensitive directory policy, retain single-link and physical-identity checks. Revalidate legacy scopes before model/tool dispatch and again in workers. No permission normalization or fallback. Linux keeps ADR-021 exact-name trusted-root flat-create semantics. See docs/engineering/m1-file-aliases.md",
+      "migration": "SQLite stays v3; do not rewrite grants, approvals, action IDs or evidence. Ambiguous legacy scopes block; owner reviews exact long names and creates a new task. Uncertain effects remain needs_reconciliation. Noncanonical roots and unsupported directory case queries fail closed.",
+      "revisit_when": "A reviewed backend supports additional filesystems, Windows case-sensitive directories or alternative alias bindings."
+    },
+    {
+      "id": "ADR-025",
+      "title": "Proposed bounded M1 trust/data acceptance and per-connector gates",
+      "status": "provisional",
+      "recorded_on": "2026-10-31",
+      "owner": "proposed for explicit project owner decision",
+      "context": "Literal REQ-017 includes absent connectors; universal REQ-019 cannot be proven for unknown or misclassified arbitrary contents.",
+      "decision": "Recommend option B in docs/engineering/m1-trust-boundary-proposal.md: enumerated M1 ingress/sinks, owner classification, reviewed secret inventory/vault, default-deny, fail-closed, and mandatory actual-adapter gates at M2-M4. Inventory/vault/legacy admission work remains unimplemented. This proposal changes no requirement text, priority, milestone or status; M1 and original P0 acceptance stay open.",
+      "migration": "Only after recorded owner approval: explicitly revise acceptance and traceability, implement agreed missing controls, review legacy data without automatic erasure/relabeling, rerun Windows/Ubuntu and selected-Qwen host evidence. No deployment or merge implied.",
+      "revisit_when": "Owner answers the three explicit questions in the proposal."
     }
   ]
 }

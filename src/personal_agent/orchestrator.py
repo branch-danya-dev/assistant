@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from .bounded import run_worker
 from .config import AgentError
 from .context import final_context, limited_result
-from .data_policy import admit, tool_result
+from .data_policy import admit, tool_result, validate_scope
 from .identity import Identity
 from .journal import Journal
 from .memory import Memory
@@ -103,6 +103,10 @@ class Agent:
             self.journal.start(task_id, resume=resume)
             task, scope = self.journal.get(task_id), self.journal.scope(task_id)
             try:
+                validate_scope(scope)
+                if scope.get("files") or scope.get("create_files"):
+                    run_worker(self.store.paths, {"kind": "scope_check", "project": task["project_id"],
+                               "scope": scope}, journal=self.journal, task_id=task_id)
                 plan = self.journal.plan(task_id)
                 if not plan:
                     reply = self._model(task, self._messages(task, scope))

@@ -142,7 +142,9 @@
         "tests/test_orchestrator.py",
         "docs/engineering/m1-completion.md",
         "docs/engineering/evidence/m1-validation.json",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-file-aliases.md",
+        "tests/test_file_aliases.py"
       ],
       "verification_scope": "Scoped synthetic runtime evidence; live Qwen planning/final responses with owner/test-harness injected revision. No live model-generated revision certification. See m1-review-fixes.md for remaining M1 gates."
     },
@@ -204,7 +206,9 @@
         "docs/engineering/m1-review-fixes.md",
         "docs/engineering/m1-security-boundaries.md",
         "tests/test_data_boundary.py",
-        "tests/test_injection_boundary.py"
+        "tests/test_injection_boundary.py",
+        "docs/engineering/m1-file-aliases.md",
+        "tests/test_file_aliases.py"
       ],
       "verification_scope": "Current supported M1 paths tested with a deliberately persuaded synthetic provider after actual hostile file/memory retrieval. Future connector admission is synthetic fail-closed only; unchanged REQ-017/019 acceptance remains open."
     },
@@ -296,7 +300,9 @@
         "tests/test_journal.py",
         "docs/engineering/m1-completion.md",
         "docs/engineering/evidence/m1-validation.json",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-file-aliases.md",
+        "tests/test_file_aliases.py"
       ],
       "verification_scope": "Scoped synthetic runtime evidence; live Qwen planning/final responses with owner/test-harness injected revision. No live model-generated revision certification. See m1-review-fixes.md for remaining M1 gates."
     },

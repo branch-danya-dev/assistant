@@ -59,9 +59,16 @@ class BoundedTests(RuntimeCase):
 
         controller = threading.Thread(target=stop)
         controller.start()
+        real_tool = agent._tool
+
+        def delayed_tool(*args):
+            # Delay the dispatched effect worker, not the new metadata preflight.
+            with patch("personal_agent.bounded.subprocess.Popen", side_effect=sleeping_child):
+                return real_tool(*args)
+
         try:
             start = time.monotonic()
-            with patch("personal_agent.bounded.subprocess.Popen", side_effect=sleeping_child):
+            with patch.object(agent, "_tool", side_effect=delayed_tool):
                 result = agent.run(task)
             self.assertLess(time.monotonic() - start, 2.5)
             self.assertEqual(result["task"]["state"], "needs_reconciliation")

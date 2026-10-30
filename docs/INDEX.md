@@ -21,6 +21,8 @@
 - [`engineering/implementation.md`](engineering/implementation.md): development process and local setup.
 - [`engineering/runbook.md`](engineering/runbook.md): CLI, stop, recovery, provisioning and backup.
 - [`engineering/m1-evidence.md`](engineering/m1-evidence.md): implementation checks and remaining work.
+- [`engineering/m1-file-aliases.md`](engineering/m1-file-aliases.md): PR #6 alias remediation and compatibility.
+- [`engineering/m1-trust-boundary-proposal.md`](engineering/m1-trust-boundary-proposal.md): provisional ADR-025 and owner decisions.
 
 Canonical datasets: `spec/{manifest,model-config,storage-config,requirements,capabilities,scenarios,decisions,milestones,tasks,components}.json`.
 Event/data contracts: `spec/schemas/*.schema.json`.

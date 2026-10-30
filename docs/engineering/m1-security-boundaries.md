@@ -4,6 +4,12 @@ M1 remains **in_progress**. REQ-017 and REQ-019 remain **specified, P0, M1**,
 with their original acceptance unchanged. This is implemented defence and executable
 negative evidence, not certification of arbitrary secret detection or future connectors.
 
+PR #6 review follow-up: [file alias remediation and compatibility](m1-file-aliases.md)
+enforces fail-closed Windows scope/long-name checks, hardlink rejection and legacy resume
+preflight. [ADR-025 proposed acceptance agreement](m1-trust-boundary-proposal.md) is provisional,
+not an owner-approved requirement change. The evidence below describes the original PR #6;
+new cycle evidence is recorded separately in `evidence/m1-alias-validation.json`.
+
 Starting point checked against GitHub: PR #5 at `62df23f2e49c6f90134d6d7ad46c7fc284d77696`,
 base `feat/m0-m1-local-agent` at `42a9f31dd1556a1714d64d86ee6e8f630b027d2f`.
 [Independent review](https://github.com/branch-danya-dev/assistant/pull/5#pullrequestreview-5718253568)
@@ -34,6 +40,7 @@ provider after actual bounded-worker file/memory retrieval; they do not measure 
 | --- | --- |
 | Source → model intent | Source stays in user data; persona also moves out of the system message. Forged roles, tool calls, approvals and verification flags cannot become contract fields. |
 | Intent → execution | Exact operation/input schema, owner file paths, immutable task/project, create binding and content-bound one-use approval are rechecked. Allowed create_text still stops at owner approval; UNC export and cross-project search arguments fail. |
+| Windows pathname → classified object | Scope aliases/duplicates and conflicting private grants fail closed. Bounded metadata preflight at creation/resume and worker checks require exact long names, single-link files and known case-insensitive directories. No grant/approval is rebound; see m1-file-aliases.md for Unicode, 8.3 and platform limits. |
 | Tool result → IPC/journal/model | Output schema and independent observation; classification and credential admission check before worker return, parent persistence and final projection, including saved legacy results. No content truncation to bypass a denial. |
 | Memory → retrieval | Project/class SQL filtering precedes ranking; returned records are rechecked. Restricted is never an M1 retrieval grant. Legacy recognizable credentials are rejected before return. |
 | Model → saved plan/revision/result | Recursive credential admission before saving; model-provided verification fields and invented evidence refs fail. A model summary remains unverified prose, never proof that a new action happened. |
@@ -96,7 +103,8 @@ silent exemptions closing the original P0 requirements.
 
 SQLite stays v3. No migrations, action IDs, approvals or stored source content are rewritten.
 v1→v2→v3, pending approvals, immutable revisions and evidence tests remain mandatory.
-Legacy task scopes retain their exact file grants; optional private-file labels only add
+Legacy unambiguous task scopes retain their exact file grants; ambiguous scopes are blocked
+before model/tool dispatch without relabelling. Optional private-file labels only add
 restrictions/grants from the owner. Stricter credential admission can block an old task on
 resume; it does not replay verified actions or erase data. Older binaries ignore the new
 scope labels and therefore must not be used as a privacy-policy rollback without owner review.

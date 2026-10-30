@@ -67,13 +67,35 @@ class CreateTests(RuntimeCase):
         action_id = self.approved()
         victim = self.base / "original.txt"
         victim.write_text("preserve original")
-        os.link(victim, self.base / "new.txt")
-        result = self.agent.run(self.task_id)
+        real_tool = self.agent._tool
+
+        def link_after_dispatch(*args):
+            # Reproduce a race after preflight; the worker must still refuse.
+            os.link(victim, self.base / "new.txt")
+            return real_tool(*args)
+
+        with patch.object(self.agent, "_tool", side_effect=link_after_dispatch):
+            result = self.agent.run(self.task_id)
         self.assertEqual(result["task"]["state"], "needs_reconciliation")
         self.assertEqual(victim.read_text(), "preserve original")
         self.assertEqual(self.journal.action(action_id)["attempts"], 1)
         with self.assertRaises(AgentError):
             observe(self.paths, "alpha", "new.txt")
+
+    def test_preflight_hardlink_denial_preserves_unused_create_approval(self):
+        action_id = self.approved()
+        before = dict(self.journal.action(action_id))
+        approval = dict(self.journal.approval(before["approval_id"]))
+        victim = self.base / "original.txt"
+        victim.write_text("preserve original")
+        os.link(victim, self.base / "new.txt")
+        with patch.object(self.agent, "_tool") as tool:
+            result = self.agent.run(self.task_id)
+            tool.assert_not_called()
+        self.assertEqual(result["task"]["state"], "blocked")
+        self.assertEqual(dict(self.journal.action(action_id)), before)
+        self.assertEqual(dict(self.journal.approval(before["approval_id"])), approval)
+        self.assertEqual(victim.read_text(), "preserve original")
 
     def test_parent_replaced_after_approval_is_denied(self):
         action_id = self.approved()

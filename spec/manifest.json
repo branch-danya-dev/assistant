@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "project_id": "personal-ai-assistant",
   "stage": "implementation",
-  "last_reviewed": "2026-10-30",
+  "last_reviewed": "2026-10-31",
   "canonical_source": "spec/*.json for structured records; docs/* for rationale",
   "instruction_priority": [
     "AGENTS.md",
@@ -128,7 +128,9 @@
     "docs/engineering/evidence/windows-m1-review-host.json",
     "docs/engineering/m1-security-boundaries.md",
     "docs/engineering/evidence/m1-security-validation.json",
-    "docs/engineering/evidence/windows-m1-security-host.json"
+    "docs/engineering/evidence/windows-m1-security-host.json",
+    "docs/engineering/m1-file-aliases.md",
+    "docs/engineering/m1-trust-boundary-proposal.md"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",

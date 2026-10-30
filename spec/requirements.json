@@ -248,7 +248,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-file-aliases.md",
+        "tests/test_file_aliases.py"
       ]
     },
     {
@@ -271,7 +273,10 @@
         "docs/engineering/m1-security-boundaries.md",
         "tests/test_data_boundary.py",
         "tests/test_injection_boundary.py",
-        "docs/engineering/evidence/m1-security-validation.json"
+        "docs/engineering/evidence/m1-security-validation.json",
+        "docs/engineering/m1-file-aliases.md",
+        "tests/test_file_aliases.py",
+        "docs/engineering/m1-trust-boundary-proposal.md"
       ]
     },
     {
@@ -311,7 +316,10 @@
         "docs/engineering/m1-security-boundaries.md",
         "tests/test_data_boundary.py",
         "tests/test_injection_boundary.py",
-        "docs/engineering/evidence/m1-security-validation.json"
+        "docs/engineering/evidence/m1-security-validation.json",
+        "docs/engineering/m1-file-aliases.md",
+        "tests/test_file_aliases.py",
+        "docs/engineering/m1-trust-boundary-proposal.md"
       ]
     },
     {
@@ -406,7 +414,9 @@
         "tests/test_security.py",
         "docs/engineering/m1-completion.md",
         "docs/engineering/evidence/m1-validation.json",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/m1-file-aliases.md",
+        "tests/test_file_aliases.py"
       ]
     },
     {
