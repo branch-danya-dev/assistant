@@ -104,9 +104,10 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_memory.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ],
-      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
+      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
     },
     {
       "id": "SCN-005",
@@ -138,9 +139,10 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ],
-      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
+      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
     },
     {
       "id": "SCN-006",
@@ -195,9 +197,10 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ],
-      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
+      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
     },
     {
       "id": "SCN-008",
@@ -250,9 +253,10 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_storage.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ],
-      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
+      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
     },
     {
       "id": "SCN-010",
@@ -283,9 +287,10 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_journal.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ],
-      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
+      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
     },
     {
       "id": "SCN-011",
@@ -313,9 +318,10 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ],
-      "verification_scope": "Synthetic runtime fixtures. Live selected-model read/memory workflow additionally recorded in windows-host.json. No real external mutations."
+      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
     }
   ]
 }

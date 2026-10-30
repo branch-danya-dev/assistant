@@ -1,0 +1,42 @@
+{
+  "recorded_on": "2026-10-30",
+  "scope": "synthetic M1 acceptance; no private data or real external side effects",
+  "base_pr": "https://github.com/branch-danya-dev/assistant/pull/4",
+  "base_sha": "42a9f31dd1556a1714d64d86ee6e8f630b027d2f",
+  "implementation_pr": "https://github.com/branch-danya-dev/assistant/pull/5",
+  "implementation_branch": "feat/m1-safe-create-revisions",
+  "tested_runtime_commit": "9ae713a25d8085d5498c33e332b7ddc40a26718e",
+  "ci": {
+    "url": "https://github.com/branch-danya-dev/assistant/actions/runs/41112783355",
+    "windows": "success",
+    "ubuntu": "success",
+    "tests_discovered_per_platform": 83,
+    "tests_passed_per_platform": 81,
+    "other_platform_only_skips": 2,
+    "contracts": "pass",
+    "ruff": "pass",
+    "wheel_build": "pass",
+    "package_execution_outside_checkout": "pass"
+  },
+  "local": {
+    "platform": "Windows",
+    "python": "3.12.10",
+    "tests_discovered": 83,
+    "tests_passed": 81,
+    "linux_only_skips": 2,
+    "contracts": "pass",
+    "ruff": "pass",
+    "wheel_build": "pass",
+    "package_execution_outside_checkout": "pass"
+  },
+  "live_selected_model": {
+    "model": "qwen3.5:9b",
+    "report": "docs/engineering/evidence/windows-m1-completion.json",
+    "result": "pass",
+    "isolated_synthetic_runtime": true,
+    "production_database_modified": false,
+    "model_comparisons": 0
+  },
+  "platform_boundary": "Windows primary. Linux trusted application/project roots; create-only direct children, Landlock ABI 3+ and O_TMPFILE required. Nested Linux creates denied before dispatch.",
+  "merge_performed": false
+}

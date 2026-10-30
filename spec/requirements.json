@@ -140,16 +140,17 @@
       "title": "Tool-aware multi-step planning",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Agent builds executable plan with dependencies and can revise it with audit."
       ],
       "owner": "project",
-      "notes": "Implemented in completion candidate; final validation pending. See ADR-021 for Linux trusted-root boundary.",
+      "notes": "Verified immutable bounded plan revisions and exclusive scoped create-only files. Linux supports flat names in a trusted project root (ADR-021); no overwrite/delete.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ]
     },
     {
@@ -380,16 +381,17 @@
       "title": "Scoped filesystem access",
       "priority": "P0",
       "target_milestone": "M1",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Read/write only approved test workspace and reject traversal/unsafe targets."
       ],
       "owner": "project",
-      "notes": "Implemented in completion candidate; final validation pending. See ADR-021 for Linux trusted-root boundary.",
+      "notes": "Verified immutable bounded plan revisions and exclusive scoped create-only files. Linux supports flat names in a trusted project root (ADR-021); no overwrite/delete.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/evidence/m1-validation.json"
       ]
     },
     {

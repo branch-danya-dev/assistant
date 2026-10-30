@@ -1,4 +1,4 @@
-# Owner runbook — first local slice
+# Owner runbook — M1 local agent
 
 ## Environment and model
 

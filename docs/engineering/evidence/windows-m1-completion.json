@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-30T19:08:00.274328Z",
+  "timestamp": "2026-10-30T19:11:38.941428Z",
   "synthetic_only": true,
   "selected_model": {
     "reachable": true,
@@ -13,10 +13,10 @@
     "metrics": {
       "prompt_eval_count": 66,
       "eval_count": 86,
-      "total_duration": 938875800
+      "total_duration": 880275000
     }
   },
-  "runtime_source_fingerprint": "410a42b913f5701a87ffc5da08da2d04a7b1f29b2d5b0d0f65258932143cc4d8",
+  "runtime_source_fingerprint": "e7a418d3c886c9550a46a37b7d4af2a06a6ffffbe3e1b05737cb1c4b0614830d",
   "checks": {
     "local_task_completed": true,
     "both_read_tools_verified": true,
@@ -29,7 +29,7 @@
     "live_create_approval_revision_exactly_once": true
   },
   "passed": true,
-  "task_id": "b546924f-d35f-4120-8a80-121656955d21",
+  "task_id": "dced455c-7876-4a7f-a7b4-f5dde27093c7",
   "task_state": "completed",
   "block_reason": null,
   "verified_operations": [
@@ -126,7 +126,7 @@
     "loaded_model_memory_independently_verified": false
   },
   "isolated_runtime": true,
-  "runtime_relative": "cache/host-acceptance-32b2b10d-c9fe-48a1-827d-42785bbf5c00",
+  "runtime_relative": "cache/host-acceptance-cb442cd3-21b6-4fbd-b413-4b287d49f225",
   "create_task_state": "completed",
   "create_block_reason": null
 }

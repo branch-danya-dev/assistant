@@ -1,8 +1,9 @@
-# M1 completion candidate — stacked on PR #4
+# M1 completed acceptance — stacked on PR #4
 
 Base audited and rechecked: `42a9f31dd1556a1714d64d86ee6e8f630b027d2f`,
 `feat/m0-m1-local-agent`. PR #4 stays open; neither PR is merged by this work.
-Final milestone status is gated on the recorded checks below, not this document's title.
+TASK-009, TASK-010 and TASK-043 acceptance is complete within the platform boundaries below.
+This is an implementation/acceptance result, not a merge or deployment of either PR.
 
 ## Implementation and security evidence
 
@@ -87,7 +88,13 @@ independent hashes and persisted evidence in an isolated synthetic runtime. The 
 production database was not opened/migrated. See [host report](evidence/windows-m1-completion.json).
 The report fingerprints runtime source, schemas, model/storage configuration and the verifier.
 
-Final CI/package result links are recorded here before M1 status is advanced. The first Ubuntu
+[Windows and Ubuntu CI at runtime commit 9ae713a](https://github.com/branch-danya-dev/assistant/actions/runs/41112783355)
+passed: 83 tests discovered on each OS, 81 executed successfully and two intentionally limited
+to the other platform. Both jobs passed contracts, Ruff, wheel build and execution outside the
+checkout. Local Windows Python 3.12.10 passed the same 83-test suite (two Linux-only skips),
+contracts, Ruff, wheel build and isolated package execution. [Structured validation record](evidence/m1-validation.json).
+
+The first Ubuntu
 run exposed O_TMPFILE's retained anonymous `/proc` name; independent published-name/inode
 verification corrected that and subsequent Ubuntu CI passed. Host checks also discovered the
 local Ollama retained-original-manifest format; the verifier now hashes the retained original

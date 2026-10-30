@@ -1,6 +1,6 @@
 # Personal AI Assistant
 
-**M0 complete; M1 completion candidate.** Python 3.12+ modular monolith,
+**M0 and M1 acceptance complete on the stacked implementation branch.** Python 3.12+ modular monolith,
 SQLite/FTS5, Windows first. Based on Architecture Baseline v1.0 (`c1a0079`).
 
 Первая реализация уже работает: Qwen строит план, агент читает разрешённые текстовые файлы
@@ -16,6 +16,8 @@ SQLite/FTS5, Windows first. Based on Architecture Baseline v1.0 (`c1a0079`).
   traversal/junction/opened-handle checks and independent tool-result verification.
 - SQLite migrations and task journal, stable action IDs, exact one-use approvals, pre-dispatch
   commits, persistent stop, explicit resume and `needs_reconciliation` for uncertain effects.
+- Bounded plan revisions with immutable completed actions and explicit dependencies; process
+  deadlines/cancellation; create-only files after exact owner approval and independent observation.
 - Sourced versioned memory, preserved supersession, FTS5, retention filtering/index rebuild,
   explicit owner remembering/removal from retrieval and persona independent of model weights.
 - CLI for tasks, evidence, approvals, recovery, memory/persona and consistent database backup.
@@ -25,7 +27,8 @@ and approval consumption are tested with real synthetic filesystem/crash fixture
 no send/purchase/install/overwrite/delete adapter is active.
 LLM summaries are labelled separately from verified tool results. Office/browser integrations,
 semantic embeddings and general document editing remain deferred. Windows is primary;
-Linux create-only execution requires a trusted environment and kernel support (ADR-021).
+Linux create-only execution allows flat output names and requires a trusted environment and
+kernel support (ADR-021). PR #4 must be accepted first; neither PR is automatically merged.
 
 ## Windows quick start
 

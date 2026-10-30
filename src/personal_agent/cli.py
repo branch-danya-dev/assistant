@@ -20,7 +20,7 @@ from .storage import Store
 
 
 def parser() -> argparse.ArgumentParser:
-    root = argparse.ArgumentParser(description="Local personal agent (partial M1)")
+    root = argparse.ArgumentParser(description="Local personal agent (M1)")
     root.add_argument("--root", help="Explicit ASSISTANT_ROOT override; default G:\\Assistant on Windows")
     commands = root.add_subparsers(dest="command", required=True)
     for command in ("init", "doctor", "smoke", "demo", "tasks", "stop", "clear-stop", "recover", "backup", "persona"):

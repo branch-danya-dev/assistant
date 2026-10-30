@@ -191,7 +191,7 @@
     {
       "id": "TASK-009",
       "title": "Orchestrator with bounded plan/execute/verify",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -217,15 +217,18 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
         "docs/engineering/evidence/windows-host.json",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "tests/test_plan_revisions.py",
+        "tests/test_bounded.py",
+        "docs/engineering/evidence/m1-validation.json"
       ],
       "owner": "unassigned",
-      "notes": "Implementation and targeted tests added on stacked PR; final CI and current host acceptance pending. Linux trusted environment per ADR-021."
+      "notes": "Acceptance verified on Windows and Ubuntu, plus real Qwen synthetic host acceptance. Windows primary; Linux trusted environment and flat output names per ADR-021. Stacked PR does not imply merge/deployment."
     },
     {
       "id": "TASK-010",
       "title": "Minimal local task interface",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -240,10 +243,12 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_cli.py",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "tests/test_evidence.py",
+        "docs/engineering/evidence/m1-validation.json"
       ],
       "owner": "unassigned",
-      "notes": "Implementation and targeted tests added on stacked PR; final CI and current host acceptance pending. Linux trusted environment per ADR-021."
+      "notes": "Acceptance verified on Windows and Ubuntu, plus real Qwen synthetic host acceptance. Windows primary; Linux trusted environment and flat output names per ADR-021. Stacked PR does not imply merge/deployment."
     },
     {
       "id": "TASK-011",
@@ -916,7 +921,7 @@
     {
       "id": "TASK-043",
       "title": "Complete scoped create-only workspace writes",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -933,10 +938,13 @@
         "Crash/stop fixtures prove no uncertain mutation is replayed."
       ],
       "evidence": [
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "tests/test_m1_create.py",
+        "tests/test_bounded.py",
+        "docs/engineering/evidence/m1-validation.json"
       ],
       "owner": "unassigned",
-      "notes": "Implementation and targeted tests added on stacked PR; final CI and current host acceptance pending. Linux trusted environment per ADR-021."
+      "notes": "Acceptance verified on Windows and Ubuntu, plus real Qwen synthetic host acceptance. Windows primary; Linux trusted environment and flat output names per ADR-021. Stacked PR does not imply merge/deployment."
     }
   ]
 }

@@ -121,7 +121,8 @@
     "docs/engineering/runbook.md",
     "tools/verify_host.py",
     "tools/configure-ollama-storage.ps1",
-    "docs/engineering/m1-completion.md"
+    "docs/engineering/m1-completion.md",
+    "docs/engineering/evidence/m1-validation.json"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
@@ -134,5 +135,5 @@
     "spec/schemas/plan-revision.schema.json"
   ],
   "agent_read_strategy": "Read AGENTS + manifest then only ID-matched records and relevant topic docs. Do not paste entire repository into LLM context.",
-  "implementation_warning": "M0 complete; M1 completion candidate with bounded revisions and create-only tools. Final CI/host acceptance pending; see m1-completion.md and ADR-021."
+  "implementation_warning": "M0 and M1 acceptance completed on the stacked implementation branch; main remains unchanged until owner-authorized integration. Windows primary; Linux trusted flat-output mode. See m1-completion.md for evidence and explicit limits."
 }
