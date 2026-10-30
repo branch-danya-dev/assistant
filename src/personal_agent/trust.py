@@ -7,14 +7,22 @@ from __future__ import annotations
 
 import hashlib
 import json
+import unicodedata
 from datetime import datetime, timedelta, timezone
 
 from .config import AgentError, safe_relative
-from .data_policy import CLASSES, admit, file_access, file_key, validate_scope
+from .data_policy import CLASSES, admit, file_access, validate_scope
 from .storage import encode, now, uid
 
 LOCAL_SINKS = frozenset({"journal", "worker", "ollama", "preview"})
 KINDS = frozenset({"task", "memory", "persona", "preview"})
+
+
+def inventory_key(path):
+    # Persist a platform-independent conservative denial key. Moving the database
+    # between Windows/Linux must never make a known source lose its mark. This is
+    # not a filename resolver/grant and may deny distinct Linux/Unicode spellings.
+    return unicodedata.normalize("NFC", path.casefold())
 
 
 def fingerprint(value):
@@ -40,7 +48,7 @@ class Trust:
     def guard(self, kind, project, locator):
         if kind not in KINDS | {"file"}:
             raise AgentError("unclassified_source_denied")
-        key = file_key(locator) if kind == "file" else locator
+        key = inventory_key(locator) if kind == "file" else locator
         row = self.db.execute("SELECT * FROM sensitive_inventory WHERE kind=? AND project_id=?"
                               " AND locator_key=?", (kind, project, key)).fetchone()
         if row and (not row["reviewed_at"] or row["expires_at"] <= now()
@@ -59,7 +67,7 @@ class Trust:
         if not isinstance(locator, str) or not 1 <= len(locator) <= 1000:
             raise AgentError("invalid_inventory_metadata")
         admit(locator)
-        key = file_key(locator) if kind == "file" else locator
+        key = inventory_key(locator) if kind == "file" else locator
         identifier, timestamp = uid(), expiry(expires_at)
         with self.store.transaction():
             self.db.execute("INSERT INTO sensitive_inventory VALUES (?,?,?,?,?,?,?,?,?,?)",

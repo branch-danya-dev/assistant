@@ -251,6 +251,15 @@ class InventoryTests(BoundaryCase):
         with self.assertRaisesRegex(AgentError, "invalid_inventory_metadata"):
             self.trust.mark("file", "alpha", "folder\\x.txt")
 
+    def test_inventory_denial_key_is_portable_across_platform_case_unicode_policies(self):
+        self.trust.mark("file", "alpha", "Caf\u00e9.txt")
+        # Same conservative metadata denial on either OS, never a rewritten file grant.
+        for spelling in ("Caf\u00e9.txt", "caf\u00e9.txt", "CAFE\u0301.TXT"):
+            with self.assertRaisesRegex(AgentError, "inventory_source_denied"):
+                self.trust.guard("file", "alpha", spelling)
+        with self.assertRaises(sqlite3.IntegrityError):
+            self.trust.mark("file", "alpha", "cafe\u0301.txt", "internal")
+
 
 class MigrationTests(RuntimeCase):
     def legacy(self, version):

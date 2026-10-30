@@ -49,6 +49,9 @@ fixed owner identity/provenance, reviewed timestamp and expiry. Paths are exact 
 workspace files (no recursive directory crawling); other locators are task/memory/persona/
 preview IDs. No secret values, source excerpts, OS credentials or automatic imports are stored
 in inventory. Locators themselves are owner-attested metadata; do not put secrets in names.
+Persisted file denial keys use the same conservative NFC/casefold function on both platforms,
+so relocating a database cannot silently lose a mark. This can block distinct Linux/Unicode
+spellings too; it never resolves a path or creates a weaker file grant.
 
 Every new mark blocks even if labelled internal until a separate owner review. Restricted
 and unclassified marks always block; reviewing a restricted mark as restricted does not
@@ -116,6 +119,9 @@ Regression retains 8/32 KiB full-source-or-receipt partial outcomes, exactly-onc
 immutable revisions, approval retention, safe recover, backup and preview ACL/TTL. Windows
 alias code and Linux ADR-021/Landlock are unchanged. Fresh counts, commit/CI and live-host
 availability are recorded separately in `evidence/m1-trust-validation.json`.
+That file is a snapshot at its named implementation commit. [PR #8](https://github.com/branch-danya-dev/assistant/pull/8)
+records the final HEAD/CI, including the subsequent portable inventory-key regression and
+a repeated live-host availability check; earlier test counts are not final-HEAD evidence.
 
 ## Risk register
 
