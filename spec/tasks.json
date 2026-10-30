@@ -70,7 +70,7 @@
     {
       "id": "TASK-004",
       "title": "Implement persistence migrations and event journal",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -85,13 +85,17 @@
       "acceptance": [
         "Restart retains task and scoped memory events."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_storage.py",
+        "tests/test_journal.py"
+      ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-005",
       "title": "Build authorization policy and stop switch",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -106,7 +110,11 @@
       "acceptance": [
         "No denied tool request reaches executor; stop blocks new actions."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_storage.py",
+        "tests/test_journal.py"
+      ],
       "owner": "unassigned"
     },
     {
@@ -471,7 +479,7 @@
     {
       "id": "TASK-024",
       "title": "Implement portable assistant home bootstrap, path resolver and migration verification",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -485,7 +493,11 @@
         "Provide explicit bootstrap and Windows Ollama env setup flow, with safe migration and DB backup guidance.",
         "CI unit tests cover root override, traversal, directory layout and model path mapping."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_storage.py",
+        "tests/test_journal.py"
+      ],
       "owner": "unassigned"
     },
     {
@@ -574,7 +586,7 @@
     {
       "id": "TASK-029",
       "title": "Implement M1 restart-safe action journal and reconciliation block",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -590,7 +602,11 @@
         "Crash between dispatch and acknowledgment cannot replay side effect automatically.",
         "Persist approval consumption, operation id and needs_reconciliation state with evidence."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m1-evidence.md",
+        "tests/test_storage.py",
+        "tests/test_journal.py"
+      ],
       "owner": "unassigned"
     },
     {
