@@ -1,6 +1,18 @@
 """Closed public diagnostics. Never add source or exception text here."""
 
 ERROR_CODES = frozenset({
+    'invalid_connector-gates',
+    'database_version_invalid',
+    'inventory_source_denied',
+    'invalid_inventory_metadata',
+    'inventory_entry_not_found',
+    'invalid_review_expiry',
+    'unclassified_source_denied',
+    'unclassified_sink_denied',
+    'source_review_required',
+    'private_sink_denied',
+    'review_digest_or_label_mismatch',
+    'vault_adapter_disabled',
     'ambiguous_file_scope',
     'directory_case_policy_unavailable',
     'case_sensitive_directory_denied',

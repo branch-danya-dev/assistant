@@ -11,6 +11,11 @@ REQ-017/019 remain specified; partial analysis is reported explicitly, never as 
 Current [M1 security boundaries and remaining risks](docs/engineering/m1-security-boundaries.md):
 owner data classes, credential admission, minimal worker environment and executable injection tests.
 
+[SQLite v4 inventory/admission and legacy owner review](docs/engineering/m1-trust-inventory.md)
+now fail closed on unreviewed saved data and known inventory marks. The vault and all future
+connectors remain disabled. [ADR-025 owner decisions](docs/engineering/adr025-owner-decisions.md)
+are still pending; this is not M1 closure or deployment.
+
 ## Implemented
 
 - Ollama **qwen3.5:9b**, separate schema-validated planning and final response, numeric loopback

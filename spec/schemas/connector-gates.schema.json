@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "all_adapters_disabled",
+    "requirements",
+    "gates"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "all_adapters_disabled": {
+      "const": true
+    },
+    "requirements": {
+      "const": [
+        "REQ-017",
+        "REQ-019"
+      ]
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "connector",
+          "stages",
+          "task_ids",
+          "enabled",
+          "required_checks",
+          "actual_adapter_evidence",
+          "owner_enablement",
+          "fixture_scope",
+          "adversarial_surface"
+        ],
+        "properties": {
+          "connector": {
+            "enum": [
+              "browser",
+              "document",
+              "spreadsheet",
+              "telegram",
+              "email",
+              "cloud",
+              "desktop",
+              "voice",
+              "calendar"
+            ]
+          },
+          "stages": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "M2",
+                "M3",
+                "M4"
+              ]
+            }
+          },
+          "task_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^TASK-[0-9]{3}$"
+            }
+          },
+          "enabled": {
+            "const": false
+          },
+          "required_checks": {
+            "type": "array",
+            "minItems": 9,
+            "maxItems": 9,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "source_classification",
+                "origin_scope",
+                "recipient_scope",
+                "target_scope",
+                "credential_isolation",
+                "injection_no_escalation",
+                "outbound_consent",
+                "one_use_approval",
+                "uncertain_effect_reconciliation"
+              ]
+            }
+          },
+          "actual_adapter_evidence": {
+            "type": "null"
+          },
+          "owner_enablement": {
+            "type": "null"
+          },
+          "fixture_scope": {
+            "const": "synthetic_contract_only"
+          },
+          "adversarial_surface": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

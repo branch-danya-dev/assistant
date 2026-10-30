@@ -8,7 +8,7 @@ No server/startup daemon is installed. `.env` is a reference template, not autom
 Export `$env:ASSISTANT_ROOT='G:\Assistant'`, set Windows User environment, or pass an explicit
 absolute `--root` before the subcommand. Relative roots fail; there is no C: fallback.
 
-`init` creates the layout, transactional database version 3 and baseline persona, preserving
+`init` creates the layout, transactional database version 4 and baseline persona, preserving
 existing versions. `doctor` reports runtime availability and the separately configured Ollama
 User environment. A matching variable does not prove a running process inherited it:
 `tools/verify_host.py` also checks actual model blob paths.
@@ -139,7 +139,8 @@ python -m personal_agent persona
 ```
 
 Remembering is explicit; generated answers are never promoted automatically. New records default
-to private. `--include-private` grants local access to that project's private records. Restricted
+to private. `--include-private` grants local access to that project's private records; CLI diagnostics
+withhold private contents. New restricted records are refused before storage; existing restricted
 records are excluded from M1 model context. Project/sensitivity filters precede candidate ranking.
 Search is lexical FTS5 with chronological ordering, not semantic embeddings. Supersession retains
 old decisions and sources; unverified claims cannot replace verified ones. Temporary expiry hides
@@ -194,3 +195,46 @@ unqueryable directory semantics fail closed. `--allow-private-file` cannot overl
 spelled `--allow-file`. A blocked legacy scope is not automatically normalized: inspect its
 labels and create a new task with reviewed names. Retain existing evidence and approvals;
 never replay an uncertain create. See [policy and platform limits](m1-file-aliases.md).
+
+## SQLite v4: source inventory and owner review
+
+Read [the exact admission contract and risks](m1-trust-inventory.md) before deployment.
+Opening v1–v3 creates a consistent integrity-checked backup in `backups/`, then adds three
+metadata tables transactionally. It does not attest or relabel old data. No production
+upgrade has been performed by this PR. A fresh v4 root receives a reviewed default persona;
+an existing persona requires explicit review, and `init` does not bypass that gate.
+
+Examples below contain only metadata placeholders. Review the real sources locally yourself;
+never paste secret values into these commands. Use a future UTC expiry within 366 days.
+
+```powershell
+python -m personal_agent inventory-mark file credentials.txt --project example --classification restricted --expires-at 2026-12-01T00:00:00Z
+python -m personal_agent data-audit --project example
+python -m personal_agent data-audit --project identity
+python -m personal_agent data-audit --project legacy-previews
+python -m personal_agent data-review memory RECORD_ID --project example --digest REVIEWED_DIGEST --classification internal --expires-at 2026-12-01T00:00:00Z
+python -m personal_agent data-review persona 1 --project identity --digest REVIEWED_DIGEST --classification internal --expires-at 2026-12-01T00:00:00Z
+python -m personal_agent inventory-review INVENTORY_ID --classification restricted --expires-at 2026-12-01T00:00:00Z
+```
+
+Every new inventory mark blocks until reviewed; restricted stays blocked even when reviewed.
+Review never grants file scope, effect approval or replay. A task review can retain only its
+existing label; missing/ambiguous old file labels require a fresh task with exact `--allow-file`
+or `--allow-private-file`, after checking completed/uncertain effects. Old approvals/results
+remain intact. Ordinary `show`/`show-evidence` withhold unreviewed data; audit lists IDs/hashes,
+not contents. Previews have a separate explicit global metadata namespace because v3 stored
+no project binding; audit never opens/recreates old preview files or scans unregistered ones.
+
+New owner API calls attest internal intent by default; `run --private-intent` explicitly marks
+it private-local. Private task flags grant `journal`, `worker`, `ollama`, `preview` for purpose
+`owner-task`; no diagnostic content or egress grant. Receipts expire after 30 days by default.
+The Python owner API can narrow local sinks. Private `show` retains approval IDs/digests so
+the existing protected `approval-preview` flow remains usable. A real secret should be
+inventory-marked/restricted, not merely private-local.
+
+No credential import/read/store command exists. The Credential Manager adapter always denies.
+Owner review assumes accurate classification: unknown opaque secrets wrongly attested as
+internal remain a documented residual. ADR-025 and M1 are still open. To roll back, close the
+app and restore verified pre-upgrade backup plus matching code in a separate root; never edit
+`user_version` manually. Older code does not enforce this policy and is not permission to
+resume private tasks. Keep backups private and retain the original root until restore checks pass.

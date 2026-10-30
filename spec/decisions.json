@@ -251,9 +251,20 @@
       "recorded_on": "2026-10-31",
       "owner": "proposed for explicit project owner decision",
       "context": "Literal REQ-017 includes absent connectors; universal REQ-019 cannot be proven for unknown or misclassified arbitrary contents.",
-      "decision": "Recommend option B in docs/engineering/m1-trust-boundary-proposal.md: enumerated M1 ingress/sinks, owner classification, reviewed secret inventory/vault, default-deny, fail-closed, and mandatory actual-adapter gates at M2-M4. Inventory/vault/legacy admission work remains unimplemented. This proposal changes no requirement text, priority, milestone or status; M1 and original P0 acceptance stay open.",
+      "decision": "Recommend option B in docs/engineering/m1-trust-boundary-proposal.md: enumerated M1 ingress/sinks, owner classification, reviewed secret inventory/vault, default-deny, fail-closed, and mandatory actual-adapter gates at M2-M4. TASK-049 implements bounded inventory/admission/legacy review with a disabled vault port under the explicit implementation request. Acceptance approval is still pending in spec/owner-decisions-adr025.json. This proposal changes no requirement text, priority, milestone or status; M1 and original P0 acceptance stay open.",
       "migration": "Only after recorded owner approval: explicitly revise acceptance and traceability, implement agreed missing controls, review legacy data without automatic erasure/relabeling, rerun Windows/Ubuntu and selected-Qwen host evidence. No deployment or merge implied.",
       "revisit_when": "Owner answers the three explicit questions in the proposal."
+    },
+    {
+      "id": "ADR-026",
+      "title": "Owner-authorized M1 metadata inventory and fail-closed legacy admission",
+      "status": "accepted",
+      "recorded_on": "2026-10-31",
+      "owner": "project owner via explicit bounded M1 implementation request",
+      "context": "Owner authorized implementation of option B controls while explicitly withholding acceptance/status changes pending three ADR-025 decisions.",
+      "decision": "Refine ADR-023/024 source admission: new owner APIs attest whole datasets; old sources require ID/hash review, with no implicit internal legacy labels. Add metadata-only inventory, private local sink grants and disabled Windows Credential Manager interface. Preserve all authority/effect/reconciliation/alias invariants. ADR-025 remains provisional and REQ-017/019 unchanged.",
+      "migration": "SQLite v4 adds data_admissions, sensitive_inventory, data_reviews only. Automatic consistent verified backup before v1-v3 upgrade; transaction rollback; no source, scope, result or approval rewrite or attestation during migration. Restore matching backup/code for rollback under separate owner approval. See docs/engineering/m1-trust-inventory.md.",
+      "revisit_when": "Owner explicitly decides ADR-025 acceptance, enables a separately verified connector, or changes trust assumptions."
     }
   ]
 }

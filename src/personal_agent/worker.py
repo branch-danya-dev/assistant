@@ -16,6 +16,11 @@ def work(payload):
     paths = Paths(payload["root"])
     if payload["kind"] == "scope_check":
         from .safe_fs import check_scope_paths
+        from .trust import Trust
+        with Store(paths) as store:
+            # Classification/metadata check precedes filesystem inspection.
+            for path in payload["scope"].get("files", []) + payload["scope"].get("create_files", []):
+                Trust(store).guard("file", payload["project"], path)
         check_scope_paths(paths, payload["project"], payload["scope"])
         return {"scope_checked": True}
     if payload["kind"] == "snapshot":
@@ -23,6 +28,9 @@ def work(payload):
         return {p: snapshot(paths, payload["project"], p) for p in payload["files"]}
     if payload["kind"] == "model":
         from .models import Ollama
+        from .trust import Trust
+        with Store(paths) as store:
+            Trust(store).require_task(payload["task_id"], sink="ollama")
         model = Ollama(endpoint=payload["endpoint"], timeout=payload["timeout"])
         reply = model.complete(payload["messages"], task_id=payload["task_id"])
         return {"reply": reply, "metrics": model.metrics}
@@ -30,6 +38,8 @@ def work(payload):
         from .memory import Memory
         from .tools import Registry, Resolved
         with Store(paths) as store:
+            from .trust import Trust
+            Trust(store).require_task(payload["task"]["task_id"], sink="worker")
             registry = Registry(paths, Memory(store))
             resolved = Resolved(**payload["resolved"])
             result = registry.execute(resolved, payload["task"], payload["scope"])

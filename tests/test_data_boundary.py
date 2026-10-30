@@ -145,7 +145,10 @@ class BoundaryTests(BoundaryCase):
     def test_private_restricted_foreign_memory_never_enters_unauthorized_model_or_worker_result(self):
         memory = Memory(self.store)
         for project, sensitivity in (("alpha", "private"), ("alpha", "restricted"), ("beta", "internal")):
-            memory.remember(project, "needle " + self.canary, "fixture://owner", sensitivity=sensitivity)
+            if sensitivity == "restricted":
+                self.legacy_restricted_memory(project, "needle " + self.canary, "fixture://owner")
+            else:
+                memory.remember(project, "needle " + self.canary, "fixture://owner", sensitivity=sensitivity)
         task = self.task()
         provider = self.reader("search_memory", {"query": "needle OR beta"})
         result = Agent(self.store, provider).run(task)
@@ -165,7 +168,7 @@ class BoundaryTests(BoundaryCase):
         document = json.loads(row[0])
         document["source_refs"] = [json.dumps({"token": self.canary})]
         self.store.connection.execute("UPDATE memory SET document=? WHERE id=?", (encode(document), record))
-        with self.assertRaisesRegex(AgentError, "credential_content_denied"):
+        with self.assertRaisesRegex(AgentError, "source_review_required"):
             memory.search("needle", project_id="alpha")
 
     def test_worker_environment_has_no_owner_secrets_or_proxy(self):

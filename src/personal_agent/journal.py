@@ -10,6 +10,7 @@ from .data_policy import admit, validate_scope
 from .evidence import project_result, redact, text_receipt
 from .plans import Plans
 from .storage import Store, encode, now, uid
+from .trust import LOCAL_SINKS, Trust
 
 TRANSITIONS = {
     "created": {"planned", "cancelled", "failed"},
@@ -34,6 +35,7 @@ class Journal:
         self.store = store
         self.db = store.connection
         self.plans = Plans(self)
+        self.trust = Trust(store)
 
     def get(self, task_id: str) -> dict:
         row = self.db.execute("SELECT document FROM tasks WHERE id=?", (task_id,)).fetchone()
@@ -93,6 +95,18 @@ class Journal:
             raise AgentError("invalid_intent")
         self.store.paths.project_workspace(project_id)
         scope = json.loads(encode(scope))
+        # This owner-only API is the attestation boundary, never called by tools.
+        scope["file_classes"] = {p: scope.get("file_classes", {}).get(p, "internal")
+                                 for p in scope.get("files", [])}
+        scope.setdefault("local_sinks", sorted(LOCAL_SINKS))
+        scope.setdefault("local_purpose", "owner-task")
+        scope.setdefault("intent_class", "internal")
+        if ((scope["intent_class"] == "private" or scope.get("private_files") or
+             "private" in scope.get("memory_classes", [])) and
+                "journal" not in scope["local_sinks"]):
+            raise AgentError("private_sink_denied")
+        for path in scope.get("files", []) + scope.get("create_files", []):
+            self.trust.guard("file", project_id, path)
         if scope.get("files") or scope.get("create_files"):
             from .bounded import run_worker
             run_worker(self.store.paths, {"kind": "scope_check", "project": project_id,
@@ -122,9 +136,11 @@ class Journal:
                             (task_id, "created", encode(task), encode(scope)))
             self._event(task_id, "created", actor="owner")
             self._transition(task_id, "planned")
+            self.trust.refresh_task(task_id, new=True)
         return task_id
 
     def set_plan(self, task_id: str, requests: list[dict]):
+        self.trust.require_task(task_id)
         admit(requests)
         if not isinstance(requests, list) or len(requests) > 40:
             raise AgentError("plan_budget_exceeded")
@@ -141,6 +157,7 @@ class Journal:
             self.db.execute("UPDATE tasks SET plan=? WHERE id=?", (encode(requests), task_id))
             self.plans.initial(task_id)
             self._event(task_id, "planned", {"steps": len(requests), "plan_digest": digest(requests)})
+            self.trust.refresh_task(task_id)
 
     def plan(self, task_id: str) -> list[dict]:
         return json.loads(self.db.execute("SELECT plan FROM tasks WHERE id=?", (task_id,))
@@ -212,6 +229,7 @@ class Journal:
             self._event(task_id, "checkpointed", {"model_call": task["budget"]["model_calls"]})
 
     def prepare(self, task_id: str, ordinal: int, request: dict, effect: str, resource: str) -> str:
+        self.trust.require_task(task_id)
         action_id = f"{task_id}:{ordinal}"
         planned = next((s for s in self.plans.current(task_id)["steps"]
                         if s["action_id"] == action_id), None)
@@ -236,6 +254,7 @@ class Journal:
                             (action_id, task_id, ordinal, encode(request), fingerprint, effect, resource))
             self._event(task_id, "tool_proposed", {"action_id": action_id,
                         "arguments_digest": fingerprint, "effect": effect}, key=action_id)
+            self.trust.refresh_task(task_id)
         return action_id
 
     def action(self, action_id: str) -> dict:
@@ -285,6 +304,7 @@ class Journal:
             self._transition(approval["task_id"], "queued")
 
     def dispatch(self, action_id: str, *, approval_required: bool):
+        self.trust.require_task(self.action(action_id)["task_id"], sink="worker")
         with self.store.transaction():
             action = self.action(action_id)
             if action["status"] != "pending":
@@ -317,6 +337,7 @@ class Journal:
             self._event(action["task_id"], "checkpointed", {"dispatch": action_id}, key=action_id)
 
     def finish(self, action_id: str, result: dict):
+        self.trust.require_task(self.action(action_id)["task_id"])
         admit(result)
         with self.store.transaction():
             action = self.action(action_id)
@@ -327,6 +348,7 @@ class Journal:
             self._event(action["task_id"], "tool_executed", {"action_id": action_id}, key=action_id)
             self._event(action["task_id"], "verified", {"result_digest": digest(result)},
                         refs=(f"action:{action_id}",), key=action_id)
+            self.trust.refresh_task(action["task_id"])
 
     def recover(self) -> list[str]:
         """Caller MUST hold Store.execution_lock; no automatic execution here."""
@@ -349,6 +371,7 @@ class Journal:
         return changed
 
     def reconcile(self, action_id: str, outcome: str, evidence_ref: str):
+        admit(evidence_ref)
         """Owner asserts observed outcome. Never replays the old operation."""
         if outcome not in ("applied", "not_applied") or not evidence_ref.strip():
             raise AgentError("reconciliation_evidence_required")
@@ -365,6 +388,7 @@ class Journal:
             self._transition(action["task_id"], "blocked", "reconciled_create_new_task")
 
     def complete(self, task_id: str, result: dict, *, partial: bool = False):
+        self.trust.require_task(task_id)
         admit(result)
         """Finalize verified actions; partial explicitly does not certify the owner's whole goal."""
         with self.store.transaction():
@@ -392,9 +416,25 @@ class Journal:
             self.db.execute("UPDATE tasks SET result=? WHERE id=?", (encode(result), task_id))
             self._transition(task_id, "partial" if partial else "completed",
                              "full_content_analysis_unavailable" if partial else None)
+            self.trust.refresh_task(task_id)
 
     def inspect(self, task_id: str) -> dict:
         task = self.get(task_id)
+        minimal = {k: task.get(k) for k in ("task_id", "state")}
+        minimal["block_reason"] = str(AgentError(task["block_reason"])) if task.get("block_reason") else None
+        try:
+            admitted = self.trust.require_task(task_id)
+        except AgentError:
+            # Legacy/restricted/private data never enters ordinary stdout. The explicit
+            # inventory review path supplies only IDs/hashes without payload expansion.
+            return {"task": minimal,
+                    "actions": [], "events": [], "result": None,
+                    "content_withheld": True}
+        if self.trust.task_class(admitted) == "private":
+            return {"task": minimal, "actions": [dict(r) for r in self.db.execute(
+                "SELECT id,status,effect,digest,approval_id,attempts FROM actions WHERE task_id=?"
+                " ORDER BY ordinal", (task_id,))], "events": [], "result": None,
+                "content_withheld": True}
         actions = [dict(row) for row in self.db.execute(
             "SELECT id,status,effect,digest,resource,approval_id,attempts,request FROM actions WHERE task_id=?"
             " ORDER BY ordinal", (task_id,))]
@@ -420,15 +460,19 @@ class Journal:
         if "reason" in plan:
             plan["reason"] = text_receipt(plan["reason"])
         visible_steps = [{k: v for k, v in s.items() if k != "request"} for s in plan["steps"]]
-        return {"task": task, "actions": actions, "events": self.events(task_id)[-100:],
+        # Old event payloads have no separate owner receipt. Print lifecycle metadata only.
+        events = [{k: e[k] for k in ("event_id", "sequence", "kind", "timestamp")}
+                  for e in self.events(task_id)[-100:]]
+        return {"task": task, "actions": actions, "events": events,
                 "result": result, "plan": {**plan, "steps": visible_steps},
                 "plan_history": [{k: v for k, v in p.items() if k not in ("steps", "reason")}
                                  for p in self.plans.history(task_id)]}
 
-    def evidence(self, task_id: str, ref: str, project: str) -> dict:
+    def evidence(self, task_id: str, ref: str, project: str, *, sink="diagnostics") -> dict:
         task = self.get(task_id)
         if task["project_id"] != project or not ref.startswith("action:"):
             raise AgentError("evidence_scope_mismatch")
+        self.trust.require_task(task_id, sink=sink)
         action = self.action(ref.removeprefix("action:"))
         if action["task_id"] != task_id or action["status"] != "verified" or not action["result"]:
             raise AgentError("evidence_scope_mismatch")

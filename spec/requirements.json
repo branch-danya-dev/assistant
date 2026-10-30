@@ -278,7 +278,12 @@
         "docs/engineering/m1-file-aliases.md",
         "tests/test_file_aliases.py",
         "docs/engineering/m1-trust-boundary-proposal.md",
-        "docs/engineering/evidence/m1-alias-validation.json"
+        "docs/engineering/evidence/m1-alias-validation.json",
+        "docs/engineering/m1-trust-inventory.md",
+        "tests/test_trust_inventory.py",
+        "tests/test_connector_gates.py",
+        "spec/m1-data-contract.json",
+        "spec/connector-gates.json"
       ]
     },
     {
@@ -322,7 +327,12 @@
         "docs/engineering/m1-file-aliases.md",
         "tests/test_file_aliases.py",
         "docs/engineering/m1-trust-boundary-proposal.md",
-        "docs/engineering/evidence/m1-alias-validation.json"
+        "docs/engineering/evidence/m1-alias-validation.json",
+        "docs/engineering/m1-trust-inventory.md",
+        "tests/test_trust_inventory.py",
+        "tests/test_connector_gates.py",
+        "spec/m1-data-contract.json",
+        "spec/connector-gates.json"
       ]
     },
     {

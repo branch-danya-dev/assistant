@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "design": "ADR-025 option B working design; acceptance still provisional",
+  "default": "deny",
+  "authorities": [
+    "local-owner",
+    "reviewed-code"
+  ],
+  "sources": {
+    "owner_intent_scope": "Journal.create owner API attests intent/internal and exact --allow-file/internal; labels materialized only here",
+    "utf8_file": "explicit exact whole-file label, scope, inventory, physical alias checks before read",
+    "memory_provenance": "Memory.add owner API explicit label and whole-record receipt; search verifies project/expiry/inventory/digest",
+    "persona": "Identity.save owner API internal receipt; old versions require ID review",
+    "tool_output": "registered operation, admitted scope, verifier, inherited maximum classification; no authority",
+    "model_steps_revisions": "schema validation, admitted task lineage, registry, immutable revisions; no authority",
+    "saved_legacy_result": "no migration attestation; manual ID/digest review, existing permissions immutable"
+  },
+  "sinks": {
+    "ollama": "numeric loopback only; admitted task/persona/results before call; private local grant",
+    "worker": "before IPC persistence/Popen and repeated in worker; minimal environment",
+    "journal": "before writes; digest-bound derivation refresh is transactional",
+    "diagnostics": "closed errors; no unreviewed/private payload; event lifecycle metadata only",
+    "preview": "owner request, admitted exact task, explicit private preview sink, existing ACL/TTL"
+  },
+  "private_local": {
+    "purpose": "owner-task",
+    "sinks": [
+      "journal",
+      "worker",
+      "ollama",
+      "preview"
+    ],
+    "grant": "exact files and project memory classes; diagnostics excluded"
+  },
+  "inventory": {
+    "secret_values": false,
+    "discovery": false,
+    "default_expiry_days": 30,
+    "maximum_expiry_days": 366,
+    "review": "ID, expiry, label; never effect approval"
+  },
+  "vault": {
+    "backend_candidate": "Windows Credential Manager",
+    "enabled": false,
+    "credential_reads": false
+  },
+  "residuals": [
+    "owner misclassification and incomplete inventory",
+    "opaque/encoded unknown values not discoverable",
+    "same-account process and database are trusted",
+    "no control of arbitrary external Git clients",
+    "absent connector tests do not certify real integrations"
+  ]
+}

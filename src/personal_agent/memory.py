@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from .config import AgentError, validate
 from .data_policy import admit
 from .storage import Store, encode, now, uid
+from .trust import Trust
 
 
 class Memory:
@@ -17,6 +18,8 @@ class Memory:
 
     def add(self, record: dict) -> str:
         admit(record)
+        if record.get("sensitivity") not in {"public", "internal", "private"}:
+            raise AgentError("memory_sensitivity_denied")
         record = {"sensitivity": "private", "retention_class": "project", **record}
         validate("memory-record", record)
         for field in ("recorded_at", "expires_at", "valid_from", "valid_to"):
@@ -30,6 +33,8 @@ class Memory:
         if record["retention_class"] == "temporary" and not record.get("expires_at"):
             raise AgentError("temporary_record_requires_expiry")
         with self.store.transaction():
+            Trust(self.store).attest("memory", record["id"], record["project_id"], record,
+                                     record["sensitivity"])
             for previous_id in record["supersedes"]:
                 previous = self.db.execute("SELECT document FROM memory WHERE id=? AND removed=0",
                                            (previous_id,)).fetchone()
@@ -87,6 +92,7 @@ class Memory:
         records = [json.loads(row[0]) for row in rows]
         # Show history links only if the linked record is authorized and still retained.
         for record in records:
+            Trust(self.store).require_memory(record, project_id)
             successors = self.db.execute(scoped + "SELECT scoped.id FROM scoped, json_each("
                 "json_extract(document,'$.supersedes')) AS s WHERE s.value=?",
                 (project_id, *allowed_classes, now(), record["id"])).fetchall()
@@ -107,6 +113,13 @@ class Memory:
 
     def rebuild_index(self):
         with self.store.transaction():
+            admitted = []
+            for row in self.db.execute("SELECT document FROM memory WHERE removed=0"):
+                record = json.loads(row[0])
+                try:
+                    Trust(self.store).require_memory(record, record["project_id"])
+                except AgentError:
+                    continue  # Rebuildable index must not re-admit legacy/restricted data.
+                admitted.append((record["id"], record["statement"]))
             self.db.execute("DELETE FROM memory_fts")
-            self.db.execute("INSERT INTO memory_fts(id,statement)"
-                            " SELECT id,statement FROM memory WHERE removed=0")
+            self.db.executemany("INSERT INTO memory_fts(id,statement) VALUES (?,?)", admitted)

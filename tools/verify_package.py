@@ -33,7 +33,12 @@ assert result['task']['state'] == 'completed', result['task']['block_reason']
 assert result['result']['verified_steps'] == 2
 assert 'partial' in specification('schemas/task-state.schema.json')['properties']['state']['enum']
 with Store(Paths(Path(sys.argv[2]))) as store:
-    assert store.connection.execute('PRAGMA user_version').fetchone()[0] == 3
+    assert store.connection.execute('PRAGMA user_version').fetchone()[0] == 4
+    from personal_agent.trust import Trust
+    assert Trust(store).audit('demo')['content_disclosed'] is False
+    from personal_agent.vault import DisabledWindowsCredentialManager
+    assert DisabledWindowsCredentialManager.enabled is False
+    assert specification('connector-gates.json')['all_adapters_disabled'] is True
     previews = Previews(store)
     preview = previews.create({'synthetic': True}, clock=1000)
     assert preview['permissions_verified']
