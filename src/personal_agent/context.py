@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 
+from .data_policy import tool_result
 from .journal import digest
 from .models import MAX_CONTEXT_BYTES
 from .storage import encode
@@ -28,6 +29,7 @@ def final_context(journal, task, scope, persona, system):
         ref = f"action:{step['action_id']}"
         receipt = journal.evidence(task["task_id"], ref, task["project_id"])
         result = json.loads(journal.action(step["action_id"])["result"])
+        tool_result(step["request"], result, task, scope)
         operation = step["request"]["operation"]
         observations.append({"evidence_ref": ref, "result_digest": receipt["result_digest"],
                              "operation": operation, "content_visibility": "receipt_only",

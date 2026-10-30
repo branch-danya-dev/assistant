@@ -8,6 +8,8 @@ SQLite/FTS5, Windows first. Based on Architecture Baseline v1.0 (`c1a0079`).
 и сохраняет журнал. Пересмотр плана сохраняет выполненные действия и подтверждения.
 [Исправления review, доказательства и открытые P0-gates](docs/engineering/m1-review-fixes.md).
 REQ-017/019 remain specified; partial analysis is reported explicitly, never as full semantic success.
+Current [M1 security boundaries and remaining risks](docs/engineering/m1-security-boundaries.md):
+owner data classes, credential admission, minimal worker environment and executable injection tests.
 
 ## Implemented
 

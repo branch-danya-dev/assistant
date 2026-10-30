@@ -8,6 +8,7 @@ import signal
 import sys
 
 from .config import AgentError, Paths
+from .data_policy import admit
 from .storage import Store, encode
 
 
@@ -36,12 +37,14 @@ def work(payload):
 def main():
     try:
         payload = json.loads(sys.stdin.buffer.read(262145))
+        admit(payload)
         if os.name != "nt":
             # Parent-death signal is set before any tool effect; recheck the startup race.
             libc = ctypes.CDLL(None)
             if libc.prctl(1, signal.SIGKILL, 0, 0, 0) or os.getppid() != payload["parent_pid"]:
                 raise AgentError("worker_parent_gone")
         reply = {"result": work(payload)}
+        admit(reply)
     except Exception as exc:
         reply = {"error": str(exc) if isinstance(exc, AgentError) else "worker_operation_failed"}
     sys.stdout.buffer.write(encode(reply).encode("utf-8"))

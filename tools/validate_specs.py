@@ -102,6 +102,7 @@ def check() -> list[str]:
     for task in tasks:
         check_refs(task, "requirement_ids", sets["requirements"], errors)
         check_refs(task, "depends_on", sets["tasks"], errors)
+        check_refs(task, "acceptance_depends_on", sets["tasks"], errors)
         if task.get("milestone") not in sets["milestones"]:
             errors.append(f"{task['id']}: unknown milestone")
         if task.get("status") not in ("todo", "in_progress", "blocked", "done", "cancelled"):
@@ -202,6 +203,22 @@ def check() -> list[str]:
         visited.add(node)
     for node in graph:
         visit(node)
+
+    # Work prerequisites alone are not the acceptance graph: a gate can depend on
+    # the task whose acceptance it must supply, without a syntactic DAG cycle.
+    graph = {t["id"]: [*t.get("depends_on", []), *t.get("acceptance_depends_on", [])]
+             for t in tasks}
+    visited.clear()
+    visiting.clear()
+    for task in tasks:
+        if task["status"] == "done" and any(task_statuses.get(dep) != "done"
+                for dep in task.get("acceptance_depends_on", [])):
+            errors.append(f"{task['id']}: done before acceptance gate")
+    for node in graph:
+        previous = len(errors)
+        visit(node)
+        for index in range(previous, len(errors)):
+            errors[index] = errors[index].replace("task dependency cycle", "acceptance dependency cycle")
 
     components = load("spec/components.json")["components"]
     if len({c["id"] for c in components}) != len(components):

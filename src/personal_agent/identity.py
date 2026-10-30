@@ -5,6 +5,7 @@ import json
 import os
 
 from .config import AgentError, Paths, reject_links, specification, validate
+from .data_policy import admit
 from .storage import encode, now, uid
 
 
@@ -27,9 +28,10 @@ class Identity:
             raise AgentError("persona_size_exceeded")
         try:
             value = json.loads(path.read_text(encoding="utf-8"))
-        except ValueError as exc:
-            raise AgentError("persona_corrupted") from exc
+        except ValueError:
+            raise AgentError("persona_corrupted") from None
         validate("persona", value)
+        admit(value)
         if value["version"] != versions[-1]:
             raise AgentError("persona_version_mismatch")
         return value
@@ -43,6 +45,7 @@ class Identity:
     def save(self, value: dict):
         """Owner boundary only; no tool can call this. New version or fail, never overwrite."""
         validate("persona", value)
+        admit(value)
         previous = self.current() if self.versions() else None
         expected = previous["version"] + 1 if previous else 1
         if (value["version"] != expected
@@ -64,7 +67,7 @@ class Identity:
                 os.rename(temporary, final)
             else:
                 os.link(temporary, final)
-        except FileExistsError as exc:
-            raise AgentError("persona_version_conflict") from exc
+        except FileExistsError:
+            raise AgentError("persona_version_conflict") from None
         finally:
             temporary.unlink(missing_ok=True)

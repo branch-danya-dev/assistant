@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-30T20:45:13.562121Z",
+  "source_revision": {
+    "commit": "12e0d2a5f2435959e124e73198a34dd45bf917c7",
+    "dirty": false
+  },
+  "runtime_source_fingerprint": "fefe2b006fc584780d2b1f8292721c6ad708659fb84c32445c4b575f35345cfd",
+  "passed": false,
+  "status": "unavailable",
+  "error": "ollama_unavailable_or_invalid_response",
+  "selected_model": "qwen3.5:9b",
+  "model_comparisons": 0,
+  "synthetic_only": true,
+  "historical_success_reused": false,
+  "tcp_followup": {
+    "exception_type": "ConnectionRefusedError",
+    "errno": 10061,
+    "winerror": 10061
+  },
+  "phase": "initial_model_smoke_before_fixture_dispatch",
+  "production_database_opened": false,
+  "current_model_files_verified": false,
+  "task_dispatched": false
+}

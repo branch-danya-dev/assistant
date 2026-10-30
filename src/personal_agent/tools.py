@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from jsonschema import Draft202012Validator
 
 from .config import AgentError, Paths, safe_relative, validate
+from .data_policy import admit, file_access, tool_result, validate_scope
 from .memory import Memory
 from .safe_fs import MAX_FILE_BYTES, create_text, observe
 from .storage import encode
@@ -70,6 +71,8 @@ class Registry:
     def resolve(self, request: dict, task: dict, scope: dict) -> Resolved:
         """Pure authorization; blocking filesystem calls belong inside the bounded worker."""
         validate("tool-invocation", request)
+        validate_scope(scope)
+        admit(request)
         if request["task_id"] != task["task_id"]:
             raise AgentError("task_scope_mismatch")
         definition = self.descriptors.get((request["capability_id"], request["operation"]))
@@ -83,6 +86,8 @@ class Registry:
             create = request["operation"] == "create_text"
             if relative not in scope.get("create_files" if create else "files", []):
                 raise AgentError("file_not_in_owner_scope")
+            if not create:
+                file_access(relative, scope)
             if create:
                 if os.name != "nt" and "/" in relative:
                     raise AgentError("nested_create_requires_windows")
@@ -126,6 +131,7 @@ class Registry:
     def verify(self, resolved: Resolved, result: dict, task: dict, scope: dict):
         if not Draft202012Validator(resolved.descriptor["output_schema"]).is_valid(result):
             raise AgentError("invalid_tool_output")
+        tool_result(resolved.request, result, task, scope)
         if resolved.request["operation"] == "create_text":
             data = resolved.request["arguments"]["text"].encode("utf-8")
             if result["bytes"] != len(data) or result["sha256"] != hashlib.sha256(data).hexdigest():

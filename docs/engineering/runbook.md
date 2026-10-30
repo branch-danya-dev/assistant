@@ -173,3 +173,15 @@ Migration is transactional;
 newer unknown schema versions are rejected. Rollback restores a backup with matching code,
 not a destructive down migration. A G: backup is not disaster recovery; retain an encrypted
 off-disk copy separately.
+
+## M1 data admission update
+
+Read [current security boundaries](m1-security-boundaries.md) before using private sources.
+`--allow-file` is an explicit internal-file local-context grant, not a secret-free certificate.
+Use `--allow-private-file relative.txt` for an exact private file authorized for local tool
+IPC, canonical evidence and Ollama; private summaries are withheld from task diagnostics.
+`--include-private` grants project-scoped private memory locally. Never provide real secrets:
+recognizable credential patterns are denied, but arbitrary/encoded secrets are not detected
+universally. No remote egress is enabled by these flags. Secret denials block the task;
+inspect the source under owner control and create a correctly scoped task instead of changing
+policy from model/source text. Existing tasks and complete saved evidence are not rewritten.

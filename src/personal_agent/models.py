@@ -11,6 +11,7 @@ from urllib.parse import urlsplit
 from jsonschema import Draft202012Validator
 
 from .config import AgentError, specification
+from .data_policy import admit
 from .storage import encode
 from .tools import DESCRIPTORS
 
@@ -108,7 +109,11 @@ def validate_reply(value: object, task_id: str) -> dict:
 class Ollama:
     def __init__(self, *, endpoint: str | None = None, timeout: float = 60):
         self.config = specification("model-config.json")["primary_local"]
-        url = urlsplit(endpoint or self.config["endpoint"])
+        try:
+            url = urlsplit(endpoint or self.config["endpoint"])
+            port = url.port or 80
+        except ValueError:
+            raise AgentError("non_loopback_egress_denied") from None
         if (url.scheme != "http" or url.hostname not in ("127.0.0.1", "::1")
                 or url.username or url.password or url.path not in ("", "/")
                 or url.query or url.fragment):
@@ -117,11 +122,14 @@ class Ollama:
             raise AgentError("unapproved_model_configuration")
         if not 0 < timeout <= 120:
             raise AgentError("invalid_provider_timeout")
-        self.host, self.port = url.hostname, url.port or 80
+        self.host, self.port = url.hostname, port
         self.timeout = timeout
         self.metrics = {}
 
     def _request(self, path: str, payload: dict | None = None) -> dict:
+        if self.host not in ("127.0.0.1", "::1") or path not in ("/api/chat", "/api/tags", "/api/show"):
+            raise AgentError("non_loopback_egress_denied")
+        admit(payload)
         connection = http.client.HTTPConnection(self.host, self.port, timeout=self.timeout)
         deadline = time.monotonic() + self.timeout
         response = None
@@ -155,8 +163,8 @@ class Ollama:
             if not isinstance(value, dict):
                 raise AgentError("ollama_invalid_response")
             return value
-        except (OSError, http.client.HTTPException, ValueError, socket.timeout) as exc:
-            raise AgentError("ollama_unavailable_or_invalid_response") from exc
+        except (OSError, http.client.HTTPException, ValueError, socket.timeout):
+            raise AgentError("ollama_unavailable_or_invalid_response") from None
         finally:
             if response is not None:
                 response.close()
@@ -175,6 +183,7 @@ class Ollama:
 
     def _chat(self, messages: list[dict], *, structured: bool, phase: str | None = None,
               task_id: str | None = None) -> str:
+        admit(messages)
         if len(encode(messages).encode("utf-8")) > MAX_CONTEXT_BYTES:
             raise AgentError("context_budget_exhausted")
         payload = {"model": self.config["model"], "messages": messages, "stream": False, "think": False,
@@ -206,9 +215,10 @@ class Ollama:
         content = self._chat(messages, structured=True, phase=phase, task_id=task_id)
         try:
             result = json.loads(content)
-        except ValueError as exc:
-            raise AgentError("invalid_model_json") from exc
+        except ValueError:
+            raise AgentError("invalid_model_json") from None
         validate_reply(result, task_id)
+        admit(result)
         if not Draft202012Validator(reply_schema(phase, constrain_tools=True, task_id=task_id)).is_valid(result):
             raise AgentError("model_reply_wrong_phase")
         return result
