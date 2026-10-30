@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "UntrustedToolInvocation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "capability_id",
+    "operation",
+    "arguments"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capability_id": {
+      "type": "string",
+      "pattern": "^CAP-[0-9]{3}$"
+    },
+    "operation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "arguments": {
+      "type": "object"
+    }
+  },
+  "description": "Model-generated intent only; effective authorization, side effect and target must be derived by trusted engine."
+}

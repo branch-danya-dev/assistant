@@ -1,0 +1,27 @@
+{
+  "id": "CAP-028",
+  "version": "1.0.0",
+  "operation": "create_pull_request",
+  "input_schema": {
+    "type": "object",
+    "required": [
+      "repo",
+      "head",
+      "base"
+    ]
+  },
+  "output_schema": {
+    "type": "object"
+  },
+  "side_effect": "external_send",
+  "scope": "approved_repository_exact_operation",
+  "timeout_seconds": 60,
+  "approval_required": true,
+  "verifier": "github_pr_lookup",
+  "effect_resolver": "policy.github_pr_mutation.v1",
+  "data_classes": [
+    "private"
+  ],
+  "retry_policy": "reconcile_before_retry",
+  "idempotent": false
+}

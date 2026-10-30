@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VersionedPersona",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "persona_id",
+    "version",
+    "updated_at",
+    "core",
+    "preferences",
+    "provenance"
+  ],
+  "properties": {
+    "persona_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "core": {
+      "type": "object",
+      "required": [
+        "style",
+        "principles"
+      ],
+      "properties": {
+        "style": {
+          "type": "string"
+        },
+        "principles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "preferences": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "string"
+    },
+    "supersedes_version": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    }
+  }
+}

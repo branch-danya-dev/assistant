@@ -79,7 +79,41 @@
       ]
     },
     "retention_class": {
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "durable",
+        "project",
+        "temporary",
+        "archive",
+        "user_managed"
+      ]
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "valid_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "valid_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   }
 }

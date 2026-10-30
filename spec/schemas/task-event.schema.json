@@ -40,7 +40,12 @@
         "blocked",
         "completed",
         "failed",
-        "cancelled"
+        "cancelled",
+        "approval_consumed",
+        "reconciliation_required",
+        "reconciled",
+        "resumed",
+        "paused"
       ]
     },
     "timestamp": {

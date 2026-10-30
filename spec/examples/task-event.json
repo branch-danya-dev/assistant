@@ -1,0 +1,15 @@
+{
+  "event_id": "event-001",
+  "task_id": "test-task",
+  "sequence": 2,
+  "kind": "reconciliation_required",
+  "timestamp": "2026-10-30T00:01:00Z",
+  "actor": "system",
+  "evidence_refs": [
+    "fixture:network-timeout"
+  ],
+  "payload": {
+    "reason": "timeout_after_send"
+  },
+  "idempotency_key": "idem-001"
+}
