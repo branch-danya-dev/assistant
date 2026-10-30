@@ -16,5 +16,5 @@
 - [`engineering/quality.md`](engineering/quality.md): acceptance, test pyramid, evaluation.
 - [`engineering/implementation.md`](engineering/implementation.md): development process and local setup.
 
-Canonical datasets: `spec/{manifest,requirements,capabilities,scenarios,decisions,milestones,tasks,components}.json`.
+Canonical datasets: `spec/{manifest,model-config,requirements,capabilities,scenarios,decisions,milestones,tasks,components}.json`.
 Event/data contracts: `spec/schemas/*.schema.json`.

@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "project_id": "personal-ai-assistant",
   "stage": "planning",
-  "last_reviewed": "2026-10-29",
+  "last_reviewed": "2026-10-30",
   "canonical_source": "spec/*.json for structured records; docs/* for rationale",
   "instruction_priority": [
     "AGENTS.md",
@@ -28,6 +28,12 @@
       "path": "docs/INDEX.md",
       "role": "DOC_INDEX",
       "purpose": "Route to topic docs",
+      "context_cost": "small"
+    },
+    {
+      "path": "spec/model-config.json",
+      "role": "MODEL_SELECTION",
+      "purpose": "Owner-approved local model baseline (no A/B model tests)",
       "context_cost": "small"
     },
     {
@@ -91,7 +97,8 @@
     "docs/engineering/import-to-github.md",
     "src/personal_agent/ports.py",
     ".github/workflows/spec-validation.yml",
-    "tools/validate_specs.py"
+    "tools/validate_specs.py",
+    "spec/model-config.json"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",

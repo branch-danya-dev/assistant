@@ -27,6 +27,13 @@ def check() -> list[str]:
     manifest = load("spec/manifest.json")
     if manifest.get("schema_version") != "1.0":
         errors.append("manifest: unsupported schema_version")
+    selected = load("spec/model-config.json")
+    if selected.get("primary_local", {}).get("model") != "qwen3.5:9b":
+        errors.append("model-config: primary local model differs from ADR-015")
+    if selected.get("primary_local", {}).get("provider") != "ollama":
+        errors.append("model-config: primary provider must be ollama")
+    if selected.get("selection_policy", {}).get("comparative_model_benchmarks") != "not_required":
+        errors.append("model-config: owner declined comparative model benchmarks")
     for doc in manifest.get("entrypoints", []):
         if not (ROOT / doc["path"]).is_file():
             errors.append(f"manifest: missing entrypoint {doc['path']}")

@@ -39,7 +39,7 @@
     },
     {
       "id": "TASK-003",
-      "title": "Define acceptance fixtures and benchmark rubric",
+      "title": "Define functional acceptance fixtures and verification rubric",
       "status": "todo",
       "priority": "P0",
       "milestone": "M0",
@@ -50,7 +50,7 @@
         "REQ-051"
       ],
       "acceptance": [
-        "All SCN-001..005 fixtures and scoring methodology specified."
+        "All SCN-001..005 fixtures, expected artifacts and safety assertions specified without comparative LLM benchmarks."
       ],
       "evidence": [],
       "owner": "unassigned"
@@ -98,7 +98,7 @@
     },
     {
       "id": "TASK-006",
-      "title": "Implement local model adapter and router port",
+      "title": "Implement Ollama Qwen3.5 9B adapter and provider-neutral port",
       "status": "todo",
       "priority": "P0",
       "milestone": "M1",
@@ -110,7 +110,8 @@
         "REQ-021"
       ],
       "acceptance": [
-        "Swap adapter in test without task-data or identity loss."
+        "Configure Ollama qwen3.5:9b from spec/model-config.json; verify text generation and a controlled tool-call smoke check.",
+        "Swapping a mock provider in unit tests does not erase task, identity or memory state; do not compare live LLMs."
       ],
       "evidence": [],
       "owner": "unassigned"

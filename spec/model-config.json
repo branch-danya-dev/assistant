@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "choice_status": "accepted",
+  "decision_id": "ADR-015",
+  "recorded_on": "2026-10-30",
+  "purpose": "Primary local inference for single-user Windows assistant; this is selected model configuration, not a running model.",
+  "primary_local": {
+    "provider": "ollama",
+    "model": "qwen3.5:9b",
+    "endpoint": "http://127.0.0.1:11434",
+    "context_tokens_initial": 8192,
+    "network_policy": "localhost_only",
+    "selection": "explicit_owner_choice",
+    "version_policy": "record resolved model digest and quantization at first installation"
+  },
+  "selection_policy": {
+    "comparative_model_benchmarks": "not_required",
+    "automated_model_ranking": "disabled",
+    "runtime_smoke_check": "required_before_claiming_operational",
+    "functional_task_and_security_checks": "required",
+    "provider_swap": "architecturally_supported_but_not_part_of_initial_selection"
+  },
+  "implementation_status": "planned",
+  "source_url": "https://ollama.com/library/qwen3.5",
+  "notes": [
+    "Advertised maximum context is not a guarantee of usable context on 16 GB VRAM.",
+    "Tool use and vision capability must be wired through the adapter; model selection alone does not implement them.",
+    "Cloud inference remains optional and consent-gated; no fallback model is chosen by default."
+  ]
+}

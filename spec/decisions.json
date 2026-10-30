@@ -140,6 +140,16 @@
       "revisit_when": "Owner refines authorization rules.",
       "recorded_on": "2026-10-29",
       "owner": "proposed for owner review"
+    },
+    {
+      "id": "ADR-015",
+      "title": "Select Qwen3.5 9B as default local model, without comparative model testing",
+      "status": "accepted",
+      "context": "Owner explicitly selected Qwen3.5 9B for the initial agent and declined model comparison tests. This selects a planned implementation default, not an installed runtime.",
+      "decision": "Use Ollama tag qwen3.5:9b by default. Implement only this local model first. Retain provider-neutral contracts but do not schedule A/B model benchmarks, alternatives or model-ranking as release prerequisites. Retain minimal startup smoke checks, functional verification and security tests.",
+      "revisit_when": "Owner explicitly changes model choice or later requests evaluations.",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner"
     }
   ]
 }

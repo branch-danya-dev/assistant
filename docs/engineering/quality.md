@@ -14,5 +14,5 @@ Requirement linked -> tests written -> correct behavior observed -> verification
 ## Numerical/document tests
 Use fixture-based expected outputs; evaluate Excel formulas *and* computed values; test DOCX preservation and PDF layout; compare source citations for research; use decimal arithmetic for monetary cases; include idempotency on retry.
 
-## Model benchmark corpus
-Include tasks from `spec/scenarios.json` with expected results, tool-call validity and evidence/side-effect rules. Record model name, quantization, context size, machine profile, versions, elapsed time, cost, success and confidence intervals where meaningful.
+## Selected-model smoke and functional checks (ADR-015)
+The owner selected `qwen3.5:9b` without comparative LLM testing. Do **not** require A/B model comparisons or automated model rankings. Test that the selected Ollama adapter can load, complete a prompt and produce a parseable synthetic tool call. Continue to validate task outputs, authorization, numerical correctness and security with `spec/scenarios.json`. Record selected model/tag, resolved digest/quantization when installed, and environment details only for reproducibility. Functional acceptance and security regression are mandatory even though model selection comparisons are not.
