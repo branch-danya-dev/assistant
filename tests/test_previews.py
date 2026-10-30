@@ -176,3 +176,8 @@ foreach ($Item in @($PreviewPath, [System.IO.Path]::GetDirectoryName($PreviewPat
         self.assertEqual(cleaned["skipped_unsafe_or_inaccessible"], 1)
         self.assertEqual(outside.read_text(), "foreign")
         self.assertEqual(self.store.connection.execute("SELECT count(*) FROM approval_previews").fetchone()[0], 1)
+        malformed = self.path(self.cache.create({"fixture": "retained"}, clock=1000))
+        self.store.connection.execute("UPDATE approval_previews SET identity='invalid' WHERE name=?",
+                                      (malformed.name,))
+        self.assertEqual(self.cache.cleanup(clock=10000)["skipped_unsafe_or_inaccessible"], 2)
+        self.assertTrue(malformed.exists())

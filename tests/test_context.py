@@ -2,6 +2,7 @@ import hashlib
 import json
 from unittest.mock import patch
 
+import test_cli
 from support import RuntimeCase
 from test_models import chat_response, ollama_stub
 
@@ -78,6 +79,11 @@ class ContextTests(RuntimeCase):
         provider = ReceiptProvider()
         result = Agent(self.store, provider).run(task)
         self.check_saved_read(task, text, provider, result)
+        shown = test_cli.CliTests.invoke(self, "show", task)
+        self.assertEqual(shown.returncode, 2)
+        self.assertEqual(json.loads(shown.stdout)["task"]["state"], "partial")
+        with self.assertRaises(AgentError):
+            Agent(self.store, provider).run(task, resume=True)
 
     def test_small_read_is_fully_visible_not_an_excerpt(self):
         text = "Entire synthetic source."

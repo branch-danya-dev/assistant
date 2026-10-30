@@ -36,6 +36,7 @@ def _private(fd, *, directory=False, sid=None):
 
 
 class Previews:
+    """Owner CLI mutations are serialized by Store.execution_lock."""
     def __init__(self, store):
         self.store, self.db = store, store.connection
         # Lexical path: pinned_parent provides the no-follow boundary.
@@ -107,7 +108,7 @@ class Previews:
                     removed += 1
                 except FileNotFoundError:
                     self.db.execute("DELETE FROM approval_previews WHERE name=?", (row["name"],))
-                except (OSError, AgentError):
+                except (OSError, AgentError, ValueError):
                     # Never delete a substitute, linked object, or foreign file. Do not echo paths/data.
                     skipped += 1
                 finally:
