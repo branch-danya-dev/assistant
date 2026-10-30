@@ -14,6 +14,10 @@ from .storage import Store, encode
 
 def work(payload):
     paths = Paths(payload["root"])
+    if payload["kind"] == "scope_check":
+        from .safe_fs import check_scope_paths
+        check_scope_paths(paths, payload["project"], payload["scope"])
+        return {"scope_checked": True}
     if payload["kind"] == "snapshot":
         from .safe_fs import snapshot
         return {p: snapshot(paths, payload["project"], p) for p in payload["files"]}

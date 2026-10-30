@@ -1,6 +1,10 @@
 """Closed public diagnostics. Never add source or exception text here."""
 
 ERROR_CODES = frozenset({
+    'ambiguous_file_scope',
+    'directory_case_policy_unavailable',
+    'case_sensitive_directory_denied',
+    'noncanonical_file_alias',
     'invalid_cli_arguments',
     'absolute_path_denied',
     'absolute_root_required',

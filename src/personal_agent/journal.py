@@ -93,6 +93,10 @@ class Journal:
             raise AgentError("invalid_intent")
         self.store.paths.project_workspace(project_id)
         scope = json.loads(encode(scope))
+        if scope.get("files") or scope.get("create_files"):
+            from .bounded import run_worker
+            run_worker(self.store.paths, {"kind": "scope_check", "project": project_id,
+                                         "scope": scope})
         if scope.get("create_files"):
             from .bounded import run_worker
             scope["create_files"] = [safe_relative(p) for p in scope["create_files"]]

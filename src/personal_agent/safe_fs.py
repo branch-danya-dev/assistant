@@ -40,6 +40,30 @@ def identity(fd: int) -> list[int]:
     return [value.st_dev, value.st_ino]
 
 
+def _win_directory_policy(fd: int):
+    """No case-sensitive or unknown directory semantics in the Windows backend."""
+    import msvcrt
+    from ctypes import wintypes as w
+    api = ctypes.WinDLL("kernel32", use_last_error=True).GetFileInformationByHandleEx
+    api.argtypes = [w.HANDLE, ctypes.c_int, w.LPVOID, w.DWORD]
+    api.restype = w.BOOL
+    flags = w.ULONG()
+    if not api(msvcrt.get_osfhandle(fd), 23, ctypes.byref(flags), ctypes.sizeof(flags)):
+        raise AgentError("directory_case_policy_unavailable")
+    if flags.value:
+        raise AgentError("case_sensitive_directory_denied")
+
+
+def _exact_opened_path(fd: int, target: Path) -> bool:
+    actual = opened_path(fd)
+    if os.name != "nt":
+        return actual == target
+    # Path.__eq__ on Windows folds case and can conceal aliases. Compare the
+    # normalized long name from the pinned handle literally (drive letter excepted).
+    # No Unicode normalization, short-name expansion or right rebinding here.
+    return actual.drive.upper() == target.drive.upper() and actual.parts[1:] == target.parts[1:]
+
+
 def _regular(fd: int, *, anonymous: bool = False):
     info = os.fstat(fd)
     if (not stat.S_ISREG(info.st_mode) or info.st_nlink != (0 if anonymous else 1)
@@ -94,25 +118,31 @@ def _win_open(name: str, parent: int | None, *, directory=False, create=False,
     except BaseException:
         ctypes.WinDLL("kernel32").CloseHandle(handle)
         raise
-    info = os.fstat(fd)
-    if getattr(info, "st_file_attributes", 0) & 0x400:
+    try:
+        info = os.fstat(fd)
+        if getattr(info, "st_file_attributes", 0) & 0x400:
+            raise AgentError("reparse_path_denied")
+        if directory:
+            _win_directory_policy(fd)
+    except BaseException:
         os.close(fd)
-        raise AgentError("reparse_path_denied")
+        raise
     return fd
 
 
 @contextmanager
-def parents(paths: Paths, project: str, relative: str, binding: list | None = None):
+def parents(paths: Paths, project: str, relative: str, binding: list | None = None,
+            *, missing_ok=False):
     relative = safe_relative(relative)
     # Use lexical components, never resolve through an attacker-controlled link.
     base = paths.root / paths.config["layout"]["workspace"] / safe_relative(project)
     target = base / relative
-    with pinned_parent(target, binding) as pinned:
+    with pinned_parent(target, binding, missing_ok=missing_ok) as pinned:
         yield pinned
 
 
 @contextmanager
-def pinned_parent(target: Path, binding: list | None = None):
+def pinned_parent(target: Path, binding: list | None = None, *, missing_ok=False):
     """Pin a lexical absolute parent chain, including cache paths; never follow links."""
     if not target.is_absolute() or ".." in target.parts:
         raise AgentError("absolute_safe_path_required")
@@ -133,11 +163,17 @@ def pinned_parent(target: Path, binding: list | None = None):
                   os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd))
             fds.append(fd)
             chain.append(identity(fd))
+            if os.name == "nt" and opened_path(fd).name != part:
+                raise AgentError("noncanonical_file_alias")
         if binding is not None and chain != binding:
             raise AgentError("workspace_identity_changed")
-        if opened_path(fds[-1]) != target.parent:
+        if not _exact_opened_path(fds[-1], target.parent):
             raise AgentError("opened_parent_changed")
         yield fds, chain, target
+    except FileNotFoundError:
+        if missing_ok:
+            raise
+        raise AgentError("safe_file_access_denied") from None
     except OSError:
         raise AgentError("safe_file_access_denied") from None
     finally:
@@ -148,6 +184,38 @@ def pinned_parent(target: Path, binding: list | None = None):
 def snapshot(paths: Paths, project: str, relative: str) -> list:
     with parents(paths, project, relative) as (_, chain, _target):
         return chain
+
+
+def check_scope_paths(paths: Paths, project: str, scope: dict):
+    """Metadata-only preflight; missing future names confer no new authority.
+
+    Runs in a bounded worker at creation/resume and again at execution. It never
+    reads source bytes, including restricted files. The actual opened reader and
+    exclusive creator still recheck their handles, closing the preflight race.
+    """
+    from .data_policy import validate_scope
+    validate_scope(scope)
+    seen = set()
+    for relative in dict.fromkeys(scope.get("files", []) + scope.get("create_files", [])):
+        try:
+            with parents(paths, project, relative, missing_ok=True) as (fds, _, target):
+                fd = (_win_open(target.name, fds[-1]) if os.name == "nt" else
+                      os.open(target.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                              dir_fd=fds[-1]))
+                try:
+                    _regular(fd)
+                    if not _exact_opened_path(fd, target):
+                        raise AgentError("noncanonical_file_alias")
+                    physical = tuple(identity(fd))
+                    if not all(physical) or physical in seen:
+                        raise AgentError("ambiguous_file_scope")
+                    seen.add(physical)
+                finally:
+                    os.close(fd)
+        except FileNotFoundError:
+            # Legacy scopes may name a not-yet-created source. No binding is
+            # invented; execution must still satisfy all current handle checks.
+            continue
 
 
 def _linux_confine(directory_fds: list[int]):
@@ -232,7 +300,7 @@ def create_text(paths: Paths, project: str, relative: str, text: str, binding: l
             _regular(fd)
             # Linux O_TMPFILE's original fd keeps its anonymous procfs name after linkat.
             # The separate observer opens the published name and must match this inode receipt.
-            if os.name == "nt" and opened_path(fd) != target:
+            if os.name == "nt" and not _exact_opened_path(fd, target):
                 raise AgentError("opened_target_changed")
             return _receipt(fd, relative, data)
         except OSError:
@@ -248,7 +316,7 @@ def observe(paths: Paths, project: str, relative: str, binding: list | None = No
               os.open(target.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fds[-1]))
         try:
             _regular(fd)
-            if opened_path(fd) != target:
+            if not _exact_opened_path(fd, target):
                 raise AgentError("opened_target_changed")
             before = os.fstat(fd)
             data = bytearray()

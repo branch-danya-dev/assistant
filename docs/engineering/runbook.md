@@ -185,3 +185,12 @@ recognizable credential patterns are denied, but arbitrary/encoded secrets are n
 universally. No remote egress is enabled by these flags. Secret denials block the task;
 inspect the source under owner control and create a correctly scoped task instead of changing
 policy from model/source text. Existing tasks and complete saved evidence are not rewritten.
+
+## File scope compatibility after PR #6 review
+
+Use exact long filename/directory spelling on Windows, including the configured root.
+Duplicate/case/Unicode-collision grants, short aliases, hardlinks and case-sensitive or
+unqueryable directory semantics fail closed. `--allow-private-file` cannot overlap a differently
+spelled `--allow-file`. A blocked legacy scope is not automatically normalized: inspect its
+labels and create a new task with reviewed names. Retain existing evidence and approvals;
+never replay an uncertain create. See [policy and platform limits](m1-file-aliases.md).

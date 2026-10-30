@@ -11,7 +11,7 @@ from jsonschema import Draft202012Validator
 from .config import AgentError, Paths, safe_relative, validate
 from .data_policy import admit, file_access, tool_result, validate_scope
 from .memory import Memory
-from .safe_fs import MAX_FILE_BYTES, create_text, observe
+from .safe_fs import MAX_FILE_BYTES, check_scope_paths, create_text, observe
 from .storage import encode
 
 
@@ -104,6 +104,7 @@ class Registry:
     def _checked(self, resolved, task, scope):
         if self.resolve(resolved.request, task, scope) != resolved:
             raise AgentError("resolved_target_changed")
+        check_scope_paths(self.paths, task["project_id"], scope)
 
     def execute(self, resolved: Resolved, task: dict, scope: dict) -> dict:
         self._checked(resolved, task, scope)

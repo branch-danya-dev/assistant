@@ -53,3 +53,10 @@ public diagnostic codes are closed. Private local context needs an owner grant. 
 [threat model, tests and unmet P0 acceptance](../engineering/m1-security-boundaries.md).
 Arbitrary unlabelled/encoded secrets are not universally recognized. REQ-017/019 remain open;
 synthetic future-source denials do not certify real connector integrations.
+
+ADR-024 refines file admission after the PR #6 alias finding: reject ambiguous whole scopes,
+require exact Windows long names and known directory case policy on opened handles, retain
+single-link checks, and preflight legacy scopes before dispatch without rebinding rights.
+See [file policy and evidence](../engineering/m1-file-aliases.md).
+[ADR-025](../engineering/m1-trust-boundary-proposal.md) only proposes a bounded acceptance
+agreement; it does not change or close the original REQ-017/019 gates.
