@@ -8,6 +8,7 @@
 - [`architecture/overview.md`](architecture/overview.md): component boundaries and data flow.
 - [`architecture/orchestration.md`](architecture/orchestration.md): execution, retries, scheduling and recovery.
 - [`architecture/memory.md`](architecture/memory.md): data, retrieval, provenance, retention.
+- [`architecture/identity.md`](architecture/identity.md): persona, preferences, versioning and trust.
 - [`architecture/models.md`](architecture/models.md): inference and routing policy.
 - [`architecture/storage.md`](architecture/storage.md): Windows G-drive layout, Ollama path, backups, portability.
 - [`architecture/tools.md`](architecture/tools.md): capability registry and adapters.
@@ -15,6 +16,8 @@
 - [`architecture/evolution.md`](architecture/evolution.md): skill growth and review gates.
 - [`architecture/interfaces.md`](architecture/interfaces.md): API surfaces and applications.
 - [`engineering/quality.md`](engineering/quality.md): acceptance, test pyramid, evaluation.
+- [`engineering/architecture-baseline.md`](engineering/architecture-baseline.md): approved implementation contract and release gates.
+- [`engineering/threat-fixtures.md`](engineering/threat-fixtures.md): synthetic security regression cases.
 - [`engineering/implementation.md`](engineering/implementation.md): development process and local setup.
 
 Canonical datasets: `spec/{manifest,model-config,storage-config,requirements,capabilities,scenarios,decisions,milestones,tasks,components}.json`.

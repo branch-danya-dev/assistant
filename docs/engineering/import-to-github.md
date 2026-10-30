@@ -1,19 +1,22 @@
-# Import package into the empty GitHub repository
+# GitHub repository checkout and local Windows bootstrap
 
-GitHub target: `dev-danrogulin/assistant` (currently public and empty as inspected 2026-10-29). The connected account used during preparation was `branch-danya-dev` with `push=false`; therefore these files were **not** written to GitHub. Import using an account with write access.
+This repository is **already hosted** at https://github.com/branch-danya-dev/assistant on branch `main`. Historical instructions about an empty `dev-danrogulin/assistant` repository are obsolete. Do not initialize a new Git history, force-push, or import old ZIP packages over this repository.
 
-1. Download/extract the supplied `assistant-foundation.zip` into a temporary directory.
-2. Open PowerShell in that directory and run the commands below (or copy files into an already authenticated clone):
+## Windows setup on the owner computer
+
+1. Verify G: is the intended SSD and `G:\Assistant` is the approved root (`ADR-016`).
+2. Follow `docs/architecture/storage.md` to provision `G:\Assistant\repo`, model and data directories (with user approval).
+3. Clone the existing GitHub repository **inside** `G:\Assistant\repo`:
 
 ```powershell
-git init
-git branch -M main
-git add .
-git commit -m "docs: initialize agent-first assistant project foundation"
-git remote add origin https://github.com/dev-danrogulin/assistant.git
-git push -u origin main
+git clone https://github.com/branch-danya-dev/assistant.git G:\Assistant\repo
+cd G:\Assistant\repo
+git remote -v
+git status
 ```
 
-Before pushing, verify `git remote -v`, current account credentials and that the target repository is still empty. If it is no longer empty, **clone and merge manually** instead of force-pushing. Nothing in this package includes live credentials or user data.
+4. Install Python 3.12+ and developer dependencies; follow `docs/engineering/implementation.md`.
+5. Set the Windows User `OLLAMA_MODELS` variable to `G:\Assistant\models\ollama` **before pulling** `qwen3.5:9b`. Restart Ollama; `.env` does not configure the separately running Ollama process.
+6. Work in feature branches and reviewable PRs, preserve the machine-readable specs and run CI before merging.
 
-After import check GitHub Actions `Spec validation` and confirm the default branch. If the linked GitHub app needs future direct write access, install/authorize it for the correct repository and grant content-write permission.
+This is a setup guide, not evidence that any of these commands were executed on the owner's machine.

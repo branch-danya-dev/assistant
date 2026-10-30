@@ -115,7 +115,8 @@
     "spec/examples/task-event.json",
     "spec/examples/tool-descriptor.json",
     "spec/examples/tool-invocation.json",
-    "spec/examples/persona.json"
+    "spec/examples/persona.json",
+    "docs/engineering/architecture-baseline.md"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",

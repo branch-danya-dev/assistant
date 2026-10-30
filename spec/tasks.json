@@ -820,6 +820,26 @@
       ],
       "evidence": [],
       "owner": "unassigned"
+    },
+    {
+      "id": "TASK-042",
+      "title": "Record verified outcomes and propose non-executable skill candidates",
+      "status": "todo",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "TASK-009",
+        "TASK-015"
+      ],
+      "requirement_ids": [
+        "REQ-044"
+      ],
+      "acceptance": [
+        "Verified task outcomes may be distilled into a reviewable, deduplicated skill proposal with provenance.",
+        "No generated executable is activated or promoted before owner review (M4 TASK-021)."
+      ],
+      "evidence": [],
+      "owner": "unassigned"
     }
   ]
 }

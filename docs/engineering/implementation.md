@@ -12,14 +12,18 @@ Clone to `G:\Assistant\repo`, not the system disk. Before running code or downlo
 ```powershell
 py -3.12 -m venv .venv
 .venv\Scripts\Activate.ps1
-python -m pip install -e .
+python -m pip install -e ".[dev]"
 python tools/validate_specs.py
 python -m unittest discover -s tests -v
 ```
 
+## Contract and CI discipline
+
+The canonical M1 baseline is `docs/engineering/architecture-baseline.md`, with threat cases in `docs/engineering/threat-fixtures.md`. Every non-deprecated REQ must link to a TASK; every TASK has verifiable acceptance. JSON Schema examples under `spec/examples/` are checked with `jsonschema` on both Ubuntu and Windows runners. Model comparison is out of scope (ADR-015), but Qwen3.5 adapter smoke tests and security/functional acceptance are mandatory when the runtime exists. GitHub Actions cannot validate the owner's physical GPU/G: without an explicitly configured self-hosted runner.
+
 ## Delivery order
 1. M0: validate docs, contracts and decisions.
-2. M1: typed task state / permission gate / audit / SQLite memory / local model adapter / read-only tool.
+2. M1: root path bootstrap / typed task journal and safe crash reconciliation / authorization / source-provenance memory, private scopes and stable persona / selected Ollama Qwen3.5 adapter / read-only tool.
 3. M2: file/document/spreadsheet/calculator/browser; prove scenarios.
 4. M3+: scheduler, remote integrations and self-improvement experiments.
 
