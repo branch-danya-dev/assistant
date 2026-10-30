@@ -54,6 +54,7 @@ class Store:
     def __init__(self, paths: Paths):
         paths.require()
         self.paths = paths
+        self.executing = False
         self.connection = sqlite3.connect(paths.file("db", "agent.sqlite3"),
                                           timeout=5, isolation_level=None)
         self.connection.row_factory = sqlite3.Row
@@ -110,8 +111,10 @@ class Store:
             except OSError as exc:
                 raise AgentError("executor_busy") from exc
             try:
+                self.executing = True
                 yield
             finally:
+                self.executing = False
                 file.seek(0)
                 if os.name == "nt":
                     msvcrt.locking(file.fileno(), msvcrt.LK_UNLCK, 1)

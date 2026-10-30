@@ -67,6 +67,10 @@ class Journal:
         task = self.get(task_id)
         if state not in TRANSITIONS[task["state"]]:
             raise AgentError("invalid_task_transition")
+        if task["state"] == "needs_reconciliation" and state in ("queued", "blocked"):
+            if self.db.execute("SELECT 1 FROM actions WHERE task_id=? AND status IN"
+                               " ('uncertain','dispatched')", (task_id,)).fetchone():
+                raise AgentError("unresolved_effects")
         task.update(state=state, updated_at=now(), block_reason=reason)
         self._save(task)
         kind = {"running": "started", "waiting_approval": "approval_requested",
@@ -133,6 +137,8 @@ class Journal:
             task = self.get(task_id)
             if self.stopped():
                 raise AgentError("emergency_stop_active")
+            if task.get("block_reason") == "reconciled_create_new_task":
+                raise AgentError("reconciled_action_requires_new_task")
             if task["state"] == "planned":
                 self._transition(task_id, "queued")
             elif task["state"] in ("paused", "blocked") and resume:
@@ -269,6 +275,8 @@ class Journal:
 
     def recover(self) -> list[str]:
         """Caller MUST hold Store.execution_lock; no automatic execution here."""
+        if not self.store.executing:
+            raise AgentError("recovery_requires_executor_lock")
         changed = []
         with self.store.transaction():
             tasks = self.db.execute("SELECT id FROM tasks WHERE state='running'").fetchall()
@@ -306,6 +314,8 @@ class Journal:
             if self.stopped():
                 raise AgentError("emergency_stop_active")
             task = self.get(task_id)
+            if task["budget"]["deadline"] and now() >= task["budget"]["deadline"]:
+                raise AgentError("wall_budget_exhausted")
             rows = self.db.execute("SELECT id,status FROM actions WHERE task_id=?", (task_id,)).fetchall()
             if (len(rows) != len(task["step_ids"]) or any(r["status"] != "verified" for r in rows)):
                 raise AgentError("unverified_steps")
@@ -320,8 +330,10 @@ class Journal:
     def inspect(self, task_id: str) -> dict:
         task = self.get(task_id)
         actions = [dict(row) for row in self.db.execute(
-            "SELECT id,status,effect,digest,resource,approval_id,attempts FROM actions WHERE task_id=?"
+            "SELECT id,status,effect,digest,resource,approval_id,attempts,request FROM actions WHERE task_id=?"
             " ORDER BY ordinal", (task_id,))]
+        for action in actions:
+            action["request"] = json.loads(action["request"])
         row = self.db.execute("SELECT result FROM tasks WHERE id=?", (task_id,)).fetchone()
         return {"task": task, "actions": actions, "events": self.events(task_id),
                 "result": json.loads(row[0]) if row[0] else None}

@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "src"))
 
 from validate_specs import check, load  # noqa: E402
+
 from personal_agent.ports import ToolRequest, ToolResult  # noqa: E402
 
 

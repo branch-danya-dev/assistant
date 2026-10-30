@@ -4,6 +4,7 @@ import subprocess
 import sys
 
 from support import REPO, RuntimeCase
+
 from personal_agent.config import AgentError, validate
 from personal_agent.journal import Journal
 from personal_agent.storage import Store, encode

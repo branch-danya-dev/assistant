@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from support import RuntimeCase
+
 from personal_agent.config import AgentError, Paths
 from personal_agent.storage import Store
 
