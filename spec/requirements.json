@@ -647,12 +647,15 @@
       "title": "Agent-oriented specs and CI validation",
       "priority": "P0",
       "target_milestone": "M0",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "All IDs, cross-links and machine records validate in CI."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "M0 spec/traceability gates verified; runtime acceptance tracked separately.",
+      "evidence": [
+        "docs/engineering/m0-evidence.md"
+      ]
     },
     {
       "id": "REQ-051",
@@ -660,12 +663,15 @@
       "title": "Versioned functional acceptance scenarios",
       "priority": "P0",
       "target_milestone": "M0",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Five reproducible scenario specs exist with expected artifacts and safety checks."
       ],
       "owner": "project",
-      "notes": "Task correctness and security checks are required; comparative model benchmarks are not part of the approved scope (ADR-015)."
+      "notes": "M0 spec/traceability gates verified; runtime acceptance tracked separately.",
+      "evidence": [
+        "docs/engineering/m0-evidence.md"
+      ]
     },
     {
       "id": "REQ-052",
@@ -673,12 +679,15 @@
       "title": "Agent-friendly task traceability",
       "priority": "P0",
       "target_milestone": "M0",
-      "status": "specified",
+      "status": "implemented",
       "acceptance": [
         "Task, requirement, capability, scenario, decision and component references resolve."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "M0 spec/traceability gates verified; runtime acceptance tracked separately.",
+      "evidence": [
+        "docs/engineering/m0-evidence.md"
+      ]
     },
     {
       "id": "REQ-053",

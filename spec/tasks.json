@@ -4,7 +4,7 @@
     {
       "id": "TASK-001",
       "title": "Automated spec validity and traceability",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M0",
       "depends_on": [],
@@ -15,13 +15,17 @@
       "acceptance": [
         "Validate all ids/references and schema examples in CI."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m0-evidence.md",
+        "tests/test_fixtures.py",
+        "https://github.com/branch-danya-dev/assistant/actions/runs/41041028122"
+      ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-002",
       "title": "Document security boundaries and threat cases",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M0",
       "depends_on": [
@@ -34,13 +38,17 @@
       "acceptance": [
         "Threat table includes injection, exfiltration and irreversible external actions."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m0-evidence.md",
+        "tests/test_fixtures.py",
+        "https://github.com/branch-danya-dev/assistant/actions/runs/41041028122"
+      ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-003",
       "title": "Specify functional verification fixtures and acceptance rubric",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M0",
       "depends_on": [
@@ -52,7 +60,11 @@
       "acceptance": [
         "Each SCN-001..005 has expected outputs, authorization gates and failure fixtures; no comparative local model testing."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m0-evidence.md",
+        "tests/test_fixtures.py",
+        "https://github.com/branch-danya-dev/assistant/actions/runs/41041028122"
+      ],
       "owner": "unassigned"
     },
     {
@@ -763,7 +775,7 @@
     {
       "id": "TASK-039",
       "title": "Validate examples against JSON Schema and run CI on Windows",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M0",
       "depends_on": [
@@ -777,13 +789,17 @@
         "Schema examples validated using a JSON Schema 2020-12 implementation.",
         "CI passes on ubuntu-latest and windows-latest and checks required task coverage."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m0-evidence.md",
+        "tests/test_fixtures.py",
+        "https://github.com/branch-danya-dev/assistant/actions/runs/41041028122"
+      ],
       "owner": "unassigned"
     },
     {
       "id": "TASK-040",
       "title": "Define adversarial tool and prompt injection test fixtures",
-      "status": "todo",
+      "status": "done",
       "priority": "P0",
       "milestone": "M0",
       "depends_on": [
@@ -798,7 +814,11 @@
         "Threat cases include forged side effects, GitHub mutation through read intent, browser injection and private memory leakage.",
         "Each threat references an executable future security regression fixture."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/engineering/m0-evidence.md",
+        "tests/test_fixtures.py",
+        "https://github.com/branch-danya-dev/assistant/actions/runs/41041028122"
+      ],
       "owner": "unassigned"
     },
     {

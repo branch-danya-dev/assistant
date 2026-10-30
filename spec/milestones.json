@@ -4,8 +4,11 @@
     {
       "id": "M0",
       "name": "Specification and bootstrap",
-      "status": "specified",
-      "exit_gate": "All active requirements trace to tasks, accepted core ADRs and synthetic threat fixtures documented; JSON Schema examples and traceability checks pass on Windows and Linux."
+      "status": "completed",
+      "exit_gate": "All active requirements trace to tasks, accepted core ADRs and synthetic threat fixtures documented; JSON Schema examples and traceability checks pass on Windows and Linux.",
+      "evidence": [
+        "docs/engineering/m0-evidence.md"
+      ]
     },
     {
       "id": "M1",
