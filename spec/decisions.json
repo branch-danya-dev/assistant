@@ -150,6 +150,16 @@
       "revisit_when": "Owner explicitly changes model choice or later requests evaluations.",
       "recorded_on": "2026-10-30",
       "owner": "project owner"
+    },
+    {
+      "id": "ADR-016",
+      "title": "Store assistant and runtime state in portable G-drive home",
+      "status": "accepted",
+      "context": "Owner requests one dedicated G: directory containing project code, local model, history, memory and supporting files for migration and management.",
+      "decision": "Use G:\\Assistant as default home. Repo in repo/, Ollama models in models/ollama, durable data in data/{db,history,memory,identity,skills}, work in workspace/, logs, backups and cache separated. Resolve paths through ASSISTANT_ROOT; OLLAMA_MODELS for Ollama. Never silently fall back to C:. Keep secrets and runtime data out of Git, protect backups and validate restoration.",
+      "revisit_when": "Owner changes storage or destination disk.",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner"
     }
   ]
 }

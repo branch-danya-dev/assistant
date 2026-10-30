@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "ADR-016",
+  "status": "accepted",
+  "target_os": "Windows",
+  "default_root": "G:\\Assistant",
+  "environment_override": "ASSISTANT_ROOT",
+  "layout": {
+    "repository": "repo",
+    "models_ollama": "models/ollama",
+    "data": "data",
+    "db": "data/db",
+    "history": "data/history",
+    "memory": "data/memory",
+    "identity": "data/identity",
+    "skills": "data/skills",
+    "workspace": "workspace",
+    "logs": "logs",
+    "backups": "backups",
+    "cache": "cache"
+  },
+  "relative_path_policy": {
+    "all_entries_relative_to_root": true,
+    "block_parent_traversal": true,
+    "fail_if_drive_unavailable": true,
+    "no_silent_fallback_to_system_disk": true
+  },
+  "ollama": {
+    "model_storage_env": "OLLAMA_MODELS",
+    "default_model_storage": "G:\\Assistant\\models\\ollama",
+    "require_restart_after_env_change": true
+  },
+  "recovery": {
+    "consistent_sqlite_backup_required": true,
+    "same_disk_backup_is_not_disaster_recovery": true,
+    "off_disk_encrypted_backup_recommended": true,
+    "restore_test_required": true
+  },
+  "implementation_status": "planned",
+  "recorded_on": "2026-10-30"
+}
