@@ -6,7 +6,6 @@ import json
 import os
 import sqlite3
 import sys
-import tempfile
 from pathlib import Path
 
 from .config import AgentError, Paths, safe_relative
@@ -16,6 +15,7 @@ from .journal import Journal
 from .memory import Memory
 from .models import Ollama
 from .orchestrator import Agent
+from .previews import Previews
 from .storage import Store
 
 
@@ -23,6 +23,7 @@ def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(description="Local personal agent (M1)")
     root.add_argument("--root", help="Explicit ASSISTANT_ROOT override; default G:\\Assistant on Windows")
     commands = root.add_subparsers(dest="command", required=True)
+    commands.add_parser("cleanup-previews", help="Remove expired registered approval previews only")
     for command in ("init", "doctor", "smoke", "demo", "tasks", "stop", "clear-stop", "recover", "backup", "persona"):
         commands.add_parser(command)
     run = commands.add_parser("run")
@@ -144,6 +145,8 @@ def execute(args) -> dict:
         if args.command == "persona":
             return Identity(paths).current()
         with store.execution_lock():
+            if args.command == "cleanup-previews":
+                return Previews(store).cleanup()
             if args.command == "approval-preview":
                 approval = journal.approval(args.approval_id)
                 task_id = approval["task_id"]
@@ -155,13 +158,9 @@ def execute(args) -> dict:
                 # Owner-requested private review artifact: full proposed bytes stay out of stdout.
                 document = {"approval": approval, "request": json.loads(action["request"]),
                             "scope": journal.scope(task_id), "action_id": action["id"]}
-                with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", prefix="approval-",
-                                                  suffix=".json", dir=paths.directory("cache"),
-                                                  delete=False) as file:
-                    json.dump(document, file, ensure_ascii=False, indent=2)
-                    preview_path = Path(file.name).relative_to(paths.root).as_posix()
+                preview = Previews(store).create(document)
                 return {"approval_id": args.approval_id, "arguments_digest": action["digest"],
-                        "private_preview_relative": preview_path, "status": approval["status"]}
+                        **preview, "status": approval["status"]}
             if args.command == "revise":
                 journal.recover()
                 with args.plan.open("rb") as file:

@@ -43,3 +43,7 @@ Fully Quit Ollama Desktop and relaunch after changing user environment. Setting 
 4. Verify model visibility, SQLite integrity, history, identity, memory, skills, task recovery and permissions. Retain old files until an actual restore succeeds.
 
 Never commit runtime state, model weights or secrets to Git.
+
+Approval previews use `cache/approval-previews-v1`, private ACL/mode, registered identities and
+a 15-minute cleanup TTL. SQLite v3 adds the inventory. Expiry requires on-demand cleanup; it
+is not automatic or cryptographic erasure. See `../engineering/m1-review-fixes.md`.

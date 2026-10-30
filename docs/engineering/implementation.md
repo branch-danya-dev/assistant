@@ -1,7 +1,7 @@
 # Implementation guide
 
 ## Repo state
-**M1 acceptance complete on the stacked implementation branch.** Runtime modules implement storage, immutable plan
+**M1 in_progress: REQ-017/019 remain specified P0/M1.** See [review remediation](m1-review-fixes.md). Runtime modules implement storage, immutable plan
 revisions, journal, memory, identity, trusted reads and approved create-only files, Ollama and
 an owner CLI. CI covers security, crash and local HTTP integration tests.
 See `m1-completion.md` for acceptance evidence and `runbook.md` for operation.

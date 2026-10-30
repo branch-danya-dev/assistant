@@ -2,19 +2,19 @@
 
 ## State machine
 
-Task states: `created`, `planned`, `queued`, `running`, `waiting_approval`, `paused`, `blocked`, `needs_reconciliation`, `completed`, `failed`, `cancelled`. Canonical JSON contract: `spec/schemas/task-state.schema.json`.
+Task states: `created`, `planned`, `queued`, `running`, `waiting_approval`, `paused`, `blocked`, `needs_reconciliation`, `completed`, `partial`, `failed`, `cancelled`. Canonical JSON contract: `spec/schemas/task-state.schema.json`.
 
 | From | Allowed next states |
 |---|---|
 | created | planned, cancelled, failed |
 | planned | queued, paused, cancelled, failed |
 | queued | running, paused, cancelled |
-| running | waiting_approval, paused, blocked, needs_reconciliation, completed, failed, cancelled |
+| running | waiting_approval, paused, blocked, needs_reconciliation, completed, partial, failed, cancelled |
 | waiting_approval | queued, paused, blocked, cancelled |
 | paused | queued, cancelled |
 | blocked | queued only after resolving blocker, cancelled, failed |
 | needs_reconciliation | blocked, queued only after verified outcome and explicit transition, failed, cancelled |
-| completed, failed, cancelled | terminal; create a new task to retry |
+| completed, partial, failed, cancelled | terminal; create a new task to retry |
 
 A new retry is a new action ID; a previous uncertain side effect **must not** be replayed. No unconditional transition from `needs_reconciliation` to `running`.
 
@@ -53,3 +53,9 @@ Read-only independent steps may run concurrently under bounded resource budgets.
 ## Verification
 
 See `spec/scenarios.json`, especially SCN-005 and SCN-010. Test simulated crashes before dispatch, during tool execution, after external confirmation and before journal commit. Neither a network timeout nor process exit proves an action failed.
+
+## Bounded content outcome (ADR-022)
+
+`partial` is terminal and retains verified action evidence while explicitly refusing full semantic
+completion when source content cannot fit the model context. It exits CLI with code 2.
+See `../engineering/m1-review-fixes.md` for exact projection, append-revision and migration rules.

@@ -13,13 +13,19 @@
     {
       "id": "M1",
       "name": "Local agent core",
-      "status": "completed",
-      "exit_gate": "Verified selected-Qwen local workflow, immutable bounded plan revisions, exact approved create-only files, scoped evidence/identity/memory, interruptible workers, durable reconciliation and root portability (SCN-004/005/007/009/010/011). Windows primary; Linux trusted flat-output mode per ADR-021.",
+      "status": "in_progress",
+      "exit_gate": "Verified selected-Qwen local workflow, immutable bounded plan revisions, exact approved create-only files, scoped evidence/identity/memory, interruptible workers, durable reconciliation and root portability (SCN-004/005/007/009/010/011). Windows primary; Linux trusted flat-output mode per ADR-021. ALL P0 M1 requirements and task dependencies must be closed with evidence, including unchanged REQ-017 and REQ-019; partial source analysis is not full semantic success.",
       "evidence": [
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/evidence/m1-review-validation.json"
       ],
-      "remaining": []
+      "remaining": [
+        "REQ-017 / TASK-044: broad supported-source prompt-injection acceptance remains unverified.",
+        "REQ-019 / TASK-026 / TASK-044: broad no-secrets-in-prompts/logs/repo acceptance remains incomplete.",
+        "TASK-009/010/041 final acceptance waits on the TASK-026 security dependency."
+      ]
     },
     {
       "id": "M2",

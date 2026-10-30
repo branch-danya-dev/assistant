@@ -47,7 +47,8 @@
         "reconciliation_required",
         "reconciled",
         "resumed",
-        "paused"
+        "paused",
+        "partial"
       ]
     },
     "timestamp": {

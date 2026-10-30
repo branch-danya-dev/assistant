@@ -122,7 +122,8 @@
       "adapter": "personal_agent.tools.read_text",
       "verification": "docs/engineering/m1-evidence.md",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -140,7 +141,8 @@
       "verification": "docs/engineering/m1-completion.md",
       "evidence": [
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {

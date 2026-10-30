@@ -5,6 +5,7 @@ import json
 import os
 import re
 import stat
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -20,6 +21,19 @@ from personal_agent.models import Ollama
 from personal_agent.orchestrator import Agent
 from personal_agent.safe_fs import opened_path
 from personal_agent.storage import Store, now, uid
+
+
+def source_revision():
+    """Record the exact checkout; a dirty tree is never evidence for its HEAD alone."""
+    repository = Path(__file__).resolve().parents[1]
+    try:
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repository,
+                                         text=True, stderr=subprocess.DEVNULL).strip()
+        status = subprocess.check_output(["git", "status", "--porcelain"], cwd=repository,
+                                         text=True, stderr=subprocess.DEVNULL).strip()
+        return {"commit": commit, "dirty": bool(status)}
+    except (OSError, subprocess.CalledProcessError):
+        return {"commit": None, "dirty": None}
 
 
 def runtime_fingerprint():
@@ -204,7 +218,8 @@ def verify(root: str) -> dict:
                 and journal.plan(create_task) == [expected]):
             action = waiting["actions"][0]
             current = journal.plans.current(create_task)
-            # Revise while awaiting approval; preserve the approved operation and add a dependency.
+            # OWNER/TEST-HARNESS injected revision, NOT a model-generated revision.
+            # Real Qwen handles planning/final responses; this line must not certify model revision.
             proposal = {"base_digest": current["digest"], "reason": "Synthetic live acceptance revision",
                         "steps": [*current["steps"], {"ordinal": 1, "action_id": f"{create_task}:1",
                             "depends_on": [f"{create_task}:0"], "request": {
@@ -226,8 +241,14 @@ def verify(root: str) -> dict:
               "persona_restart": identity_survived, "journal_restart": task_survived,
               "windows_user_model_path": model_storage_status(owner_paths)["windows_user_value_matches"],
               "actual_model_files_on_root": storage["passed"],
-              "live_create_approval_revision_exactly_once": create_verified}
+              "live_create_with_harness_revision_exactly_once": create_verified}
     return {"timestamp": now(), "synthetic_only": True, "selected_model": smoke,
+            "source_revision": source_revision(),
+            "revision_provenance": {
+                "actor": "owner/test-harness", "injected_by": "tools/verify_host.py",
+                "live_model_generated_revision_tested": False,
+                "synthetic_model_revision_tests": "tests/test_plan_revisions.py; tests/test_context.py",
+                "live_model_roles": ["initial_planning", "final_response"]},
             "runtime_source_fingerprint": runtime_fingerprint(),
             "checks": checks, "passed": all(checks.values()), "task_id": task_id,
             "task_state": result["task"]["state"], "block_reason": result["task"]["block_reason"],

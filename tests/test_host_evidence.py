@@ -1,16 +1,50 @@
 import hashlib
 import json
 import sys
+from unittest.mock import patch
 
 from support import REPO, RuntimeCase
 
 sys.path.insert(0, str(REPO / "tools"))
-from verify_host import verify_model_files  # noqa: E402
+from verify_host import verify, verify_model_files  # noqa: E402
 
 from personal_agent.config import AgentError  # noqa: E402
 
 
 class HostEvidenceTests(RuntimeCase):
+    def test_harness_revision_is_not_reported_as_live_model_revision(self):
+        class SyntheticProvider:
+            metrics = {}
+
+            def smoke(self):
+                return {"model": "qwen3.5:9b"}
+
+            def _request(self, *args):
+                return {}
+
+            def complete(self, messages, *, task_id):
+                context = json.loads(messages[-1]["content"])
+                if context["phase"] == "plan":
+                    if context["allowed_create_files"]:
+                        steps = [{"task_id": task_id, "capability_id": "CAP-008", "operation": "create_text",
+                                  "arguments": {"path": "new.txt", "text": "SYNTHETIC-CREATE-42"}}]
+                    else:
+                        steps = [{"task_id": task_id, "capability_id": cap, "operation": op, "arguments": args}
+                                 for cap, op, args in [("CAP-007", "read_text", {"path": "note.txt"}),
+                                                       ("CAP-002", "search_memory", {"query": "colour"})]]
+                    return {"steps": steps, "answer": "", "evidence_refs": []}
+                return {"steps": [], "answer": "LOCAL-42 green", "evidence_refs":
+                        [o["evidence_ref"] for o in context["untrusted_observations"]]}
+        with patch("verify_host.Ollama", return_value=SyntheticProvider()), \
+                patch("verify_host.verify_model_files", return_value={"passed": True}), \
+                patch("verify_host.model_storage_status", return_value={"windows_user_value_matches": True}):
+            report = verify(str(self.paths.root))
+        self.assertTrue(report["passed"], report)
+        self.assertTrue(report["checks"]["live_create_with_harness_revision_exactly_once"])
+        self.assertEqual(report["revision_provenance"]["actor"], "owner/test-harness")
+        self.assertFalse(report["revision_provenance"]["live_model_generated_revision_tested"])
+        self.assertIn("source_revision", report)
+
     def setUp(self):
         super().setUp()
         root = self.paths.directory("models_ollama")

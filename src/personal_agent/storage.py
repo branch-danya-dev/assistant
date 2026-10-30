@@ -51,7 +51,9 @@ MIGRATIONS = [
     CREATE TABLE plan_revisions(task_id TEXT NOT NULL REFERENCES tasks(id),
                                 revision INTEGER NOT NULL, document TEXT NOT NULL,
                                 PRIMARY KEY(task_id,revision));
-    """
+    """,
+    # v3 adds preview inventory and terminal partial state; old applications must refuse v3.
+    "CREATE TABLE approval_previews(name TEXT PRIMARY KEY, identity TEXT NOT NULL, expires REAL NOT NULL);"
 ]
 
 

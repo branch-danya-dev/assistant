@@ -15,12 +15,12 @@ TRANSITIONS = {
     "planned": {"queued", "paused", "cancelled", "failed"},
     "queued": {"running", "paused", "cancelled"},
     "running": {"waiting_approval", "paused", "blocked", "needs_reconciliation",
-                "completed", "failed", "cancelled"},
+                "completed", "partial", "failed", "cancelled"},
     "waiting_approval": {"queued", "paused", "blocked", "cancelled"},
     "paused": {"queued", "cancelled"},
     "blocked": {"queued", "cancelled", "failed"},
     "needs_reconciliation": {"blocked", "queued", "failed", "cancelled"},
-    "completed": set(), "failed": set(), "cancelled": set(),
+    "completed": set(), "partial": set(), "failed": set(), "cancelled": set(),
 }
 
 
@@ -354,7 +354,8 @@ class Journal:
             # Fail closed even for 'not applied': a fresh task and approval are required.
             self._transition(action["task_id"], "blocked", "reconciled_create_new_task")
 
-    def complete(self, task_id: str, result: dict):
+    def complete(self, task_id: str, result: dict, *, partial: bool = False):
+        """Finalize verified actions; partial explicitly does not certify the owner's whole goal."""
         with self.store.transaction():
             if self.stopped():
                 raise AgentError("emergency_stop_active")
@@ -378,7 +379,8 @@ class Journal:
             task["result_refs"] = refs
             self._save(task)
             self.db.execute("UPDATE tasks SET result=? WHERE id=?", (encode(result), task_id))
-            self._transition(task_id, "completed")
+            self._transition(task_id, "partial" if partial else "completed",
+                             "full_content_analysis_unavailable" if partial else None)
 
     def inspect(self, task_id: str) -> dict:
         task = self.get(task_id)

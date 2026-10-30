@@ -2,6 +2,7 @@
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from jsonschema import Draft202012Validator
 
@@ -15,6 +16,17 @@ from personal_agent.ports import ToolRequest, ToolResult  # noqa: E402
 
 
 class SpecTests(unittest.TestCase):
+    def test_milestone_cannot_be_completed_with_unimplemented_p0(self):
+        def mutated(path):
+            value = load(path)
+            if path == "spec/milestones.json":
+                next(m for m in value["milestones"] if m["id"] == "M1")["status"] = "completed"
+            return value
+        with patch("validate_specs.load", side_effect=mutated):
+            errors = check()
+        self.assertIn("M1: completed with open P0 REQ-017", errors)
+        self.assertIn("M1: completed with open P0 REQ-019", errors)
+
     def test_machine_readable_contracts_and_full_requirement_coverage(self):
         self.assertEqual(check(), [])
         requirements = load("spec/requirements.json")["requirements"]

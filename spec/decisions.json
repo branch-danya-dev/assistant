@@ -210,6 +210,17 @@
       "context": "Unprivileged Linux directory descriptors do not prohibit another owner process from renaming the authority root. Windows can pin the ancestor handle chain.",
       "decision": "Keep Windows the primary target. On Linux trust the application and project-root anchors and allow only flat new-file names directly in the project root. Deny nested create paths before dispatch to avoid in-project directory rename races. Require no-follow handle traversal, O_TMPFILE, exclusive publication and Landlock ABI 3+. Fail closed when mechanisms are unavailable. Never claim isolation from malicious same-account root relocation.",
       "revisit_when": "Linux needs hostile-root isolation or a different filesystem/OS backend; requires a reviewed design, not a pathname fallback."
+    },
+    {
+      "id": "ADR-022",
+      "title": "Explicit partial analysis and bounded references for M1 review remediation",
+      "status": "accepted",
+      "recorded_on": "2026-10-30",
+      "owner": "project owner via requested bounded-context fixes and honest semantic outcomes",
+      "context": "The 32 KiB tool limit exceeds the 6000-byte LLM message envelope. Copying full evidence/plans into final prompts can deadlock already verified actions.",
+      "decision": "Extend ADR-018 task lifecycle with terminal partial when complete source analysis is unavailable; retain all verified evidence and emit CLI exit 2. Keep complete saved results and requests separate from bounded LLM projections. Append revisions bind the exact saved base digest and retain old steps in trusted code. SQLite v3 adds preview ownership/expiry inventory and gates older binaries; no action/approval rewrite.",
+      "revisit_when": "A reviewed chunked full-analysis workflow or a new context budget is authorized.",
+      "migration": "Back up v1/v2 before opening with v3. Transactional additive migration preserves IDs, digests, approvals and evidence. Restore matching backup and older code to roll back; do not downgrade user_version manually."
     }
   ]
 }

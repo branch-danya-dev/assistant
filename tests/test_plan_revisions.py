@@ -136,7 +136,8 @@ class RevisionTests(RuntimeCase):
         first = waiting["actions"][0]
         approval_before = self.journal.approval(first["approval_id"])
         # v1 stores the same original tasks.plan/actions/approvals; only v2's additive table is absent.
-        self.store.connection.executescript("DROP TABLE plan_revisions; PRAGMA user_version=1;")
+        self.store.connection.executescript(
+            "DROP TABLE plan_revisions; DROP TABLE approval_previews; PRAGMA user_version=1;")
         with Store(self.paths) as upgraded:
             journal = Agent(upgraded, CreateProvider()).journal
             self.assertTrue(journal.plans.current(self.task_id)["legacy"])
@@ -149,6 +150,22 @@ class RevisionTests(RuntimeCase):
         document = json.loads(reply.stdout)
         self.assertEqual(document["plan"]["revision"], 1)
         self.assertEqual(document["actions"][0]["approval_id"], first["approval_id"])
+        self.journal.approve(first["approval_id"], first["digest"])
+        result = self.agent.run(self.task_id)
+        self.assertEqual(result["task"]["state"], "completed", result)
+        self.assertEqual(self.journal.action(first["id"])["attempts"], 1)
+
+    def test_v2_upgrade_preserves_pending_approval_and_plan_digest(self):
+        waiting = self.agent.run(self.task_id)
+        first = waiting["actions"][0]
+        approval = self.journal.approval(first["approval_id"])
+        plan = self.journal.plans.current(self.task_id)
+        self.store.connection.executescript("DROP TABLE approval_previews; PRAGMA user_version=2;")
+        with Store(self.paths) as upgraded:
+            journal = Agent(upgraded, CreateProvider()).journal
+            self.assertEqual(journal.approval(first["approval_id"]), approval)
+            self.assertEqual(journal.plans.current(self.task_id), plan)
+            self.assertEqual(upgraded.connection.execute("PRAGMA user_version").fetchone()[0], 3)
         self.journal.approve(first["approval_id"], first["digest"])
         result = self.agent.run(self.task_id)
         self.assertEqual(result["task"]["state"], "completed", result)

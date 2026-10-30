@@ -31,7 +31,8 @@
         "failed",
         "completed",
         "cancelled",
-        "needs_reconciliation"
+        "needs_reconciliation",
+        "partial"
       ]
     },
     "project_id": {

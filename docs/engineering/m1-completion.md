@@ -1,8 +1,13 @@
-# M1 completed acceptance — stacked on PR #4
+# Historical M1 runtime acceptance — stacked on PR #4
+
+**Full M1 closure withdrawn after independent review.** Current M1 status is `in_progress`;
+REQ-017/019 remain `specified` P0/M1. See [review remediation](m1-review-fixes.md).
+The implementation checks below are retained as historical evidence, not a current gate closure.
 
 Base audited and rechecked: `42a9f31dd1556a1714d64d86ee6e8f630b027d2f`,
 `feat/m0-m1-local-agent`. PR #4 stays open; neither PR is merged by this work.
-TASK-009, TASK-010 and TASK-043 acceptance is complete within the platform boundaries below.
+TASK-043 has scoped acceptance; TASK-009/010 final gates are reopened with their security dependency.
+Runtime behavior below remains covered by its original tests.
 This is an implementation/acceptance result, not a merge or deployment of either PR.
 
 ## Implementation and security evidence
@@ -83,7 +88,8 @@ All CLI responses also have a 64 KiB cap with explicit truncation.
 
 ## Validation record
 
-Current host acceptance passed with real selected Qwen, including create/approval/revision,
+Historical host acceptance passed with real selected Qwen planning/final responses, create/approval
+and an **owner/test-harness injected revision** (NOT a live model-generated revision),
 independent hashes and persisted evidence in an isolated synthetic runtime. The owner's
 production database was not opened/migrated. See [host report](evidence/windows-m1-completion.json).
 The report fingerprints runtime source, schemas, model/storage configuration and the verifier.

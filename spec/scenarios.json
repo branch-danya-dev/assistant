@@ -105,9 +105,10 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_memory.py",
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
-      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
+      "verification_scope": "Scoped synthetic runtime evidence; live Qwen planning/final responses with owner/test-harness injected revision. No live model-generated revision certification. See m1-review-fixes.md for remaining M1 gates."
     },
     {
       "id": "SCN-005",
@@ -140,9 +141,10 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
-      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
+      "verification_scope": "Scoped synthetic runtime evidence; live Qwen planning/final responses with owner/test-harness injected revision. No live model-generated revision certification. See m1-review-fixes.md for remaining M1 gates."
     },
     {
       "id": "SCN-006",
@@ -173,7 +175,7 @@
       "id": "SCN-007",
       "title": "Scoped private memory and injection denial",
       "target_milestone": "M1",
-      "status": "verified",
+      "status": "specified",
       "requirement_ids": [
         "REQ-008",
         "REQ-017",
@@ -198,9 +200,10 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
-      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
+      "verification_scope": "PARTIAL: project/sensitivity filtering and denial of synthetic unauthorized tool intents are tested. Broad source-instruction and secret handling acceptance stays open under REQ-017/019 and TASK-044."
     },
     {
       "id": "SCN-008",
@@ -254,9 +257,10 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_storage.py",
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
-      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
+      "verification_scope": "Scoped synthetic runtime evidence; live Qwen planning/final responses with owner/test-harness injected revision. No live model-generated revision certification. See m1-review-fixes.md for remaining M1 gates."
     },
     {
       "id": "SCN-010",
@@ -288,9 +292,10 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_journal.py",
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
-      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
+      "verification_scope": "Scoped synthetic runtime evidence; live Qwen planning/final responses with owner/test-harness injected revision. No live model-generated revision certification. See m1-review-fixes.md for remaining M1 gates."
     },
     {
       "id": "SCN-011",
@@ -319,9 +324,71 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
-      "verification_scope": "Windows/Ubuntu synthetic runtime acceptance including actual create, crash, stop/cancel, plan revision, project isolation and immutable evidence; current Qwen host run recorded in windows-m1-completion.json. No real external communications or purchases."
+      "verification_scope": "Scoped synthetic runtime evidence; live Qwen planning/final responses with owner/test-harness injected revision. No live model-generated revision certification. See m1-review-fixes.md for remaining M1 gates."
+    },
+    {
+      "id": "SCN-012",
+      "title": "Large-file bounded context and honest partial analysis",
+      "target_milestone": "M1",
+      "status": "verified",
+      "requirement_ids": [
+        "REQ-009",
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-025"
+      ],
+      "capability_ids": [
+        "CAP-007",
+        "CAP-008"
+      ],
+      "preconditions": [
+        "isolated synthetic fixture environment"
+      ],
+      "expected_artifacts": [
+        "saved evidence",
+        "test results"
+      ],
+      "acceptance": "8/32 KiB file operations retain complete evidence, obey model prompt limits, preserve immutable revisions/approvals and resume without replay; withheld read content is reported as partial, not semantic success.",
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/evidence/m1-review-validation.json",
+        "tests/test_context.py"
+      ],
+      "verification_scope": "Scoped runtime regression; does not certify all REQ-017/019 acceptance."
+    },
+    {
+      "id": "SCN-013",
+      "title": "Private expiring approval previews",
+      "target_milestone": "M1",
+      "status": "verified",
+      "requirement_ids": [
+        "REQ-019",
+        "REQ-047",
+        "REQ-054"
+      ],
+      "capability_ids": [
+        "CAP-008"
+      ],
+      "preconditions": [
+        "isolated synthetic fixture environment"
+      ],
+      "expected_artifacts": [
+        "saved evidence",
+        "test results"
+      ],
+      "acceptance": "Private access, fixed TTL, bounded inventory, no proposed content in stdout, safe cleanup and rejection of cache links/substitution are tested on Windows/POSIX.",
+      "automated": "implemented",
+      "evidence": [
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/evidence/m1-review-validation.json",
+        "tests/test_previews.py"
+      ],
+      "verification_scope": "Scoped runtime regression; does not certify all REQ-017/019 acceptance."
     }
   ]
 }

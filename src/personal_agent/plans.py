@@ -37,7 +37,10 @@ class Plans:
 
     def revise(self, task_id, proposal, registry, *, actor="owner"):
         from .journal import digest
-        if (not isinstance(proposal, dict) or set(proposal) != {"base_digest", "reason", "steps"}
+        if (not isinstance(proposal, dict)
+                or set(proposal) not in ({"base_digest", "reason", "steps"},
+                                         {"base_digest", "reason", "steps", "mode"})
+                or proposal.get("mode", "replace") not in ("replace", "append")
                 or not isinstance(proposal["reason"], str) or not 1 <= len(proposal["reason"]) <= 500
                 or not isinstance(proposal["steps"], list) or not 1 <= len(proposal["steps"]) <= MAX_ACTIONS):
             raise AgentError("invalid_plan_revision")
@@ -56,7 +59,11 @@ class Plans:
             known = {s["action_id"]: s for revision in history for s in revision["steps"]}
             active = {s["action_id"] for s in current["steps"]}
             maximum = max((s["ordinal"] for s in known.values()), default=-1)
-            steps, seen = proposal["steps"], set()
+            steps = ([*current["steps"], *proposal["steps"]] if proposal.get("mode") == "append"
+                     else proposal["steps"])
+            if len(steps) > MAX_ACTIONS:
+                raise AgentError("plan_action_budget_exhausted")
+            seen = set()
             new_targets = set()
             scope = self.journal.scope(task_id)
             old_effects = {r[0] for r in self.db.execute(

@@ -1,12 +1,13 @@
 # Personal AI Assistant
 
-**M0 and M1 acceptance complete on the stacked implementation branch.** Python 3.12+ modular monolith,
+**M0 complete; M1 in progress after independent review.** Python 3.12+ modular monolith,
 SQLite/FTS5, Windows first. Based on Architecture Baseline v1.0 (`c1a0079`).
 
 Первая реализация уже работает: Qwen строит план, агент читает разрешённые текстовые файлы
 и проектную память, создаёт разрешённые новые файлы после подтверждения, проверяет результаты
 и сохраняет журнал. Пересмотр плана сохраняет выполненные действия и подтверждения.
-[Приёмка и ограничения](docs/engineering/m1-completion.md).
+[Исправления review, доказательства и открытые P0-gates](docs/engineering/m1-review-fixes.md).
+REQ-017/019 remain specified; partial analysis is reported explicitly, never as full semantic success.
 
 ## Implemented
 

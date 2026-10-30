@@ -35,8 +35,11 @@
     "result": "pass",
     "isolated_synthetic_runtime": true,
     "production_database_modified": false,
-    "model_comparisons": 0
+    "model_comparisons": 0,
+    "revision_provenance": "owner/test-harness injected; live model-generated revision NOT tested"
   },
   "platform_boundary": "Windows primary. Linux trusted application/project roots; create-only direct children, Landlock ABI 3+ and O_TMPFILE required. Nested Linux creates denied before dispatch.",
-  "merge_performed": false
+  "merge_performed": false,
+  "historical_record": true,
+  "superseded_status_note": "Historical scoped runtime checks only. Full M1 closure is withdrawn; see m1-review-fixes.md."
 }

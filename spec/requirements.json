@@ -131,7 +131,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -150,7 +151,8 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_orchestrator.py",
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -167,7 +169,8 @@
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -184,7 +187,8 @@
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -258,11 +262,12 @@
         "Webpage, document and message instructions cannot escalate privileges or override owner policy."
       ],
       "owner": "project",
-      "notes": "M1 closed registry, scoped retrieval, payload-free diagnostics and loopback-only inference verified. Broad source/secret detection, vault and future network adapters not claimed.",
+      "notes": "P0/M1 acceptance remains OPEN, not certified by closed-registry tests. Priority, target milestone and acceptance unchanged. TASK-026 and TASK-044 retain the remaining gate; see review remediation report.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
-        "tests/test_models.py"
+        "tests/test_models.py",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -293,11 +298,12 @@
         "No secrets in prompts/logs/repo; unauthorized cloud egress rejected."
       ],
       "owner": "project",
-      "notes": "M1 closed registry, scoped retrieval, payload-free diagnostics and loopback-only inference verified. Broad source/secret detection, vault and future network adapters not claimed.",
+      "notes": "P0/M1 acceptance remains OPEN, not certified by closed-registry tests. Priority, target milestone and acceptance unchanged. TASK-026 and TASK-044 retain the remaining gate; see review remediation report.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
-        "tests/test_models.py"
+        "tests/test_models.py",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -391,7 +397,8 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
         "docs/engineering/m1-completion.md",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -681,7 +688,8 @@
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     },
     {
@@ -792,7 +800,8 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "docs/engineering/m1-review-fixes.md"
       ]
     }
   ]

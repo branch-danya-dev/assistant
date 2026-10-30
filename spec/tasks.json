@@ -191,7 +191,7 @@
     {
       "id": "TASK-009",
       "title": "Orchestrator with bounded plan/execute/verify",
-      "status": "done",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -220,15 +220,16 @@
         "docs/engineering/m1-completion.md",
         "tests/test_plan_revisions.py",
         "tests/test_bounded.py",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
       "owner": "unassigned",
-      "notes": "Acceptance verified on Windows and Ubuntu, plus real Qwen synthetic host acceptance. Windows primary; Linux trusted environment and flat output names per ADR-021. Stacked PR does not imply merge/deployment."
+      "notes": "Implemented behavior has scoped evidence, but final acceptance is reopened because the TASK-026 security dependency gate remains incomplete. Real Qwen revision evidence is owner/test-harness injected; synthetic providers exercise model-generated revisions."
     },
     {
       "id": "TASK-010",
       "title": "Minimal local task interface",
-      "status": "done",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -245,10 +246,11 @@
         "tests/test_cli.py",
         "docs/engineering/m1-completion.md",
         "tests/test_evidence.py",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
       "owner": "unassigned",
-      "notes": "Acceptance verified on Windows and Ubuntu, plus real Qwen synthetic host acceptance. Windows primary; Linux trusted environment and flat output names per ADR-021. Stacked PR does not imply merge/deployment."
+      "notes": "Implemented behavior has scoped evidence, but final acceptance is reopened because the TASK-026 security dependency gate remains incomplete. Real Qwen revision evidence is owner/test-harness injected; synthetic providers exercise model-generated revisions."
     },
     {
       "id": "TASK-011",
@@ -556,7 +558,7 @@
     {
       "id": "TASK-026",
       "title": "Implement memory scope, sensitivity and export/egress enforcement",
-      "status": "done",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -576,9 +578,11 @@
         "docs/engineering/m1-evidence.md",
         "tests/test_memory.py",
         "tests/test_security.py",
-        "tests/test_orchestrator.py"
+        "tests/test_orchestrator.py",
+        "docs/engineering/m1-review-fixes.md"
       ],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "notes": "Scoped retrieval is verified. The broad secrets/injection acceptance is not complete; no blanket prompt/log/argument secret protection is claimed. Gate TASK-044 remains open."
     },
     {
       "id": "TASK-027",
@@ -877,7 +881,7 @@
     {
       "id": "TASK-041",
       "title": "Implement memory lifecycle and archival defaults",
-      "status": "done",
+      "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -894,9 +898,11 @@
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_memory.py",
-        "tests/test_cli.py"
+        "tests/test_cli.py",
+        "docs/engineering/m1-review-fixes.md"
       ],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "notes": "Implemented behavior has scoped evidence, but final acceptance is reopened because the TASK-026 security dependency gate remains incomplete. Real Qwen revision evidence is owner/test-harness injected; synthetic providers exercise model-generated revisions."
     },
     {
       "id": "TASK-042",
@@ -941,10 +947,119 @@
         "docs/engineering/m1-completion.md",
         "tests/test_m1_create.py",
         "tests/test_bounded.py",
-        "docs/engineering/evidence/m1-validation.json"
+        "docs/engineering/evidence/m1-validation.json",
+        "docs/engineering/m1-review-fixes.md"
       ],
       "owner": "unassigned",
-      "notes": "Acceptance verified on Windows and Ubuntu, plus real Qwen synthetic host acceptance. Windows primary; Linux trusted environment and flat output names per ADR-021. Stacked PR does not imply merge/deployment."
+      "notes": "Create-only runtime acceptance remains verified; this does not close M1 security gates. Live Qwen plans the create; owner/test-harness injects the revision."
+    },
+    {
+      "id": "TASK-044",
+      "title": "Close unchanged M1 P0 injection and secret/egress acceptance",
+      "status": "todo",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-005",
+        "TASK-026"
+      ],
+      "requirement_ids": [
+        "REQ-017",
+        "REQ-019"
+      ],
+      "acceptance": [
+        "Demonstrate that webpage/document/message instructions cannot escalate privileges or override owner policy, with adversarial executable fixtures and an explicit supported-source boundary.",
+        "Demonstrate the unchanged REQ-019 no-secrets-in-prompts/logs/repo and unauthorized-egress acceptance; record remaining supported-path gaps rather than certifying future integrations.",
+        "Only close the M1 gate after traceable review and Windows/Ubuntu evidence; do not lower priority or silently defer P0 acceptance."
+      ],
+      "evidence": [
+        "docs/engineering/m1-review-fixes.md"
+      ],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-045",
+      "title": "Bound evidence context and preserve honest large-file outcomes",
+      "status": "done",
+      "priority": "P1",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-004",
+        "TASK-007"
+      ],
+      "requirement_ids": [
+        "REQ-009",
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-025"
+      ],
+      "acceptance": [
+        "8 KiB and 32 KiB reads retain full results and hashes; LLM input stays <=6000 serialized UTF-8 bytes without hidden source truncation.",
+        "32 KiB create arguments never need to be copied into final context or an append revision; action identity and approval remain immutable.",
+        "Partial semantic coverage produces terminal partial with evidence, never a false full-analysis claim or repeated context-budget pause; resume never replays verified actions."
+      ],
+      "evidence": [
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/evidence/m1-review-validation.json",
+        "tests/test_context.py",
+        "tests/test_plan_revisions.py"
+      ],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-046",
+      "title": "Protect and expire private approval previews",
+      "status": "done",
+      "priority": "P1",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-004"
+      ],
+      "requirement_ids": [
+        "REQ-019",
+        "REQ-047",
+        "REQ-054"
+      ],
+      "acceptance": [
+        "Create full previews with verified user-only protected Windows DACL or POSIX 0600 inside private directory; stdout contains no proposed content.",
+        "Enforce 15-minute expiry, 256 KiB/file and 64 tracked previews; clean only registered expired identities on creation or explicit cleanup-previews.",
+        "Reject symlink/junction/substitution and unsafe permissions; failures do not expose content or delete foreign objects; ordinary deletion is not secure erasure."
+      ],
+      "evidence": [
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/evidence/m1-review-validation.json",
+        "tests/test_previews.py"
+      ],
+      "owner": "unassigned"
+    },
+    {
+      "id": "TASK-047",
+      "title": "Correct M1 gate traceability and Qwen revision provenance",
+      "status": "done",
+      "priority": "P1",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-003"
+      ],
+      "requirement_ids": [
+        "REQ-017",
+        "REQ-019",
+        "REQ-050",
+        "REQ-051",
+        "REQ-052"
+      ],
+      "acceptance": [
+        "M1 cannot be completed while P0 requirements/tasks remain open; regression-test the validator.",
+        "Separate live Qwen planning/final responses with harness revision from synthetic model revisions; host reports identify exact commit and dirty state."
+      ],
+      "evidence": [
+        "docs/engineering/m1-review-fixes.md",
+        "docs/engineering/evidence/m1-review-validation.json",
+        "tests/test_specs.py",
+        "tests/test_host_evidence.py"
+      ],
+      "owner": "unassigned"
     }
   ]
 }

@@ -8,7 +8,7 @@ No server/startup daemon is installed. `.env` is a reference template, not autom
 Export `$env:ASSISTANT_ROOT='G:\Assistant'`, set Windows User environment, or pass an explicit
 absolute `--root` before the subcommand. Relative roots fail; there is no C: fallback.
 
-`init` creates the layout, transactional database version 2 and baseline persona, preserving
+`init` creates the layout, transactional database version 3 and baseline persona, preserving
 existing versions. `doctor` reports runtime availability and the separately configured Ollama
 User environment. A matching variable does not prove a running process inherited it:
 `tools/verify_host.py` also checks actual model blob paths.
@@ -40,8 +40,13 @@ API references: [chat](https://docs.ollama.com/api/chat),
 Place UTF-8 files in `G:\Assistant\workspace\PROJECT`. Only exact relative file names explicitly
 passed with `--allow-file` can be read. Maximum 32 KiB per regular file; no symlinks, junctions,
 hard links, traversal or alternate data streams. Model input has a conservative 6,000-byte
-ceiling, context is 8,192 tokens and output is capped at 1,024 tokens. Oversized context pauses
-visibly rather than silently truncating evidence. This is an application boundary, not isolation
+ceiling, context is 8,192 tokens and output is capped at 1,024 tokens. Complete results remain
+saved; the final prompt includes each source in full or an explicitly marked receipt. Withheld
+read content produces terminal `partial` (exit 2), never a full-analysis success claim. Review
+original sources against receipts, or prepare smaller sources for a new scoped task; do not
+repeat verified creates. Large create completion confirms exact bytes only, not semantic
+correctness. Initial oversized intent/persona/scope is still rejected before execution.
+See [bounded context and limits](m1-review-fixes.md). This is an application boundary, not isolation
 against another process with the same Windows account modifying the whole app/database.
 
 ```powershell
@@ -78,6 +83,12 @@ Before approval, `approval-preview APPROVAL_ID --project PROJECT` creates a priv
 in the application's cache containing the full exact proposal and scope. Open that file locally
 to review the proposed content; the CLI prints only its relative location and approval digest.
 It never approves or executes the proposal. Preview files are private state, never Git artifacts.
+The cache subdirectory is `approval-previews-v1`: verified user-only Windows DACL, or POSIX
+0600 files/0700 directory. TTL is 15 minutes; 256 KiB/file and 64 tracked previews maximum.
+Creation cleans expired entries; run `python -m personal_agent cleanup-previews` for repeatable
+cleanup after restart. There is no background cleaner: expired files persist until cleanup runs.
+Only registered identities are removed; substitutions/unsafe objects are reported as skipped.
+Legacy unregistered previews require owner inspection/removal. Deletion is not secure erasure.
 Approvals expire after ten minutes and are consumed in the same transaction as dispatch.
 The registry permits `create_text` only for exact `--allow-create new.txt` targets in existing
 project directories. This allowlist alone does not approve the content: inspect the proposal,
@@ -99,7 +110,9 @@ For an owner revision, pause using stop, recover, prepare a JSON proposal follow
 `revise TASK_ID --plan PROPOSAL.json`, clear-stop and resume. Copy every retained node's ordinal,
 action ID, request and dependencies exactly; append fresh ordinals. Pending approved or verified
 actions cannot be removed or changed, approvals cannot be reset, and uncertain effects must be
-reconciled first. The model can propose the same revision format at an execution checkpoint.
+reconciled first. Alternatively set `mode: "append"` and provide only NEW steps with the current
+base_digest; trusted code preserves all saved steps without copying large create arguments.
+The model uses this compact format at an execution checkpoint; it cannot change the saved base.
 The saved initial plan remains in v1 format for migration compatibility; history records the
 new active snapshots. A no-op, stale, cyclic or substituted plan is rejected transactionally.
 
@@ -152,7 +165,8 @@ Run `recover`, `tasks`, `persona`, memory search, `doctor`, then the synthetic h
 old root until verification passes. Changing only `ASSISTANT_ROOT` relocates application paths;
 separately update Ollama User `OLLAMA_MODELS` and restart Desktop.
 
-Make and verify a backup before schema upgrades. Version 2 adds only the plan-revisions table;
+Make and verify a backup before schema upgrades. Version 2 added plan revisions; version 3 adds
+approval-preview ownership/expiry inventory and support for terminal partial (ADR-022);
 legacy plans, evidence and approvals are preserved. Directory identity bindings deliberately
 become invalid after physical relocation: use a fresh create task and approval in the new root.
 Migration is transactional;

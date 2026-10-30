@@ -49,7 +49,8 @@ def _regular(fd: int, *, anonymous: bool = False):
         raise AgentError("file_size_exceeded")
 
 
-def _win_open(name: str, parent: int | None, *, directory=False, create=False) -> int:
+def _win_open(name: str, parent: int | None, *, directory=False, create=False,
+              security_descriptor=None, extra_access=0, open_if=False) -> int:
     """NtCreateFile is the Windows openat equivalent; FILE_CREATE never replaces."""
     import msvcrt
     from ctypes import wintypes as w
@@ -70,7 +71,7 @@ def _win_open(name: str, parent: int | None, *, directory=False, create=False) -
                            ctypes.cast(buffer, w.LPWSTR))
     attrs = ObjectAttributes(ctypes.sizeof(ObjectAttributes),
                              msvcrt.get_osfhandle(parent) if parent is not None else None,
-                             ctypes.pointer(string), 0x40, None, None)
+                             ctypes.pointer(string), 0x40, security_descriptor, None)
     handle, status = w.HANDLE(), IoStatus()
     api = ctypes.WinDLL("ntdll").NtCreateFile
     api.restype = w.LONG
@@ -78,11 +79,15 @@ def _win_open(name: str, parent: int | None, *, directory=False, create=False) -
                    ctypes.POINTER(IoStatus), ctypes.c_void_p, w.ULONG, w.ULONG, w.ULONG,
                    w.ULONG, ctypes.c_void_p, w.ULONG]
     access = 0x100000 | 0x80 | (0x1 if not create else 0x3)  # sync, attributes, read/write
+    access |= extra_access
     options = 0x200000 | 0x20 | (0x1 if directory else 0x40)  # no reparse, sync, type
     # Read sharing only for directories/readers; exclusive new file blocks hardlink/rename.
     code = api(ctypes.byref(handle), access, ctypes.byref(attrs), ctypes.byref(status),
-               None, 0x80, 0 if create else 1, 2 if create else 1, options, None, 0)
+               None, 0x80, 0 if create and not directory else 1,
+               3 if open_if else (2 if create else 1), options, None, 0)
     if code < 0:
+        if code & 0xFFFFFFFF in (0xC0000034, 0xC000003A):
+            raise FileNotFoundError("file_not_found")
         raise AgentError("exclusive_file_open_failed")
     try:
         fd = msvcrt.open_osfhandle(handle.value, os.O_BINARY | (os.O_RDWR if create else os.O_RDONLY))
@@ -102,6 +107,15 @@ def parents(paths: Paths, project: str, relative: str, binding: list | None = No
     # Use lexical components, never resolve through an attacker-controlled link.
     base = paths.root / paths.config["layout"]["workspace"] / safe_relative(project)
     target = base / relative
+    with pinned_parent(target, binding) as pinned:
+        yield pinned
+
+
+@contextmanager
+def pinned_parent(target: Path, binding: list | None = None):
+    """Pin a lexical absolute parent chain, including cache paths; never follow links."""
+    if not target.is_absolute() or ".." in target.parts:
+        raise AgentError("absolute_safe_path_required")
     chain, fds = [], []
     try:
         if os.name == "nt":
