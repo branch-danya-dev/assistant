@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-31T00:27:45.494079+03:00",
+  "source_revision": {
+    "commit": "0d50edda49e1af96dab80136bb3ba3ba9cc34cdf",
+    "dirty": false
+  },
+  "runtime_source_fingerprint": "679a15027f9fa85f63f2b480a812c0df6483af92f27c7bd2eab4c7ca13c7871d",
+  "selected_model": "qwen3.5:9b",
+  "model_comparisons": 0,
+  "synthetic_only": true,
+  "historical_success_reused": false,
+  "production_database_opened": false,
+  "current_model_files_verified": false,
+  "task_dispatched": false,
+  "passed": false,
+  "phase": "loopback_availability_before_model_smoke",
+  "connect_errno": 10061,
+  "status": "unavailable"
+}

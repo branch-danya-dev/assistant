@@ -589,7 +589,8 @@
         "docs/engineering/evidence/m1-security-validation.json",
         "docs/engineering/m1-file-aliases.md",
         "docs/engineering/m1-trust-boundary-proposal.md",
-        "tests/test_file_aliases.py"
+        "tests/test_file_aliases.py",
+        "docs/engineering/evidence/m1-alias-validation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure.",
@@ -995,7 +996,8 @@
         "docs/engineering/evidence/m1-security-validation.json",
         "docs/engineering/m1-file-aliases.md",
         "docs/engineering/m1-trust-boundary-proposal.md",
-        "tests/test_file_aliases.py"
+        "tests/test_file_aliases.py",
+        "docs/engineering/evidence/m1-alias-validation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure."
@@ -1087,7 +1089,7 @@
     {
       "id": "TASK-048",
       "title": "Reject ambiguous file classification aliases and preserve legacy task authority",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P0",
       "milestone": "M1",
       "depends_on": [
@@ -1110,10 +1112,11 @@
         "docs/engineering/m1-file-aliases.md",
         "tests/test_file_aliases.py",
         "tests/test_m1_create.py",
-        "tests/test_bounded.py"
+        "tests/test_bounded.py",
+        "docs/engineering/evidence/m1-alias-validation.json"
       ],
       "owner": "unassigned",
-      "notes": "Functional remediation only; does not close TASK-044, REQ-017/019 or M1. ADR-025 remains provisional."
+      "notes": "Functional remediation only; does not close TASK-044, REQ-017/019 or M1. ADR-025 remains provisional. Validated on both platforms at 0d50edd (CI 41131159441). 8.3 unavailable and real case-sensitive directory unverified are explicit compatibility/evidence limits; no universal alias certification."
     }
   ]
 }

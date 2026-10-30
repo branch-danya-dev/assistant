@@ -130,7 +130,9 @@
     "docs/engineering/evidence/m1-security-validation.json",
     "docs/engineering/evidence/windows-m1-security-host.json",
     "docs/engineering/m1-file-aliases.md",
-    "docs/engineering/m1-trust-boundary-proposal.md"
+    "docs/engineering/m1-trust-boundary-proposal.md",
+    "docs/engineering/evidence/m1-alias-validation.json",
+    "docs/engineering/evidence/windows-m1-alias-host.json"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
