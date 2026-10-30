@@ -12,6 +12,10 @@ Build a reliable, local-first Windows personal agent, not a chatbot wrapper. Use
 
 ADR-016 and `spec/storage-config.json` select `G:\Assistant` on Windows. Code is in `G:\Assistant\repo`, Ollama weights at `G:\Assistant\models\ollama` via User-level `OLLAMA_MODELS`, durable memory and history under `G:\Assistant\data`. Resolve paths via `ASSISTANT_ROOT`, with explicit override for CI and migration. Do not write to C: as fallback, do not commit private runtime files, and read `docs/architecture/storage.md` before any installation, persistence or migration changes.
 
+## Binding architecture baseline v1.0
+
+Read `docs/engineering/architecture-baseline.md` and the accepted ADR records before implementing M1. Baseline assumptions are approved for M1: single-user Python modular monolith, SQLite+FTS, identity stored outside model weights, local-first, owner-gated cloud, trustworthy action classification, M1 crash-safe journal, and derivation of all application paths from one `ASSISTANT_ROOT`. A new model suggestion cannot override ADR-015 or tool permissions. Implementation changes need a superseding ADR and migration plan, not silent design changes. Untrusted model output must match `spec/schemas/tool-invocation.schema.json` and cannot supply authoritative side effects.
+
 ## Required startup sequence
 
 1. Read `README.md` and `spec/manifest.json`.
@@ -19,7 +23,7 @@ ADR-016 and `spec/storage-config.json` select `G:\Assistant` on Windows. Code is
 3. Read relevant records in `spec/requirements.json`, `spec/tasks.json`, `spec/capabilities.json`, and `spec/scenarios.json`. Follow IDs rather than loading every document into context.
 4. Inspect only the affected `docs/architecture/*.md` before touching a module.
 5. Confirm existing code and tests; avoid implementing assumed APIs or non-existent behavior.
-6. Implement the smallest testable unit, run `python tools/validate_specs.py` and `python -m unittest discover -s tests -v`, then record evidence.
+6. Install validation dependencies (`python -m pip install -e ".[dev]"`), implement the smallest testable unit, run `python tools/validate_specs.py` and `python -m unittest discover -s tests -v`, then record evidence.
 
 ## Trust hierarchy
 

@@ -106,14 +106,26 @@
     "tools/validate_specs.py",
     "spec/model-config.json",
     "spec/storage-config.json",
-    "docs/architecture/storage.md"
+    "docs/architecture/storage.md",
+    "docs/architecture/identity.md",
+    "docs/engineering/threat-fixtures.md",
+    "spec/examples/approval-request.json",
+    "spec/examples/memory-record.json",
+    "spec/examples/task-state.json",
+    "spec/examples/task-event.json",
+    "spec/examples/tool-descriptor.json",
+    "spec/examples/tool-invocation.json",
+    "spec/examples/persona.json",
+    "docs/engineering/architecture-baseline.md"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
     "spec/schemas/tool-descriptor.schema.json",
     "spec/schemas/task-event.schema.json",
     "spec/schemas/approval-request.schema.json",
-    "spec/schemas/task-state.schema.json"
+    "spec/schemas/task-state.schema.json",
+    "spec/schemas/tool-invocation.schema.json",
+    "spec/schemas/persona.schema.json"
   ],
   "agent_read_strategy": "Read AGENTS + manifest then only ID-matched records and relevant topic docs. Do not paste entire repository into LLM context.",
   "implementation_warning": "Most records are planned; no functional autonomous agent exists."

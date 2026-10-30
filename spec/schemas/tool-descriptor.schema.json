@@ -11,7 +11,9 @@
     "scope",
     "timeout_seconds",
     "approval_required",
-    "verifier"
+    "verifier",
+    "operation",
+    "output_schema"
   ],
   "properties": {
     "id": {
@@ -41,7 +43,8 @@
       "minimum": 1
     },
     "approval_required": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Required minimum; per-target policy can elevate read/workspace operations."
     },
     "verifier": {
       "type": "string"
@@ -62,6 +65,18 @@
     },
     "idempotent": {
       "type": "boolean"
+    },
+    "operation": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "effect_resolver": {
+      "type": "string",
+      "description": "Trusted registry rule id (not supplied by LLM)"
     }
   }
 }

@@ -26,3 +26,9 @@ SQLite tables + FTS5, separate interchangeable embedding index. Performance limi
 
 ## Data contract
 `spec/schemas/memory-record.schema.json`. Every material claim in a final output should be traceable to source/evidence where available.
+
+## Memory lifecycle baseline (REQ-054, TASK-041)
+
+Retention classes: `durable` (explicit user preferences, sourced important decisions), `project` (active scoped records), `temporary` (intermediate retrieval/context and scratch), `archive` (readable source/history) and `user_managed` (owner-controlled). Do not delete durable/provenance records merely because context is full. Temporary records may expire according to future owner-visible retention settings; search indexes are rebuildable from canonical records.
+
+Apply project ACL and privacy classification **before** lexical/vector ranking and prompt assembly. Automatically extracted facts carry source/evidence_status; unverified inference does not supersede a verified owner decision. Track changed facts with `supersedes`, effective times and original source pointers. Record TTL for temporary material, and provide explicit privacy-export/delete machinery by M3.

@@ -301,17 +301,17 @@
     },
     {
       "id": "CAP-022",
-      "name": "github",
+      "name": "github_read",
       "group": "development",
-      "side_effect": "workspace_write",
-      "scope": "service_api",
+      "side_effect": "read",
+      "scope": "approved_repository_read_only",
       "policy": "scoped",
       "status": "planned",
       "requirement_ids": [
         "REQ-042"
       ],
       "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "verification": "Read-only GitHub operations only: inspect repository, branches, commits and PR metadata. Never mutate refs, files, discussions or merges."
     },
     {
       "id": "CAP-023",
@@ -325,7 +325,7 @@
         "REQ-043"
       ],
       "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "verification": "Read and workspace-scoped changes only. Changes outside approved isolated copy or overwrite of original require explicit policy approval; verify saved result."
     },
     {
       "id": "CAP-024",
@@ -382,6 +382,20 @@
       ],
       "adapter": "TBD",
       "verification": "Fixture-based tool result + evidence check; implementation pending."
+    },
+    {
+      "id": "CAP-028",
+      "name": "github_mutation",
+      "group": "development",
+      "side_effect": "external_send",
+      "scope": "approved_repository_exact_operation",
+      "policy": "approval",
+      "status": "planned",
+      "requirement_ids": [
+        "REQ-042"
+      ],
+      "adapter": "TBD",
+      "verification": "Exact repo/ref/operation and payload digest approved before PR creation, branch writes, comments, releases, merges or other remote mutations; reconcile uncertain responses."
     }
   ]
 }

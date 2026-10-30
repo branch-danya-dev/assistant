@@ -1,0 +1,10 @@
+{
+  "task_id": "test-task",
+  "capability_id": "CAP-028",
+  "operation": "create_pull_request",
+  "arguments": {
+    "repo": "owner/example",
+    "head": "feature",
+    "base": "main"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "approval_id": "approval-example",
+  "task_id": "test-task",
+  "capability_id": "CAP-028",
+  "arguments_digest": "sha256:sample-digest",
+  "resource": "repo:owner/example/branch:test",
+  "side_effect": "external_send",
+  "expires_at": "2026-11-01T00:00:00Z",
+  "status": "pending",
+  "approved_by": null
+}

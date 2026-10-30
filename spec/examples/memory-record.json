@@ -1,0 +1,16 @@
+{
+  "id": "mem-001",
+  "project_id": "fixture-project",
+  "kind": "decision",
+  "statement": "Selected existing fabric prototype.",
+  "source_refs": [
+    "fixture:document-01"
+  ],
+  "evidence_status": "verified",
+  "recorded_at": "2026-10-30T00:00:00Z",
+  "supersedes": [],
+  "confidence": 1,
+  "sensitivity": "private",
+  "retention_class": "durable",
+  "expires_at": null
+}

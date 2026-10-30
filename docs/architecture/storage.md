@@ -18,7 +18,7 @@ G:\Assistant\
 └── cache\                # Regenerable cache
 ```
 
-The code and all internal database references must use paths relative to `ASSISTANT_ROOT`; it defaults to `G:\Assistant` on the owner Windows host. Reject `..` traversal and symlink/reparse-point escapes. Missing G: or insufficient access must fail visibly, **never silently writing on C:**. Explicit temporary overrides are allowed for tests and CI. All state lives outside `repo/`, so model blobs, conversations, databases, artifacts, logs, caches and backups are not versioned in Git.
+Only **`ASSISTANT_ROOT`** is an absolute application directory variable in `.env.example`. All `data/*`, `workspace`, `cache`, `logs` and `backups` paths derive from `spec/storage-config.json`. Ollama is a separate process; derive and set its Windows User-level `OLLAMA_MODELS` from the effective root at provisioning/migration. The code and all internal database references must use paths relative to `ASSISTANT_ROOT`; it defaults to `G:\Assistant` on the owner Windows host. Reject `..` traversal and symlink/reparse-point escapes. Missing G: or insufficient access must fail visibly, **never silently writing on C:**. Explicit temporary overrides are allowed for tests and CI. All state lives outside `repo/`, so model blobs, conversations, databases, artifacts, logs, caches and backups are not versioned in Git.
 
 ## Windows first-time setup (manual, after owner authorization)
 
@@ -37,7 +37,7 @@ Fully Quit Ollama Desktop and relaunch after changing user environment. Setting 
 
 1. Stop workers and Ollama; preserve pending approvals and use a consistent SQLite backup (online backup API or controlled offline checkpoint, not naive copy during active writes).
 2. Copy the entire directory to the destination with integrity checks. `cache/` is optional, and models can also be re-downloaded. Store at least one **encrypted backup on a different physical disk or external storage**; `G:\Assistant\backups` alone is not protection against G: failure.
-3. Change `ASSISTANT_ROOT` and `OLLAMA_MODELS` on the destination, restart Ollama, relocate/re-clone repo, and restore protected credentials separately (e.g., Windows Credential Manager). Ollama executable/OS integrations are not automatically portable.
+3. Change **only `ASSISTANT_ROOT` for the assistant application**; all application-owned directories follow automatically. Separately derive/update Ollama's **user-level** `OLLAMA_MODELS` using the new root and `models/ollama`, restart Ollama, relocate/re-clone repo, and restore protected credentials separately (e.g., Windows Credential Manager). Ollama executable/OS integrations are not automatically portable.
 4. Verify model visibility, SQLite integrity, history, identity, memory, skills, task recovery and permissions. Retain old files until an actual restore succeeds.
 
 Never commit runtime state, model weights or secrets to Git.

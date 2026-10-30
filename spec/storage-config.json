@@ -37,5 +37,13 @@
     "restore_test_required": true
   },
   "implementation_status": "planned",
-  "recorded_on": "2026-10-30"
+  "recorded_on": "2026-10-30",
+  "path_resolution": {
+    "effective_root_env": "ASSISTANT_ROOT",
+    "effective_root_default": "G:\\Assistant",
+    "all_runtime_paths_from_layout": true,
+    "never_require_individual_absolute_path_overrides": true,
+    "external_ollama_env_derived_from": "models_ollama",
+    "migration_change_only_app_root": true
+  }
 }

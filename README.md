@@ -13,12 +13,13 @@ A local-first, hybrid-model, long-lived personal AI agent with a stable identity
 - **Product intent:** [`docs/product/vision.md`](docs/product/vision.md).
 - **Requirements:** [`spec/requirements.json`](spec/requirements.json).
 - **Architecture:** [`docs/architecture/overview.md`](docs/architecture/overview.md).
+- **Architecture baseline v1.0:** [`docs/engineering/architecture-baseline.md`](docs/engineering/architecture-baseline.md) (M1 contracts, trust and validation).
 - **Selected local model:** [`spec/model-config.json`](spec/model-config.json) (`qwen3.5:9b`).
 - **Storage layout:** [`spec/storage-config.json`](spec/storage-config.json) (`G:\Assistant`, ADR-016).
 - **Decision register:** [`spec/decisions.json`](spec/decisions.json).
 - **Implementation queue:** [`spec/tasks.json`](spec/tasks.json).
 - **Milestones and gates:** [`spec/milestones.json`](spec/milestones.json).
-- **Validation:** `python tools/validate_specs.py` and `python -m unittest discover -s tests -v`.
+- **Validation:** install `jsonschema>=4.23,<5` (or project dev extras), then `python tools/validate_specs.py` and `python -m unittest discover -s tests -v` on Windows or Linux.
 
 ## Technical baseline (provisional)
 
@@ -30,7 +31,7 @@ Everything belongs under `G:\Assistant`: repository `repo/`, Ollama models `mode
 
 ## Conventions
 
-The JSON specifications in `spec/` are canonical for structured status and traceability. Markdown in `docs/` supplies rationale and execution guidance. If they disagree, **do not silently choose**: log a documentation defect and reconcile them. Every feature has a stable requirement ID and verifiable acceptance tests. Proposed capabilities must never be presented as implemented.
+The JSON specifications in `spec/` are canonical for structured status and traceability. All non-deprecated requirements must be covered by tasks, including deferred features; CI validates this. The selected local model is not subject to comparative A/B testing. Markdown in `docs/` supplies rationale and execution guidance. If they disagree, **do not silently choose**: log a documentation defect and reconcile them. Every feature has a stable requirement ID and verifiable acceptance tests. Proposed capabilities must never be presented as implemented.
 
 No credentials, private conversations, uploaded project files, local memory stores, model weights or personal information should be committed. See `.gitignore` and the security policy.
 
