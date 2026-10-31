@@ -108,7 +108,9 @@
         "docs/engineering/evidence/m1-validation.json",
         "docs/engineering/m1-review-fixes.md",
         "tests/test_trust_lifecycle.py",
-        "docs/engineering/evidence/m1-trust-remediation.json"
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ],
       "verification_scope": "Scoped synthetic runtime evidence; live Qwen planning/final responses with owner/test-harness injected revision. No live model-generated revision certification. See m1-review-fixes.md for remaining M1 gates."
     },

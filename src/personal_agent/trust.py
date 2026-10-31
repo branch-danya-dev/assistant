@@ -119,6 +119,9 @@ class Trust:
                               (kind, object_id)).fetchone()
         if (not row or row["project_id"] != project or row["expires_at"] <= now()
                 or row["digest"] != fingerprint(value)
+                or row["owner"] != "local-owner" or not row["reviewed_at"]
+                or row["provenance"] not in {"owner-create", "legacy-owner-review",
+                                              "owner-renewal", "admitted-derivation"}
                 or row["classification"] not in CLASSES - {"restricted"}):
             raise AgentError("source_review_required")
         if marked == "private" and row["classification"] != "private":
@@ -193,13 +196,16 @@ class Trust:
             raise AgentError("memory_sensitivity_denied")
         current, _ = self.review_value("memory", record["id"], project)
         row = self.db.execute("SELECT removed FROM memory WHERE id=?", (record["id"],)).fetchone()
-        if (canonical != current or row[0] or
+        if (canonical != current or not row or row[0] or not current.get("source_refs") or
                 (current.get("expires_at") and current["expires_at"] <= now())):
             raise AgentError("source_review_required")
         marked = self.guard("memory", project, record["id"])
         if marked and marked != record["sensitivity"]:
             raise AgentError("inventory_source_denied")
-        return self.require("memory", record["id"], project, canonical, sink=sink)
+        classification = self.require("memory", record["id"], project, canonical, sink=sink)
+        if classification != record.get("sensitivity"):
+            raise AgentError("memory_sensitivity_denied")
+        return classification
 
     def audit(self, project):
         """Bounded IDs/labels/digests only: no source bodies, paths or preview reads."""

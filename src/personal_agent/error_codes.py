@@ -65,6 +65,7 @@ ERROR_CODES = frozenset({
     'invalid_intent',
     'invalid_memory-record',
     'invalid_memory_query',
+    'memory_search_budget_exhausted',
     'invalid_model_json',
     'invalid_model_manifest_digest',
     'invalid_model_reply',

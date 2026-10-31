@@ -281,6 +281,18 @@ changed, mismatched-project and unreviewed records cannot return. Private retrie
 the exact project and `--include-private`. Rebuild applies the same checks. Stale index bytes
 may remain until rebuild after wall-clock expiry, but retrieval always rechecks admission.
 
+Mixed searches omit expired/missing/revoked/tampered records and keep returning admitted
+matches, including when the newest matches are unavailable. A lone unavailable match returns
+an empty list; it does not renew access or reveal the omitted source. Receipt and inventory
+metadata are filtered before sorting/limits, then every candidate and history link receives
+a full digest/provenance check. Results keep recorded-time descending order with ID tie breaks.
+
+Search validates at most 256 unique candidates/history links. If that is insufficient, it
+returns the closed `memory_search_budget_exhausted` error (a paused agent task), never a
+misleading partial/empty success. Narrow the query or diagnose and explicitly rebuild/review
+the affected data. Ordinary denied records are skipped; SQLite, malformed-JSON and internal
+failures stop the query. Search never auto-renews, and reindex does not attest missing receipts.
+
 Archived canonical records receive no perpetual content authorization. Expired retention and
 owner removal cannot be undone by admission renewal. Backup pages and external source archives
 are not scrubbed or made browsable by this workflow; protect and review them separately. No

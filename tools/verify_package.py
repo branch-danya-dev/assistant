@@ -47,10 +47,19 @@ with Store(Paths(Path(sys.argv[2]))) as store:
     trust.review_mark(mark, 'internal')
     assert memory.search('needle', project_id='wheel')[0]['id'] == identifier
     store.connection.execute("UPDATE data_admissions SET expires_at='2000-01-01T00:00:00Z' WHERE object_id=?", (identifier,))
+    valid = memory.remember('wheel', 'synthetic valid needle', 'fixture://valid', sensitivity='internal')
+    assert [r['id'] for r in memory.search('needle', project_id='wheel')] == [valid]
+    # More than the former eight-result limit must not starve the older valid hit.
+    for i in range(12):
+        stale = memory.remember('wheel', 'synthetic stale needle', 'fixture://stale', sensitivity='internal')
+        store.connection.execute("UPDATE data_admissions SET digest=? WHERE object_id=?", ('0' * 64, stale))
+    assert [r['id'] for r in memory.search('needle', project_id='wheel', limit=1)] == [valid]
     meta = trust.review_metadata('memory', identifier, 'wheel')
     trust.renew('memory', identifier, 'wheel', meta['digest'], 'internal',
                 expires_at=(datetime.now(timezone.utc) + timedelta(days=90)).isoformat())
-    assert memory.search('needle', project_id='wheel')[0]['id'] == identifier
+    assert [r['id'] for r in memory.search('needle', project_id='wheel')] == [valid, identifier]
+    memory.rebuild_index()
+    assert [r['id'] for r in memory.search('needle', project_id='wheel')] == [valid, identifier]
     assert Journal(store).historical_audit(result['task']['task_id'], result['task']['project_id'])['content_withheld']
     from personal_agent.vault import DisabledWindowsCredentialManager
     assert DisabledWindowsCredentialManager.enabled is False

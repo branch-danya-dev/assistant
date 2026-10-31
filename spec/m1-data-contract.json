@@ -58,6 +58,17 @@
     "renewal": "owner-only ID/project/unchanged current and previous digest/classification/explicit later expiry; inventory and scope rechecked",
     "reconciliation": "owner project/current digest, active admission; atomic evidence/event/receipt; expiry and effect approvals unchanged",
     "index": "single project/ID entry synchronized transactionally on mark/review/renewal; rebuild uses same eligibility",
-    "history": "payload-free bounded show-audit after expiry/revocation; append-only prior and new receipt metadata"
+    "history": "payload-free bounded show-audit after expiry/revocation; append-only prior and new receipt metadata",
+    "search": {
+      "prefilter": "project/class/removal/canonical retention, matching admission/expiry and active inventory before ranking and candidate limits",
+      "validation": "independent canonical schema/columns, nonempty provenance, whole-record digest, receipt owner/provenance/class, current inventory; denied records skipped",
+      "order": "recorded_at descending, id ascending; literal Unicode words, no global BM25",
+      "maximum_unique_full_checks": 256,
+      "shared_with": "superseded_by history links",
+      "budget_exhaustion": "memory_search_budget_exhausted, no partial payload; agent paused",
+      "fatal": "SQLite/storage/malformed JSON/unknown internal failures abort; no broad exception suppression",
+      "index": "encountered full-check denials pruned transactionally; add/review/renew/rebuild share validation; elapsed-expiry entries may remain physically until rebuild",
+      "automatic_renewal": false
+    }
   }
 }

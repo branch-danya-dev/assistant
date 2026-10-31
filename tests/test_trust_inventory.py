@@ -78,15 +78,13 @@ class InventoryTests(BoundaryCase):
         identifier = memory.remember("alpha", "needle " + self.canary, "fixture://owner", sensitivity="internal")
         self.trust.mark("memory", "alpha", identifier)
         self.assertEqual(memory.search("needle", project_id="alpha"), [])
-        with self.assertRaisesRegex(AgentError, "inventory_source_denied"):
-            memory.search("", project_id="alpha")
+        self.assertEqual(memory.search("", project_id="alpha"), [])
         self.assertEqual(memory.search("needle", project_id="beta"), [])
         clean = memory.remember("beta", "needle", "fixture://owner", sensitivity="internal")
         row = json.loads(self.store.connection.execute("SELECT document FROM memory WHERE id=?", (clean,)).fetchone()[0])
         row["source_refs"] = [self.canary]
         self.store.connection.execute("UPDATE memory SET document=? WHERE id=?", (encode(row), clean))
-        with self.assertRaisesRegex(AgentError, "source_review_required"):
-            memory.search("needle", project_id="beta")
+        self.assertEqual(memory.search("needle", project_id="beta"), [])
 
     def test_inventory_checked_before_memory_persistence_and_restricted_is_metadata_only(self):
         memory = Memory(self.store)

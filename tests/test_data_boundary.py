@@ -168,8 +168,7 @@ class BoundaryTests(BoundaryCase):
         document = json.loads(row[0])
         document["source_refs"] = [json.dumps({"token": self.canary})]
         self.store.connection.execute("UPDATE memory SET document=? WHERE id=?", (encode(document), record))
-        with self.assertRaisesRegex(AgentError, "source_review_required"):
-            memory.search("needle", project_id="alpha")
+        self.assertEqual(memory.search("needle", project_id="alpha"), [])
 
     def test_worker_environment_has_no_owner_secrets_or_proxy(self):
         with patch.dict(os.environ, {"CANARY_CREDENTIAL": self.canary, "HTTP_PROXY": self.canary,

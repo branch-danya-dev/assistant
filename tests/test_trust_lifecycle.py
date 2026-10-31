@@ -271,8 +271,7 @@ class TrustLifecycleTests(RuntimeCase):
         self.expire(identifier)
         before = {t: self.rows(t) for t in ("memory", "memory_events", "approvals", "events")}
         old = self.receipt("memory", identifier)
-        with self.assertRaises(AgentError):
-            self.memory.search("needle", project_id="alpha")
+        self.assertEqual(self.memory.search("needle", project_id="alpha"), [])
         self.memory.rebuild_index()
         self.renew(identifier)
         self.assertEqual(self.memory.search("needle", project_id="alpha")[0]["id"], identifier)

@@ -606,7 +606,9 @@
         "tests/test_file_aliases.py",
         "docs/engineering/evidence/m1-alias-validation.json",
         "tests/test_trust_lifecycle.py",
-        "docs/engineering/evidence/m1-trust-remediation.json"
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure.",
@@ -942,7 +944,9 @@
         "docs/engineering/m1-review-fixes.md",
         "docs/engineering/m1-security-boundaries.md",
         "tests/test_trust_lifecycle.py",
-        "docs/engineering/evidence/m1-trust-remediation.json"
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
@@ -1034,7 +1038,9 @@
         "docs/engineering/evidence/m1-trust-validation.json",
         "docs/engineering/evidence/windows-m1-trust-host.json",
         "tests/test_trust_lifecycle.py",
-        "docs/engineering/evidence/m1-trust-remediation.json"
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure. TASK-049 supplies bounded inventory/legacy/disabled-vault controls; ADR-025 owner decisions, literal acceptance and fresh host evidence remain separate open gates.",
@@ -1214,17 +1220,20 @@
         "Owner project/digest-bound reconciliation atomically refreshes admission while retaining approvals, attempts, append-only evidence and non-replayable effects.",
         "Exact eligible memory is restored to FTS transactionally after review; revoked, expired, changed, foreign or removed data stay denied.",
         "Explicit owner renewal retains immutable scope/effect authority and audit history; expired content has bounded payload-free historical diagnostics.",
-        "Windows and Ubuntu schema/DAG, regression, security/crash/integration, Ruff, wheel and installed-package checks; record platform skips and fresh selected-Qwen availability."
+        "Windows and Ubuntu schema/DAG, regression, security/crash/integration, Ruff, wheel and installed-package checks; record platform skips and fresh selected-Qwen availability.",
+        "Mixed-admission search returns valid matches despite expired, missing or tampered candidates; metadata filters precede limits, full source checks are independent, bounded exhaustion and storage failures remain explicit, with no payload leakage or replay."
       ],
       "evidence": [
         "docs/engineering/m1-trust-inventory.md",
         "docs/engineering/runbook.md",
         "tests/test_m1_create.py",
         "tests/test_trust_lifecycle.py",
-        "docs/engineering/evidence/m1-trust-remediation.json"
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ],
       "owner": "unassigned",
-      "notes": "Targeted owner-authorized remediation of review 5722142390 on existing PR #8. Remains in_progress pending final independent review; no M1/ADR-025/P0 acceptance closure."
+      "notes": "Targeted owner-authorized remediation of review 5722142390 on existing PR #8. Remains in_progress pending final independent review; no M1/ADR-025/P0 acceptance closure. Review 5722293592 follow-up covers mixed-admission lexical search; 16 additional regressions and installed-wheel coverage. Independent review and original acceptance gates remain open."
     }
   ]
 }

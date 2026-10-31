@@ -195,3 +195,57 @@ classification is not fixed by renewal. Wall-clock expiration suppresses retriev
 but stale derived FTS bytes need rebuild and physical/backup erasure remains deferred. Historical
 metadata is sensitive and may be truncated; full canonical evidence remains retained locally.
 All existing risk-register entries and the three pending ADR-025 decisions remain open.
+
+## Mixed-admission search follow-up (review 5722293592)
+
+Reviewed parent: `46890be03a4fe9bb57d51e559d80c1b105838809`. The regression reproduced
+`source_review_required` for both creation orders of an expired and a still-admitted match,
+including an expired newest candidate with `limit=1`.
+
+Search now joins current memory admissions and filters project, matching classification,
+removal, canonical retention, admission expiry and active matching inventory **before**
+sorting and candidate limits. Missing/expired receipts cannot occupy result slots. A separate
+full check validates canonical ID/columns/schema, nonempty source provenance, the whole-record
+digest, receipt owner/provenance/class and current inventory for each candidate. Known source
+denials omit that record and continue; they do not authorize, renew or return its payload.
+The same checks protect `superseded_by` IDs, even when a successor does not match the query.
+
+The query retains literal Unicode word escaping (24 words maximum), no global BM25 statistics,
+and descending recorded time; ID ascending breaks ties deterministically. It returns up to
+the requested 1–20 **valid** results. Full checks are limited to **256 unique records per search**,
+shared with successor checks, with one candidate lookahead. Metadata-only filtering does not
+consume this budget. If more full checks are needed, `memory_search_budget_exhausted` aborts
+with no partial payload; orchestration reports a paused task rather than an empty successful
+search. This explicit availability limit avoids an unbounded validation walk through damaged
+records. Ordinary SQL metadata filtering/sorting still scales with the scoped dataset; worker
+time and output limits remain enforced. Use a narrower query or explicit owner reindex/review
+after diagnosing the cause; no scheduled cleanup or silent reauthorization is required.
+
+Only the enumerated source-denial codes in `memory.RECORD_DENIALS` are skippable, including
+schema-invalid records and recognizable credential content. SQLite/schema-table failures,
+malformed JSON, I/O and unexpected/internal errors abort the operation. Public CLI/worker
+diagnostics retain their closed error codes. This intentionally distinguishes an unavailable
+source from a failed storage/policy subsystem; a broad `except AgentError: continue` is not used.
+
+A SQLite transaction serializes selection/checks with owner mutations and removes encountered
+digest/provenance-denied FTS entries atomically. Failure rolls back pruning; an existing caller
+transaction is neither committed nor replaced. Add/review/renew/rebuild use the same full-check
+helper; revoked, expired-retention and removed data are not indexed. Metadata-filtered stale
+entries after elapsed expiry may remain physically until explicit rebuild but cannot authorize
+retrieval. Canonical records, receipt/history lifetime and effect permissions remain unchanged.
+SQLite remains v4 without a new migration. No protection against malicious same-account
+database/code edits or physical erasure is claimed.
+
+`tests/test_memory_admission_search.py` adds 16 tests covering both orders, missing/expired
+mixtures, all denials, 40 leading invalid candidates, explicit budget/rollback, successor
+checks, late mutation, owner lifecycle, reload/rebuild, CLI privacy and a real child-worker
+workflow with captured input/output and no replay. The former lone-source denial assertions
+now require an empty result, retaining their nondisclosure requirement. Installed-wheel
+validation outside the checkout also exercises mixed expiry, 12 tampered leading candidates,
+renewal and rebuild. Final SHA/Windows+Ubuntu CI are recorded in PR #8; evidence snapshots
+name their own tested revision rather than claiming a later docs-only revision was tested.
+
+Residual **R-M1-SEARCH-BUDGET**: sufficiently many digest-invalid matches or history links can
+reach the explicit 256-check limit; this is a visible resource stop, not a successful truncated
+result. The local database lock may also cause a closed storage error under contention. This
+bounded behaviour does not alter ADR-025 or close TASK-050/044/026/M1 acceptance gates.

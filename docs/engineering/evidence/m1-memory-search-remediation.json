@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "date": "2026-10-31",
+  "status": "local-validation-passed-final-remote-evidence-in-pr",
+  "review_url": "https://github.com/branch-danya-dev/assistant/pull/8#pullrequestreview-5722293592",
+  "reviewed_parent_sha": "46890be03a4fe9bb57d51e559d80c1b105838809",
+  "branch": "feat/m1-trust-inventory",
+  "base": "fix/m1-file-alias-boundaries",
+  "base_sha": "e9c0fb300605ed77de208e8179a3746e9c790883",
+  "synthetic_only": true,
+  "production_data_opened": false,
+  "schema_version": 4,
+  "reproduction": "Both expired/valid creation orders raised source_review_required on the reviewed parent; expired newest also failed with limit=1.",
+  "new_regression_methods": 16,
+  "search_contract": {
+    "prefilter_before_limit": true,
+    "independent_full_validation": true,
+    "full_check_budget_including_history": 256,
+    "budget_exhaustion": "explicit memory_search_budget_exhausted; no partial payload",
+    "system_failure": "SQLite/malformed JSON/unknown internal errors propagate",
+    "automatic_renewal": false
+  },
+  "acceptance": {
+    "ADR-025": "provisional",
+    "owner_decisions_answered": 0,
+    "REQ-017": "specified P0/M1; original acceptance unchanged",
+    "REQ-019": "specified P0/M1; original acceptance unchanged",
+    "TASK-050": "in_progress; independent review pending",
+    "TASK-044": "in_progress",
+    "TASK-026": "in_progress",
+    "M1": "in_progress"
+  },
+  "live_qwen": "Optional fresh check is performed only after final commit; see exact-SHA PR evidence. No earlier smoke is reused.",
+  "final_head_evidence": "The existing PR #8 body and final report record the exact final SHA and its CI; this snapshot must not claim testing of a later revision.",
+  "risks": [
+    "Explicit 256-check budget can stop a highly damaged query or oversized history; SQL scoped filtering/sorting still scales with dataset size and worker wall/output limits remain.",
+    "Elapsed-expiry FTS bytes can remain physically until explicit rebuild but cannot authorize retrieval.",
+    "Owner classification/inventory completeness and same-account code/database trust remain assumptions.",
+    "Physical erasure, real enabled Windows case-sensitive directories, available real 8.3 fixtures, real vault and connector certification remain limited or deferred."
+  ],
+  "local_source": {
+    "runtime_fingerprint": "182dadfcb39a6e2c6ed57823e1f31058846ec0e4c7e56f89bc59cd646dadcd4e",
+    "provenance": "Precommit local runtime/tests; final exact committed HEAD CI and fresh live availability are recorded in PR #8. Evidence JSON bookkeeping is not runtime code."
+  },
+  "local_windows": {
+    "discovered": 191,
+    "passed": 186,
+    "skipped": 5,
+    "failures": 0,
+    "errors": 0,
+    "schema_combined_dag": "pass",
+    "ruff": "pass",
+    "wheel": "pass",
+    "installed_package_outside_checkout": "pass",
+    "test_log_sha256": "52a4dfe561beb52a5ce739228906fc7864a665ba27567282ce2f45388a90fb18",
+    "skips": [
+      "3 Linux-only",
+      "2 unavailable real 8.3 aliases; no settings changed"
+    ]
+  },
+  "local_initial_attempt": "Superseded: restricted host blocked loopback/hardlink/junction fixtures; the source-denial assertion and in-progress evidence references were then aligned before the complete successful run."
+}
