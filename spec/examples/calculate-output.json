@@ -1,0 +1,17 @@
+{
+  "contract": "decimal-v1",
+  "operation": "calculate",
+  "input_digest": "359cb47243ee5404d77b9479a5b85a73a07c3a151eb649d8a77f116829e4a3e4",
+  "result": {
+    "unit": {
+      "kind": "scalar"
+    },
+    "number": {
+      "value": "0.30",
+      "numerator": "3",
+      "denominator": "10",
+      "scale": 2,
+      "rounding_applied": false
+    }
+  }
+}

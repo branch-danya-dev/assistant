@@ -160,12 +160,12 @@
       "side_effect": "read",
       "scope": "sandbox",
       "policy": "scoped",
-      "status": "planned",
+      "status": "in_progress",
       "requirement_ids": [
         "REQ-026"
       ],
-      "adapter": "TBD",
-      "verification": "Fixture-based tool result + evidence check; implementation pending."
+      "adapter": "personal_agent.calculator (experimental task opt-in)",
+      "verification": "Closed JSON Schema, exact Decimal fraction evaluator and independent Fraction/integer verifier; tests/test_calculator.py and tests/test_calculator_integration.py. No arbitrary code or external effects."
     },
     {
       "id": "CAP-010",

@@ -1,0 +1,51 @@
+{
+  "base_sha": "ee7dbdd871306451a1ea9b44715ac7f3689b192e",
+  "tested_revision": "precommit working candidate; runtime fingerprint below",
+  "recorded_at": "2026-10-31T14:27:37.330861+00:00",
+  "runtime_fingerprint": "7ac507b207e667742e4d9fed75e217efafe987775533453f45fe24af819f8dd5",
+  "windows": {
+    "discovered": 218,
+    "passed": 213,
+    "skipped": 5,
+    "log": "phase-b-windows-final.log"
+  },
+  "targeted_calculator_tests": 20,
+  "schema_traceability_dag": "passed",
+  "ruff": "passed",
+  "wheel_isolated": "passed",
+  "live_initial": {
+    "passed": false,
+    "status": "FAILED",
+    "checks": {
+      "smoke": true,
+      "completed": false,
+      "exact_verified_calculation": false,
+      "no_approval": true
+    },
+    "model": "qwen3.5:9b",
+    "model_calls": 3,
+    "state": "blocked",
+    "block_reason": "ollama_http_error",
+    "synthetic_only": true,
+    "hardware_or_model_blobs_certified": false
+  },
+  "live_after_provider_schema_fix": {
+    "passed": true,
+    "status": "PASSED",
+    "checks": {
+      "smoke": true,
+      "completed": true,
+      "exact_verified_calculation": true,
+      "no_approval": true
+    },
+    "model": "qwen3.5:9b",
+    "model_calls": 4,
+    "state": "completed",
+    "block_reason": null,
+    "synthetic_only": true,
+    "hardware_or_model_blobs_certified": false
+  },
+  "final_sha_ci": "Recorded after commit in the draft PR and delivered phase-b-evidence.json",
+  "status": "experimental_in_progress",
+  "owner_decisions": "OD-1/2/3 unanswered; ADR-025 provisional; M1 remains open"
+}

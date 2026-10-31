@@ -73,7 +73,35 @@ with Store(Paths(Path(sys.argv[2]))) as store:
     preview = previews.create({'synthetic': True}, clock=1000)
     assert preview['permissions_verified']
     assert previews.cleanup(clock=10000)['removed'] == 1
-print('PASS: installed wheel resources, offline task, trust lifecycle and private preview outside checkout')
+import json
+from personal_agent.calculator import execute
+from personal_agent.calculator_verify import verify
+from personal_agent.calculator_cli import run as numeric_cli
+from personal_agent.config import AgentError
+from argparse import Namespace
+for op, name, expected in [('calculate', 'calculate', '0.30'), ('cost_scenarios', 'cost-scenarios', '250.00')]:
+    arguments = specification('examples/' + name + '-input.json')
+    receipt = execute(op, arguments)
+    assert receipt == specification('examples/' + name + '-output.json')
+    verify(op, arguments, receipt)
+    receipt['input_digest'] = '0' * 64
+    try:
+        verify(op, arguments, receipt)
+    except AgentError:
+        pass
+    else:
+        raise AssertionError('forged numeric evidence accepted')
+    source = Path(sys.argv[2]).parent / (name + '.json')
+    source.write_text(json.dumps(arguments), encoding='utf-8')
+    with Store(Paths(Path(sys.argv[2]))) as store:
+        result = numeric_cli(store, Namespace(command=name, input=source, project='numeric',
+            experimental_calculator=True, private_intent=False))
+        assert result['task']['state'] == 'completed', result
+        assert result['model_inference_used'] is False
+        output = result['calculations'][0]['result']
+        number = output['number'] if op == 'calculate' else output['scenarios'][0]['total_cost']
+        assert number['value'] == expected
+print('PASS: installed wheel contracts, numeric CLI/worker/verifier, M1 trust and preview outside checkout')
 """
         result = subprocess.run([sys.executable, "-I", "-c", program, str(target),
                                  str(Path(temporary) / "home")], cwd=temporary,

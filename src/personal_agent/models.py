@@ -6,6 +6,7 @@ import io
 import json
 import socket
 import time
+from copy import deepcopy
 from urllib.parse import urlsplit
 
 from jsonschema import Draft202012Validator
@@ -13,7 +14,7 @@ from jsonschema import Draft202012Validator
 from .config import AgentError, specification
 from .data_policy import admit
 from .storage import encode
-from .tools import DESCRIPTORS
+from .tools import available_descriptors
 
 # Conservative UTF-8 byte ceiling leaves room for framing and 1024 output tokens in 8192.
 # Tokenizer-specific packing is intentionally deferred, never silently truncate source data.
@@ -62,7 +63,7 @@ class _DeadlineSocket:
 
 
 def reply_schema(phase: str | None = None, *, constrain_tools: bool = False,
-                 task_id: str | None = None) -> dict:
+                 task_id: str | None = None, calculator_enabled=False) -> dict:
     schema = {"type": "object", "additionalProperties": False,
             "required": ["steps", "answer", "evidence_refs"], "properties": {
                 "steps": {"type": "array", "maxItems": 8,
@@ -83,11 +84,34 @@ def reply_schema(phase: str | None = None, *, constrain_tools: bool = False,
         # A revision is a continuation, not a completion claim. Journal enforces final evidence.
     if constrain_tools:
         variants = []
-        for definition in DESCRIPTORS:
+        for definition in available_descriptors(calculator_enabled):
             invocation = specification("schemas/tool-invocation.schema.json")
             invocation["properties"]["capability_id"] = {"const": definition["id"]}
             invocation["properties"]["operation"] = {"const": definition["operation"]}
-            invocation["properties"]["arguments"] = definition["input_schema"]
+            arguments = deepcopy(definition["input_schema"])
+            if definition["operation"] == "calculate":
+                # Ollama resolves local references at the response-schema root,
+                # ignoring nested resource $id scopes. Lift, don't weaken, the
+                # standalone contract's recursive definition for this provider.
+                node = arguments.pop("$defs")["node"]
+                arguments.pop("$id", None)
+                arguments.pop("$schema", None)
+
+                def rebind(value):
+                    if isinstance(value, dict):
+                        for key, child in value.items():
+                            if key == "$ref" and child == "#/$defs/node":
+                                value[key] = "#/$defs/calculator_node"
+                            else:
+                                rebind(child)
+                    elif isinstance(value, list):
+                        for child in value:
+                            rebind(child)
+
+                rebind(arguments)
+                rebind(node)
+                schema["$defs"] = {"calculator_node": node}
+            invocation["properties"]["arguments"] = arguments
             if task_id:
                 invocation["properties"]["task_id"] = {"const": task_id}
             variants.append(invocation)
@@ -107,7 +131,8 @@ def validate_reply(value: object, task_id: str) -> dict:
 
 
 class Ollama:
-    def __init__(self, *, endpoint: str | None = None, timeout: float = 60):
+    def __init__(self, *, endpoint: str | None = None, timeout: float = 60, calculator_enabled=False):
+        self.calculator_enabled = calculator_enabled is True
         self.config = specification("model-config.json")["primary_local"]
         try:
             url = urlsplit(endpoint or self.config["endpoint"])
@@ -190,7 +215,8 @@ class Ollama:
                    "keep_alive": "5m", "options": {"num_ctx": self.config["context_tokens_initial"],
                                                      "num_predict": 1024, "temperature": 0}}
         if structured:
-            payload["format"] = reply_schema(phase, constrain_tools=True, task_id=task_id)
+            payload["format"] = reply_schema(phase, constrain_tools=True, task_id=task_id,
+                                             calculator_enabled=self.calculator_enabled)
         response = self._request("/api/chat", payload)
         if response.get("model") != self.config["model"]:
             raise AgentError("ollama_model_mismatch")
@@ -219,7 +245,8 @@ class Ollama:
             raise AgentError("invalid_model_json") from None
         validate_reply(result, task_id)
         admit(result)
-        if not Draft202012Validator(reply_schema(phase, constrain_tools=True, task_id=task_id)).is_valid(result):
+        if not Draft202012Validator(reply_schema(phase, constrain_tools=True, task_id=task_id,
+                calculator_enabled=self.calculator_enabled)).is_valid(result):
             raise AgentError("model_reply_wrong_phase")
         return result
 

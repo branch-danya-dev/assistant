@@ -43,6 +43,19 @@ class Agent:
                 for d in DESCRIPTORS]}))
         system += ("\nCURRENT PHASE: PLAN. Return at least one executable step; "
                    "answer must be empty and evidence_refs must be empty. Do not answer from memory alone.")
+        if scope.get("experimental_calculator") is True:
+            # Compact hints keep M1's 6000-byte message budget. The provider format
+            # carries the full closed contracts, and registry/worker enforce them.
+            system += (
+                "\nExperimental CAP-009 read-only tools: calculate and cost_scenarios. "
+                "calculate arguments={expression,unit,scale,rounding:'half_even'}. "
+                "Expression literal={op:'literal',value:decimal_string,unit}; other nodes="
+                "{op:add|subtract|multiply|divide|percent|negate,args:[nodes]} (negate unary). "
+                "Units: {kind:'scalar'}, {kind:'count',name:'item'}, or {kind:'currency',code:RUB|USD|EUR|JPY|KWD}. "
+                "cost_scenarios arguments={currency,quantity_unit:'item',rounding:'half_even',"
+                "scenarios:[{name:low|base|high,quantity,fixed_cost_total,variable_cost_per_unit,"
+                "selling_price_per_unit(optional)}]}. All quantities/amounts are decimal strings. "
+                "Fixed cost is added once per batch; no currency conversion or side effects.")
         context = {"task_id": task["task_id"], "owner_intent": task["intent"],
                    "approved_files": scope["files"], "allowed_create_files": scope.get("create_files", []),
                    "phase": "plan", "persona": persona, "untrusted_memory": []}
@@ -66,6 +79,10 @@ class Agent:
             "CAP-008/create_text {path,text}. Paths must be allowlisted, creates need owner approval. "
             "Never repeat a create target. At most 3 revisions/40 actions. Omit revision when done."
         )
+        if scope.get("experimental_calculator") is True:
+            system += (" Experimental CAP-009/calculate and CAP-009/cost_scenarios are also allowed "
+                       "under their closed numeric contracts; they do not authorize files or sends. "
+                       "Numeric receipts are independently checked; your prose remains unverified.")
         return final_context(self.journal, task, scope, self.identity.current(), system)
 
     def _model(self, task: dict, messages: list[dict]) -> dict:

@@ -257,7 +257,7 @@
     {
       "id": "TASK-011",
       "title": "Calculator and financial numerical verifier",
-      "status": "todo",
+      "status": "in_progress",
       "priority": "P1",
       "milestone": "M2",
       "depends_on": [
@@ -268,10 +268,21 @@
         "REQ-039"
       ],
       "acceptance": [
-        "Known money fixtures use deterministic calculations and pass."
+        "Known money fixtures use deterministic calculations and pass.",
+        "Closed Decimal arithmetic and batch scenarios with fixed_cost_total once, typed units/currency, explicit final rounding and independent exact verifier.",
+        "Model intent, bounded worker, journal/final evidence and read recovery retain all M1 P0 gates; reject forged outputs, injection and budget overflow.",
+        "Windows/Ubuntu CI and installed wheel outside checkout; TASK-011 remains in_progress pending independent review and full acceptance."
       ],
-      "evidence": [],
-      "owner": "unassigned"
+      "evidence": [
+        "docs/engineering/m2-calculator.md",
+        "tests/test_calculator.py",
+        "tests/test_calculator_integration.py",
+        "src/personal_agent/calculator.py",
+        "src/personal_agent/calculator_verify.py",
+        "docs/engineering/evidence/m2-calculator-validation.json"
+      ],
+      "owner": "unassigned",
+      "notes": "Owner explicitly authorized isolated experimental implementation on 2026-10-31 after PR #8 release remediation. Draft stacked on corrected PR #8; disabled by default, opt-in per admitted owner task. TASK-009 dependency and M1 acceptance stay open. No release/main integration or OD-1/2/3 acceptance implied."
     },
     {
       "id": "TASK-012",

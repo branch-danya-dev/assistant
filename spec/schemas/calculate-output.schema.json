@@ -1,0 +1,121 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "operation",
+    "input_digest",
+    "result"
+  ],
+  "properties": {
+    "contract": {
+      "const": "decimal-v1"
+    },
+    "operation": {
+      "const": "calculate"
+    },
+    "input_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit",
+        "number"
+      ],
+      "properties": {
+        "unit": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "scalar"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "name"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "count"
+                },
+                "name": {
+                  "const": "item"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "code"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "currency"
+                },
+                "code": {
+                  "enum": [
+                    "RUB",
+                    "USD",
+                    "EUR",
+                    "JPY",
+                    "KWD"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "number": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "numerator",
+            "denominator",
+            "scale",
+            "rounding_applied"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "pattern": "^-?[0-9]{1,67}(\\.[0-9]{1,6})?$",
+              "maxLength": 75
+            },
+            "numerator": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]{0,59})$"
+            },
+            "denominator": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,59}$"
+            },
+            "scale": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            },
+            "rounding_applied": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

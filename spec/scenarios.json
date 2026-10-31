@@ -49,7 +49,8 @@
         "audit trail"
       ],
       "acceptance": "Given a fixture bill of materials, produce XLSX with three editable scenarios, verified formulas and reconciled totals.",
-      "automated": "planned"
+      "automated": "planned",
+      "notes": "Numeric low/base/high receipts tested by experimental TASK-011; XLSX/editable formulas/cached results remain unimplemented until TASK-013. Scenario not complete."
     },
     {
       "id": "SCN-003",
