@@ -31,7 +31,12 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "redirects, frames, downloads, submit"
+      "adversarial_surface": "redirects, frames, downloads, submit",
+      "functional_checks": [
+        "TASK-014 M2: real read adapter follows permitted origins/redirects/downloads and produces provenance/citations with no upload/submit authority.",
+        "TASK-032 M3: real form mutation binds origin/recipient/normalized payload, consumes approval once, and reconciles uncertain submit without replay."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     },
     {
       "connector": "document",
@@ -56,7 +61,11 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "embedded objects, links, parser output"
+      "adversarial_surface": "embedded objects, links, parser output",
+      "functional_checks": [
+        "TASK-012 M2: actual DOCX/PDF read/create/edit fixtures reopen with expected content/diff; embedded objects/links/parser output cannot grant authority; existing files are not replaced accidentally."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     },
     {
       "connector": "spreadsheet",
@@ -81,7 +90,11 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "formulas, external references, hidden cells"
+      "adversarial_surface": "formulas, external references, hidden cells",
+      "functional_checks": [
+        "TASK-013 M2: actual XLSX fixtures reopen; formulas, cached values, hidden cells and external references are checked independently; no unauthorized links/macros/network or replacement."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     },
     {
       "connector": "telegram",
@@ -108,7 +121,12 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "account, peer, forwarded message, session"
+      "adversarial_surface": "account, peer, forwarded message, session",
+      "functional_checks": [
+        "TASK-017 M3: real bot test-account adapter rejects foreign users/peers and sends only exact approved content once.",
+        "TASK-036 M4: actual personal-account session isolation, peer binding and uncertain-send reconciliation; bot evidence cannot certify personal sessions."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     },
     {
       "connector": "email",
@@ -133,7 +151,11 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "headers, attachments, recipient rewrite, uncertain send"
+      "adversarial_surface": "headers, attachments, recipient rewrite, uncertain send",
+      "functional_checks": [
+        "TASK-033 M3: actual isolated test-account search/draft/send handles headers/attachments and exact recipients; uncertain send has provider reconciliation and no blind retry."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     },
     {
       "connector": "cloud",
@@ -158,7 +180,11 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "destination, dataset, purpose, redirects, credential isolation"
+      "adversarial_surface": "destination, dataset, purpose, redirects, credential isolation",
+      "functional_checks": [
+        "TASK-019 M3: actual provider adapter binds destination/dataset/purpose, verifies response/error paths and credential isolation, rejects unauthorized private egress and redirect leakage."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     },
     {
       "connector": "desktop",
@@ -184,7 +210,12 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "window, process, account, focus, uncertain click"
+      "adversarial_surface": "window, process, account, focus, uncertain click",
+      "functional_checks": [
+        "TASK-022 M4: each installed-software adapter verifies actual supported read/mutation operations and output artifacts.",
+        "TASK-035 M4: actual UI/window/process/account/focus tests verify targets before mutation and reconcile uncertain clicks without replay."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     },
     {
       "connector": "voice",
@@ -209,7 +240,11 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "speaker, transcript injection, remote session, confirmation"
+      "adversarial_surface": "speaker, transcript injection, remote session, confirmation",
+      "functional_checks": [
+        "TASK-023 M4: actual microphone off/on and remote authentication fixtures; hostile/foreign speaker transcripts cannot authorize actions; confirmations bind the actual target."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     },
     {
       "connector": "calendar",
@@ -234,7 +269,11 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "account, event target, attendee changes, uncertain create"
+      "adversarial_surface": "account, event target, attendee changes, uncertain create",
+      "functional_checks": [
+        "TASK-037 M4: actual test-account availability and create/update fixtures cover timezone, attendees, event IDs, exact approval and duplicate/uncertain outcomes."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     }
   ]
 }

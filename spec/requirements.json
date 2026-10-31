@@ -271,7 +271,7 @@
         "Webpage, document and message instructions cannot escalate privileges or override owner policy."
       ],
       "owner": "project",
-      "notes": "Original P0/M1 acceptance unchanged and still OPEN. Current file/memory/tool/model boundaries have executable policy tests, not universal protection. See m1-security-boundaries.md for exact supported paths, synthetic-only future connector contracts and R-M1-SECRET-OPAQUE/R-M1-LEGACY residual risks and required owner decisions.",
+      "notes": "P0 and M1 target retained; original acceptance above is preserved verbatim. The owner-approved ADR-025 acceptance_policy below governs bounded M1 evaluation and mandatory later adapter gates. Status remains specified until all scoped evidence is sufficient; policy acceptance is not proof. See docs/engineering/adr025-acceptance-traceability.md.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
@@ -295,8 +295,30 @@
         "tests/test_trust_lifecycle.py",
         "docs/engineering/evidence/m1-trust-remediation.json",
         "tests/test_memory_admission_search.py",
-        "docs/engineering/evidence/m1-memory-search-remediation.json"
-      ]
+        "docs/engineering/evidence/m1-memory-search-remediation.json",
+        "spec/owner-decisions-adr025.json",
+        "docs/engineering/adr025-acceptance-traceability.md"
+      ],
+      "acceptance_policy": {
+        "decision": "ADR-025",
+        "owner_record": "spec/owner-decisions-adr025.json",
+        "recorded_on": "2026-10-31",
+        "original_acceptance_preserved": true,
+        "evaluation_rule": "This explicit revision governs M1 evaluation; acceptance above retains the original product invariant and history. Future adapters must pass their own gates before enablement; they are not certified or silently waived by M1.",
+        "scope_contract": "spec/m1-data-contract.json",
+        "m1_criteria": [
+          "For every source/sink enumerated in spec/m1-data-contract.json, exercise the actual M1 reader/worker/journal/model paths with hostile source instructions and a persuaded synthetic model; owner scope and trusted registry remain authoritative, with zero unauthorized dispatch or scope expansion.",
+          "Cover model intent/revisions, file names/bodies, memory/provenance, persona and saved legacy data; ID/hash review cannot change permissions or replay effects. Unknown source kinds and unregistered operations fail closed.",
+          "Absent adapters remain disabled; synthetic contract denials do not satisfy their mandatory actual-adapter functional/security gates in spec/connector-gates.json at M2-M4."
+        ],
+        "future_adapter_gates": "spec/connector-gates.json",
+        "closure_requires": [
+          "traceable review of bounded coverage and residuals",
+          "fresh exact-head Windows and Ubuntu CI with counts/skips",
+          "fresh selected local qwen3.5:9b evidence with bounded scope",
+          "TASK-044 and all mandatory acceptance dependencies satisfied"
+        ]
+      }
     },
     {
       "id": "REQ-018",
@@ -328,7 +350,7 @@
         "No secrets in prompts/logs/repo; unauthorized cloud egress rejected."
       ],
       "owner": "project",
-      "notes": "Original P0/M1 acceptance unchanged and still OPEN. Current file/memory/tool/model boundaries have executable policy tests, not universal protection. See m1-security-boundaries.md for exact supported paths, synthetic-only future connector contracts and R-M1-SECRET-OPAQUE/R-M1-LEGACY residual risks and required owner decisions.",
+      "notes": "P0 and M1 target retained; original acceptance above is preserved verbatim. The owner-approved ADR-025 acceptance_policy below governs bounded M1 evaluation and mandatory later adapter gates. Status remains specified until all scoped evidence is sufficient; policy acceptance is not proof. See docs/engineering/adr025-acceptance-traceability.md.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
         "tests/test_security.py",
@@ -352,8 +374,31 @@
         "tests/test_trust_lifecycle.py",
         "docs/engineering/evidence/m1-trust-remediation.json",
         "tests/test_memory_admission_search.py",
-        "docs/engineering/evidence/m1-memory-search-remediation.json"
-      ]
+        "docs/engineering/evidence/m1-memory-search-remediation.json",
+        "spec/owner-decisions-adr025.json",
+        "docs/engineering/adr025-acceptance-traceability.md"
+      ],
+      "acceptance_policy": {
+        "decision": "ADR-025",
+        "owner_record": "spec/owner-decisions-adr025.json",
+        "recorded_on": "2026-10-31",
+        "original_acceptance_preserved": true,
+        "evaluation_rule": "This explicit revision governs M1 evaluation; acceptance above retains the original product invariant and history. Future adapters must pass their own gates before enablement; they are not certified or silently waived by M1.",
+        "scope_contract": "spec/m1-data-contract.json",
+        "m1_criteria": [
+          "For enumerated M1 sources/sinks, deny unclassified, restricted, inventory-marked and recognizable credential data before model, worker IPC, journal/evidence, preview or diagnostics; test actual boundaries and payload-free denials.",
+          "Explicit internal and private-local owner grants bind exact data, purpose and allowed sinks; diagnostics receive no private payload. Inventory stores metadata only, legacy ID/hash review preserves authority, and the M1 vault adapter remains disabled.",
+          "Deny unauthorized egress; Ollama remains numeric-loopback only. Synthetic controlled repository/export checks cover project tooling, not unrelated Git clients or same-account programs.",
+          "Owner classification and inventory completeness are explicit assumptions; opaque/unknown/encoded or misclassified secrets, same-account code/DB access, backups/retention and physical erasure remain visible residuals. No universal secret-discovery claim."
+        ],
+        "future_adapter_gates": "spec/connector-gates.json",
+        "closure_requires": [
+          "traceable review of bounded coverage and residuals",
+          "fresh exact-head Windows and Ubuntu CI with counts/skips",
+          "fresh selected local qwen3.5:9b evidence with bounded scope",
+          "TASK-044 and all mandatory acceptance dependencies satisfied"
+        ]
+      }
     },
     {
       "id": "REQ-020",

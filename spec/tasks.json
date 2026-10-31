@@ -222,10 +222,11 @@
         "tests/test_bounded.py",
         "docs/engineering/evidence/m1-validation.json",
         "docs/engineering/m1-review-fixes.md",
-        "docs/engineering/m1-security-boundaries.md"
+        "docs/engineering/m1-security-boundaries.md",
+        "docs/engineering/adr025-acceptance-traceability.md"
       ],
       "owner": "unassigned",
-      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
+      "notes": "SCN-004/005 and immutable revision/crash tests exist, but TASK-026 and TASK-041 remain open. Fresh read/search Qwen evidence cannot alone certify full release coverage or live model-generated revisions. See docs/engineering/adr025-acceptance-traceability.md."
     },
     {
       "id": "TASK-010",
@@ -249,10 +250,11 @@
         "tests/test_evidence.py",
         "docs/engineering/evidence/m1-validation.json",
         "docs/engineering/m1-review-fixes.md",
-        "docs/engineering/m1-security-boundaries.md"
+        "docs/engineering/m1-security-boundaries.md",
+        "docs/engineering/adr025-acceptance-traceability.md"
       ],
       "owner": "unassigned",
-      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
+      "notes": "CLI state/approval/audit evidence exists; acceptance remains open while TASK-009 is in_progress. See docs/engineering/adr025-acceptance-traceability.md."
     },
     {
       "id": "TASK-011",
@@ -287,7 +289,8 @@
         "REQ-027"
       ],
       "acceptance": [
-        "SCN-003 passes with diff and no accidental replacement."
+        "SCN-003 passes with diff and no accidental replacement.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -307,7 +310,8 @@
         "REQ-028"
       ],
       "acceptance": [
-        "SCN-002 pass and file reopens; formulas and cached results checked."
+        "SCN-002 pass and file reopens; formulas and cached results checked.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -329,7 +333,8 @@
         "REQ-037"
       ],
       "acceptance": [
-        "SCN-001 fixture result contains citations and missing data, no send."
+        "SCN-001 fixture result contains citations and missing data, no send.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -392,7 +397,8 @@
         "REQ-033"
       ],
       "acceptance": [
-        "Unauthorized user rejected, no send without approval."
+        "Unauthorized user rejected, no send without approval.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -433,7 +439,8 @@
         "REQ-022"
       ],
       "acceptance": [
-        "Private fixture payload cannot leave host in local mode."
+        "Private fixture payload cannot leave host in local mode.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -493,7 +500,8 @@
         "REQ-043"
       ],
       "acceptance": [
-        "Supported operations explicitly verified against installed software."
+        "Supported operations explicitly verified against installed software.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -515,7 +523,8 @@
         "REQ-048"
       ],
       "acceptance": [
-        "Audio mic switch and remote auth regression pass."
+        "Audio mic switch and remote auth regression pass.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -608,13 +617,15 @@
         "tests/test_trust_lifecycle.py",
         "docs/engineering/evidence/m1-trust-remediation.json",
         "tests/test_memory_admission_search.py",
-        "docs/engineering/evidence/m1-memory-search-remediation.json"
+        "docs/engineering/evidence/m1-memory-search-remediation.json",
+        "docs/engineering/adr025-acceptance-traceability.md"
       ],
       "owner": "unassigned",
-      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure.",
+      "notes": "Implemented scoped admission/retrieval/sink enforcement has deterministic evidence, but acceptance depends on open TASK-044. Apply ADR-025 bounded REQ-017/019 acceptance_policy; preserve cross-project/private denials and all inventory/retention residuals. See docs/engineering/adr025-acceptance-traceability.md.",
       "acceptance_depends_on": [
         "TASK-044"
-      ]
+      ],
+      "acceptance_policy": "ADR-025; spec/requirements.json REQ-017/019 acceptance_policy explicitly revises M1 evaluation of the preserved original criteria above; P0 and target milestone unchanged."
     },
     {
       "id": "TASK-027",
@@ -737,7 +748,8 @@
       ],
       "acceptance": [
         "Browser form submit is blocked until approved with origin, recipient and exact normalized arguments.",
-        "Synthetic hostile page cannot trigger state-changing operation."
+        "Synthetic hostile page cannot trigger state-changing operation.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -759,7 +771,8 @@
       ],
       "acceptance": [
         "Owner-authorized inbox search/drafts work; send requires operation-specific approval.",
-        "Retries after uncertain sending do not duplicate messages."
+        "Retries after uncertain sending do not duplicate messages.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -801,7 +814,8 @@
       ],
       "acceptance": [
         "Screen parsing and element targeting run on fixture without unauthorized clicks.",
-        "Mutation/privileged operations are classified using actual target and action."
+        "Mutation/privileged operations are classified using actual target and action.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -823,7 +837,8 @@
       ],
       "acceptance": [
         "Authorized personal-account sessions are isolated; read permission does not grant sending.",
-        "Sending is blocked pending target-specific approval and logged."
+        "Sending is blocked pending target-specific approval and logged.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -845,7 +860,8 @@
       ],
       "acceptance": [
         "Read-only availability works in fixtures; creating/modifying events requires confirmation.",
-        "Time zones and duplicate effects are verified."
+        "Time zones and duplicate effects are verified.",
+        "Before completion or enablement, pass this task's actual-adapter functional checks and all security checks in spec/connector-gates.json with exact SHA/platform/evidence and separate owner enablement; synthetic M1 contracts are insufficient."
       ],
       "evidence": [],
       "owner": "unassigned",
@@ -946,10 +962,11 @@
         "tests/test_trust_lifecycle.py",
         "docs/engineering/evidence/m1-trust-remediation.json",
         "tests/test_memory_admission_search.py",
-        "docs/engineering/evidence/m1-memory-search-remediation.json"
+        "docs/engineering/evidence/m1-memory-search-remediation.json",
+        "docs/engineering/adr025-acceptance-traceability.md"
       ],
       "owner": "unassigned",
-      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
+      "notes": "Expiry, owner renewal, FTS rebuild and metadata-only history have bounded tests; retention is independent of admission and is not erasure. TASK-026 remains open; no dependency shortcut. See docs/engineering/adr025-acceptance-traceability.md."
     },
     {
       "id": "TASK-042",
@@ -1002,7 +1019,7 @@
     },
     {
       "id": "TASK-044",
-      "title": "Close unchanged M1 P0 injection and secret/egress acceptance",
+      "title": "Close owner-approved bounded M1 P0 injection and secret/egress acceptance",
       "status": "in_progress",
       "priority": "P0",
       "milestone": "M1",
@@ -1040,13 +1057,16 @@
         "tests/test_trust_lifecycle.py",
         "docs/engineering/evidence/m1-trust-remediation.json",
         "tests/test_memory_admission_search.py",
-        "docs/engineering/evidence/m1-memory-search-remediation.json"
+        "docs/engineering/evidence/m1-memory-search-remediation.json",
+        "docs/engineering/adr025-acceptance-traceability.md"
       ],
       "owner": "unassigned",
-      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure. TASK-049 supplies bounded inventory/legacy/disabled-vault controls; ADR-025 owner decisions, literal acceptance and fresh host evidence remain separate open gates.",
+      "notes": "ADR-025 policy accepted, not a security completeness certificate. Open: real Windows 8.3 alias fixtures and actual case-sensitive-directory fail-closed evidence; traceable review of the final bounded source/sink coverage and current platform/model evidence. TASK-049 implementation remains done; TASK-050 remediation must also pass before this gate closes. Unknown secrets/inventory/misclassification, same-account access and retention/backups remain explicit assumptions/risks, not detection claims. Actual connector gates are mandatory at M2-M4, not claimed as M1 evidence. See docs/engineering/adr025-acceptance-traceability.md.",
       "acceptance_depends_on": [
-        "TASK-049"
-      ]
+        "TASK-049",
+        "TASK-050"
+      ],
+      "acceptance_policy": "ADR-025; spec/requirements.json REQ-017/019 acceptance_policy explicitly revises M1 evaluation of the preserved original criteria above; P0 and target milestone unchanged."
     },
     {
       "id": "TASK-045",
@@ -1200,7 +1220,7 @@
         "docs/engineering/evidence/m1-trust-remediation.json"
       ],
       "owner": "unassigned",
-      "notes": "Authorized implementation using option B; does not accept ADR-025, revise REQ-017/019 or close TASK-044/026/M1. Windows/Ubuntu implementation CI 41136331275 passed at 0748384c733b5e216f4697e2b90cecab62a8b72b. Fresh live check refused with 10061; no live inference or M1 closure claimed."
+      "notes": "Authorized implementation using option B; does not accept ADR-025, revise REQ-017/019 or close TASK-044/026/M1. Windows/Ubuntu implementation CI 41136331275 passed at 0748384c733b5e216f4697e2b90cecab62a8b72b. Fresh live check refused with 10061; no live inference or M1 closure claimed. Subsequent ADR-025 approval is recorded separately; historical implementation evidence and date remain unchanged."
     },
     {
       "id": "TASK-050",
@@ -1236,10 +1256,11 @@
         "tests/test_release_remediation.py",
         "tests/test_release_harness.py",
         "docs/engineering/m1-release-remediation.md",
-        "tools/installed_acceptance.py"
+        "tools/installed_acceptance.py",
+        "docs/engineering/adr025-acceptance-traceability.md"
       ],
       "owner": "unassigned",
-      "notes": "Targeted owner-authorized remediation of review 5722142390 on existing PR #8. Remains in_progress pending final independent review; no M1/ADR-025/P0 acceptance closure. Review 5722293592 follow-up covers mixed-admission lexical search; 16 additional regressions and installed-wheel coverage. Independent review and original acceptance gates remain open."
+      "notes": "Independent review at ee7dbdd871306451a1ea9b44715ac7f3689b192e confirms the remediation; stale pending-review claim removed. In_progress during this decision change pending its fresh exact-head Windows/Ubuntu, installed wheel and selected-Qwen availability record. Does not depend on or imply full M1/REQ-017/019 closure. See docs/engineering/adr025-acceptance-traceability.md."
     }
   ]
 }

@@ -216,9 +216,10 @@
         "docs/engineering/m1-file-aliases.md",
         "tests/test_file_aliases.py",
         "tests/test_trust_lifecycle.py",
-        "docs/engineering/evidence/m1-trust-remediation.json"
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "docs/engineering/adr025-acceptance-traceability.md"
       ],
-      "verification_scope": "Current supported M1 paths tested with a deliberately persuaded synthetic provider after actual hostile file/memory retrieval. Future connector admission is synthetic fail-closed only; unchanged REQ-017/019 acceptance remains open."
+      "verification_scope": "Actual M1 file/memory/result/model boundaries tested with persuaded synthetic provider; ADR-025 acceptance_policy accepted, bounded gate still open. Future-source denials are synthetic contracts only. See docs/engineering/adr025-acceptance-traceability.md."
     },
     {
       "id": "SCN-008",

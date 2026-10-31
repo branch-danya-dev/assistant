@@ -14,7 +14,7 @@
       "id": "M1",
       "name": "Local agent core",
       "status": "in_progress",
-      "exit_gate": "Verified selected-Qwen local workflow, immutable bounded plan revisions, exact approved create-only files, scoped evidence/identity/memory, interruptible workers, durable reconciliation and root portability (SCN-004/005/007/009/010/011). Windows primary; Linux trusted flat-output mode per ADR-021. ALL P0 M1 requirements and task dependencies must be closed with evidence, including unchanged REQ-017 and REQ-019; partial source analysis is not full semantic success.",
+      "exit_gate": "Verified selected-Qwen local workflow, immutable bounded plan revisions, exact approved create-only files, scoped evidence/identity/memory, interruptible workers, durable reconciliation and root portability (SCN-004/005/007/009/010/011). Windows primary; Linux trusted flat-output mode per ADR-021. ALL P0 M1 requirements and task dependencies must be closed with evidence, including REQ-017/019 under their explicit ADR-025 acceptance_policy (original wording and P0 retained); partial source analysis is not full semantic success.",
       "evidence": [
         "docs/engineering/m1-completion.md",
         "docs/engineering/evidence/m1-validation.json",
@@ -31,13 +31,15 @@
         "docs/engineering/evidence/m1-trust-validation.json",
         "docs/engineering/evidence/windows-m1-trust-host.json",
         "tests/test_trust_lifecycle.py",
-        "docs/engineering/evidence/m1-trust-remediation.json"
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "spec/owner-decisions-adr025.json",
+        "docs/engineering/adr025-acceptance-traceability.md"
       ],
       "remaining": [
-        "REQ-017 / TASK-044: current file/memory/result/model policy tests pass; real external connectors are not implemented or certified.",
-        "REQ-019 / TASK-044/026: opaque or misclassified secrets, legacy data/vault and universal repository prevention remain unmet P0 acceptance.",
-        "Close TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010 only with unchanged acceptance evidence.",
-        "Fresh selected-Qwen host availability/result is separately recorded; historical success does not certify this HEAD."
+        "TASK-044: actual Windows 8.3 and case-sensitive-directory evidence plus traceable final bounded coverage review remain open; no blanket Windows filesystem certification.",
+        "Verify exact-head Windows/Ubuntu CI and selected local Qwen evidence separately from historical reports; read/search smoke does not cover every M1 scenario.",
+        "Close TASK-050 on its own sufficient remediation evidence, then TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010 with all dependencies; no automatic M1 closure.",
+        "Owner classification/inventory, unknown secrets, same-account code/DB access and backups/retention remain residual risks. Actual M2-M4 connector gates and separate owner integration/deploy decisions remain mandatory."
       ]
     },
     {

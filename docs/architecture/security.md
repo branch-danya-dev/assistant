@@ -58,5 +58,6 @@ ADR-024 refines file admission after the PR #6 alias finding: reject ambiguous w
 require exact Windows long names and known directory case policy on opened handles, retain
 single-link checks, and preflight legacy scopes before dispatch without rebinding rights.
 See [file policy and evidence](../engineering/m1-file-aliases.md).
-[ADR-025](../engineering/m1-trust-boundary-proposal.md) only proposes a bounded acceptance
-agreement; it does not change or close the original REQ-017/019 gates.
+[ADR-025](../engineering/adr025-owner-decisions.md) now accepts bounded option B.
+REQ-017/019 retain original wording and P0; their explicit acceptance_policy governs M1
+evaluation and mandatory later real-adapter gates. [Open evidence and limits](../engineering/adr025-acceptance-traceability.md) remain; accepted policy is not security completeness.

@@ -148,7 +148,8 @@
     "docs/engineering/evidence/m1-memory-search-remediation.json",
     "docs/engineering/m1-release-remediation.md",
     "docs/engineering/M2-TASK-011-spec.md",
-    "tools/installed_acceptance.py"
+    "tools/installed_acceptance.py",
+    "docs/engineering/adr025-acceptance-traceability.md"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
@@ -162,5 +163,5 @@
     "spec/schemas/connector-gates.schema.json"
   ],
   "agent_read_strategy": "Read AGENTS + manifest then only ID-matched records and relevant topic docs. Do not paste entire repository into LLM context.",
-  "implementation_warning": "M0 completed; M1 in_progress after independent review. REQ-017/019 remain specified P0/M1. See m1-review-fixes.md; no merge or deployment implied."
+  "implementation_warning": "ADR-025 option B accepted with source/date; P0 REQ-017/019 and M1 remain open under explicit bounded acceptance_policy. See adr025-acceptance-traceability.md; no merge/deploy or connector/vault approval."
 }

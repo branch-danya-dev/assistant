@@ -1,5 +1,10 @@
 # Project status — first implementation, 2026-10-30
 
+> Current acceptance update (2026-10-31): ADR-025 OD-1/2/3 accepted.
+> [Current policy, evidence and open gates](adr025-acceptance-traceability.md) supersede
+> pending/provisional acceptance statements in this historical implementation account.
+> Historical test outcomes are not relabelled as fresh evidence. M1 remains open.
+
 M0 is complete; M1 is in_progress after independent review. REQ-017/019 remain specified P0/M1. Runtime includes migrations, immutable plan revisions,
 memory/persona, approved create-only files, bounded workers, crash recovery, Ollama and owner CLI. See `m1-completion.md` and
 `runbook.md` for checks and supported operation boundaries.

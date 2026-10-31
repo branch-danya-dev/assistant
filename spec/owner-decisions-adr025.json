@@ -1,32 +1,55 @@
 {
   "adr": "ADR-025",
-  "status": "pending",
+  "status": "approved",
   "implementation_authorized": true,
-  "acceptance_change_authorized": false,
+  "acceptance_change_authorized": true,
   "owner_identity": null,
-  "recorded_at": null,
-  "approval_reference": null,
+  "recorded_at": "2026-10-31",
+  "approval_reference": "chatgpt-conversation://6ae2f340-af5c-83ed-8443-188cbf41cabd",
   "decisions": [
     {
       "id": "OD-1",
-      "answer": null,
+      "answer": "YES",
       "proposal": "Approve option B bounded M1 sources/sinks and owner responsibility for classification/inventory; exclude universal discovery of unknown secrets."
     },
     {
       "id": "OD-2",
-      "answer": null,
-      "proposal": "Approve default-deny and explicit internal/private-local attestations, ID-based legacy review without authority changes, and Windows Credential Manager as later backend with M1 adapter disabled."
+      "answer": "YES",
+      "proposal": "Approve default-deny and explicit internal/private-local attestations, ID/hash-based legacy review without authority changes, and Windows Credential Manager as later backend with M1 adapter disabled."
     },
     {
       "id": "OD-3",
-      "answer": null,
+      "answer": "YES",
       "proposal": "Require real M2-M4 connector gates at implementation, and fresh selected-Qwen plus Windows/Ubuntu evidence before any M1 closure; no merge/deployment approval."
     }
   ],
   "procedure": [
-    "Owner explicitly answers each decision with ADR-025 reference.",
-    "Record verbatim owner decision reference, date and scope in separate reviewed change.",
-    "Only then consider ADR accepted and explicit acceptance/traceability revision.",
-    "Evaluate original or explicitly revised gates against new evidence before status closure."
+    "Three affirmative answers are recorded from the explicit owner confirmation; do not request the same decision again.",
+    "Preserve source message references and timestamp basis; do not infer an account identity or invent a GitHub approval.",
+    "Apply the explicit REQ-017/019 acceptance_policy while preserving original acceptance, P0 and M1 target.",
+    "Evaluate all task dependencies and mandatory evidence separately; policy approval is not security proof or milestone closure.",
+    "Obtain separate explicit owner consent for each future merge/base change/deployment or connector/vault enablement."
+  ],
+  "approval_source": {
+    "kind": "owner_chat_confirmation",
+    "conversation_id": "6ae2f340-af5c-83ed-8443-188cbf41cabd",
+    "question_message_id": "36839057-740d-41f8-a338-c6eb608d2fba",
+    "owner_answer_message_id": "5226bda2-bfcc-44f2-8144-fb9fc02c4e74",
+    "enumerated_confirmation_message_id": "cf0c785b-5ac5-4ccb-9d10-78b80b6a8dff",
+    "answered_at": "2026-10-31T16:00:02.326Z",
+    "date_basis": "read_thread returned owner-answer turn startedAt=1793462402.326; 2026-10-31 in UTC and Europe/Moscow. recorded_at is the recording date, not a GitHub approval date.",
+    "scope": "Explicit answer to the preceding question covering all three ADR-025 option B items; subsequent assistant enumeration corroborates scope but is not itself owner authority. Current owner request explicitly reaffirms OD-1/2/3=YES.",
+    "identity_basis": "project owner in the supplied conversation and current instruction; no verified account identifier supplied",
+    "github_comment": null
+  },
+  "not_authorized": [
+    "merge",
+    "rebase",
+    "retarget",
+    "deploy",
+    "credential_reads",
+    "vault_enablement",
+    "connector_enablement",
+    "production_database_access"
   ]
 }

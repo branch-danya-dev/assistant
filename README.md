@@ -14,7 +14,7 @@ owner data classes, credential admission, minimal worker environment and executa
 [SQLite v4 inventory/admission and legacy owner review](docs/engineering/m1-trust-inventory.md)
 now fail closed on unreviewed saved data and known inventory marks. The vault and all future
 connectors remain disabled. [ADR-025 owner decisions](docs/engineering/adr025-owner-decisions.md)
-are still pending; this is not M1 closure or deployment.
+are accepted (OD-1/2/3=YES). [Acceptance scope, open gates and unexecuted integration plan](docs/engineering/adr025-acceptance-traceability.md) distinguish policy approval from M1 closure or deployment.
 
 ## Implemented
 

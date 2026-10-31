@@ -31,7 +31,12 @@
       "actual_adapter_evidence": null,
       "owner_enablement": null,
       "fixture_scope": "synthetic_contract_only",
-      "adversarial_surface": "redirects, frames, downloads, submit"
+      "adversarial_surface": "redirects, frames, downloads, submit",
+      "functional_checks": [
+        "TASK-014 M2: real read adapter follows permitted origins/redirects/downloads and produces provenance/citations with no upload/submit authority.",
+        "TASK-032 M3: real form mutation binds origin/recipient/normalized payload, consumes approval once, and reconciles uncertain submit without replay."
+      ],
+      "evidence_policy": "Separate actual adapter functional and security results, exact code SHA, platform/account fixture scope, negative cases and result verification; synthetic_contract_only cannot pass. All required checks remain mandatory; unsupported mutation must prove fail-closed denial. Owner enablement is separate."
     }
   ]
 }
