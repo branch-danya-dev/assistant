@@ -249,3 +249,11 @@ Residual **R-M1-SEARCH-BUDGET**: sufficiently many digest-invalid matches or his
 reach the explicit 256-check limit; this is a visible resource stop, not a successful truncated
 result. The local database lock may also cause a closed storage error under contention. This
 bounded behaviour does not alter ADR-025 or close TASK-050/044/026/M1 acceptance gates.
+
+## Release audit follow-up (review 5723022076)
+
+Owner approve now validates current admission/inventory/scope and the exact saved action
+binding inside the approval transaction. Its ordinary stdout is a payload-free ACK; full
+proposals remain behind the protected preview API. Audit uses honest overflow accounting
+for every collection with a shared 300-entry items-plus-inventory cap and 100 per collection.
+See [remediation, wrapper provenance and reproduction](m1-release-remediation.md).

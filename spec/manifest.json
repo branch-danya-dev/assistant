@@ -145,7 +145,10 @@
     "tests/test_trust_lifecycle.py",
     "docs/engineering/evidence/m1-trust-remediation.json",
     "tests/test_memory_admission_search.py",
-    "docs/engineering/evidence/m1-memory-search-remediation.json"
+    "docs/engineering/evidence/m1-memory-search-remediation.json",
+    "docs/engineering/m1-release-remediation.md",
+    "docs/engineering/M2-TASK-011-spec.md",
+    "tools/installed_acceptance.py"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",

@@ -236,8 +236,7 @@ def execute(args) -> dict:
             if args.command == "recover":
                 return {"recovered_task_ids": journal.recover(), "executed_actions": 0}
             if args.command == "approve":
-                journal.approve(args.approval_id, args.digest)
-                return journal.approval(args.approval_id)
+                return journal.approve(args.approval_id, args.digest)
             if args.command == "reconcile":
                 journal.reconcile(args.action_id, args.outcome, args.evidence,
                                   project=args.project, expected_digest=args.digest)

@@ -297,3 +297,16 @@ Archived canonical records receive no perpetual content authorization. Expired r
 owner removal cannot be undone by admission renewal. Backup pages and external source archives
 are not scrubbed or made browsable by this workflow; protect and review them separately. No
 production migration is needed: SQLite stays v4, and earlier rollback limitations still apply.
+
+## Release audit corrections
+
+`approve` returns only approval ID/status, verified arguments digest and queued status.
+Expired/revoked/missing task admission or changed saved proposal/grant denies approval
+without a state/event mutation. Inspect exact content with protected `approval-preview`.
+`data-audit` returns at most 100 per collection and 300 combined items/inventory; any
+overflow sets `truncated=true`. This is a bounded diagnostic, not a complete inventory export.
+
+Use the tracked `tools/installed_acceptance.py` from an installed wheel environment outside
+checkout and a fresh explicit synthetic root for live smoke/workflow gates. Require both
+exit 0 and JSON `passed=true`; doctor `reachable=false` never counts. See
+[wrapper provenance, commands and remaining gates](m1-release-remediation.md).

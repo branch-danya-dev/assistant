@@ -36,6 +36,11 @@ with Store(Paths(Path(sys.argv[2]))) as store:
     assert store.connection.execute('PRAGMA user_version').fetchone()[0] == 4
     from personal_agent.trust import Trust
     assert Trust(store).audit('demo')['content_disclosed'] is False
+    for number in range(101):
+        Trust(store).mark('file', 'overflow', f'CANARY-{number}.txt')
+    audit = Trust(store).audit('overflow')
+    assert len(audit['inventory']) == 100 and audit['truncated'] is True
+    assert 'CANARY' not in str(audit)
     from personal_agent.memory import Memory
     from personal_agent.journal import Journal
     from datetime import datetime, timedelta, timezone

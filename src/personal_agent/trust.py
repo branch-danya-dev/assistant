@@ -226,12 +226,22 @@ class Trust:
                                "expires_at_unix": row[1]})
         if project == "identity":
             from .identity import Identity
-            for version in Identity(self.store.paths).versions()[:100]:
+            versions = Identity(self.store.paths).versions()
+            truncated |= len(versions) > 100
+            for version in versions[:100]:
                 result.append(self.review_metadata("persona", str(version), project))
-        return {"items": result[:300], "limit": 100, "truncated": truncated or len(result) > 300,
-                "inventory": [{k: r[k] for k in ("id", "kind", "classification", "owner",
-                    "provenance", "reviewed_at", "expires_at")} for r in self.db.execute(
-                    "SELECT * FROM sensitive_inventory WHERE project_id=? ORDER BY id LIMIT 100", (project,))],
+        rows = self.db.execute("SELECT * FROM sensitive_inventory WHERE project_id=?"
+                               " ORDER BY id LIMIT 101", (project,)).fetchall()
+        truncated |= len(rows) > 100
+        inventory = [{k: r[k] for k in ("id", "kind", "classification", "owner",
+                     "provenance", "reviewed_at", "expires_at")} for r in rows[:100]]
+        # One shared output budget, including inventory. Collection order is stable;
+        # lookahead is metadata-only and no truncated source body is projected.
+        total_limit = 300
+        truncated |= len(result) + len(inventory) > total_limit
+        remaining = max(0, total_limit - len(result))
+        return {"items": result[:total_limit], "limit": 100, "total_limit": total_limit,
+                "truncated": truncated, "inventory": inventory[:remaining],
                 "content_disclosed": False, "unregistered_previews_scanned": False}
 
     def review_value(self, kind, identifier, project):

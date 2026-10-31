@@ -295,14 +295,38 @@ class Journal:
         """Owner UI only. Never expose this as an LLM tool."""
         with self.store.transaction():
             approval = self.approval(approval_id)
+            # Authorize the current saved proposal inside the same write transaction.
+            # Approval is not a way to renew admission or change the owner's grant.
+            self.trust.require_task(approval["task_id"])
+            row = self.db.execute("SELECT action_id FROM approvals WHERE id=?",
+                                  (approval_id,)).fetchone()
+            action = self.action(row[0])
+            request = json.loads(action["request"])
+            step = next((s for s in self.plans.current(approval["task_id"])["steps"]
+                         if s["action_id"] == action["id"]), None)
+            current_digest = digest(dict(request=request, effect=action["effect"],
+                                         resource=action["resource"],
+                                         scope=self.scope(approval["task_id"])))
             if (approval["status"] != "pending" or approval["expires_at"] <= now()
                     or approval["arguments_digest"] != expected_digest
+                    or action["digest"] != expected_digest or current_digest != expected_digest
+                    or action["status"] != "pending" or action["attempts"] != 0
+                    or action["approval_id"] != approval_id
+                    or approval["approval_id"] != approval_id
+                    or action["task_id"] != approval["task_id"]
+                    or request["task_id"] != approval["task_id"]
+                    or request["capability_id"] != approval["capability_id"]
+                    or action["resource"] != approval["resource"]
+                    or action["effect"] != approval["side_effect"]
+                    or not step or step["request"] != request
                     or self.get(approval["task_id"])["state"] != "waiting_approval"):
                 raise AgentError("approval_invalid_or_expired")
             approval.update(status="approved", approved_by="local_owner")
             self.db.execute("UPDATE approvals SET document=? WHERE id=?", (encode(approval), approval_id))
             self._event(approval["task_id"], "approved", {"approval_id": approval_id}, actor="owner")
             self._transition(approval["task_id"], "queued")
+            return {"approval_id": approval_id, "status": "approved",
+                    "arguments_digest": current_digest, "safe_status": "queued"}
 
     def dispatch(self, action_id: str, *, approval_required: bool):
         self.trust.require_task(self.action(action_id)["task_id"], sink="worker")

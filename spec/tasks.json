@@ -1221,7 +1221,9 @@
         "Exact eligible memory is restored to FTS transactionally after review; revoked, expired, changed, foreign or removed data stay denied.",
         "Explicit owner renewal retains immutable scope/effect authority and audit history; expired content has bounded payload-free historical diagnostics.",
         "Windows and Ubuntu schema/DAG, regression, security/crash/integration, Ruff, wheel and installed-package checks; record platform skips and fresh selected-Qwen availability.",
-        "Mixed-admission search returns valid matches despite expired, missing or tampered candidates; metadata filters precede limits, full source checks are independent, bounded exhaustion and storage failures remain explicit, with no payload leakage or replay."
+        "Mixed-admission search returns valid matches despite expired, missing or tampered candidates; metadata filters precede limits, full source checks are independent, bounded exhaustion and storage failures remain explicit, with no payload leakage or replay.",
+        "Owner approve validates current admission and exact saved action binding atomically; payload-free ACK and unchanged database on denial.",
+        "Inventory overflow is honest across all collections and the shared output limit; release live gates require process and explicit JSON success."
       ],
       "evidence": [
         "docs/engineering/m1-trust-inventory.md",
@@ -1230,7 +1232,11 @@
         "tests/test_trust_lifecycle.py",
         "docs/engineering/evidence/m1-trust-remediation.json",
         "tests/test_memory_admission_search.py",
-        "docs/engineering/evidence/m1-memory-search-remediation.json"
+        "docs/engineering/evidence/m1-memory-search-remediation.json",
+        "tests/test_release_remediation.py",
+        "tests/test_release_harness.py",
+        "docs/engineering/m1-release-remediation.md",
+        "tools/installed_acceptance.py"
       ],
       "owner": "unassigned",
       "notes": "Targeted owner-authorized remediation of review 5722142390 on existing PR #8. Remains in_progress pending final independent review; no M1/ADR-025/P0 acceptance closure. Review 5722293592 follow-up covers mixed-admission lexical search; 16 additional regressions and installed-wheel coverage. Independent review and original acceptance gates remain open."
