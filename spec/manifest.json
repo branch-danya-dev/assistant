@@ -149,7 +149,8 @@
     "docs/engineering/m1-release-remediation.md",
     "docs/engineering/M2-TASK-011-spec.md",
     "tools/installed_acceptance.py",
-    "docs/engineering/adr025-acceptance-traceability.md"
+    "docs/engineering/adr025-acceptance-traceability.md",
+    "docs/engineering/evidence/adr025-decision-checkpoint.json"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",

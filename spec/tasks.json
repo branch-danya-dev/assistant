@@ -286,7 +286,9 @@
         "TASK-009"
       ],
       "requirement_ids": [
-        "REQ-027"
+        "REQ-027",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "SCN-003 passes with diff and no accidental replacement.",
@@ -307,7 +309,9 @@
         "TASK-011"
       ],
       "requirement_ids": [
-        "REQ-028"
+        "REQ-028",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "SCN-002 pass and file reopens; formulas and cached results checked.",
@@ -330,7 +334,9 @@
       ],
       "requirement_ids": [
         "REQ-029",
-        "REQ-037"
+        "REQ-037",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "SCN-001 fixture result contains citations and missing data, no send.",
@@ -394,7 +400,9 @@
         "TASK-016"
       ],
       "requirement_ids": [
-        "REQ-033"
+        "REQ-033",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Unauthorized user rejected, no send without approval.",
@@ -436,7 +444,9 @@
         "TASK-005"
       ],
       "requirement_ids": [
-        "REQ-022"
+        "REQ-022",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Private fixture payload cannot leave host in local mode.",
@@ -497,7 +507,9 @@
       ],
       "requirement_ids": [
         "REQ-031",
-        "REQ-043"
+        "REQ-043",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Supported operations explicitly verified against installed software.",
@@ -520,7 +532,9 @@
       ],
       "requirement_ids": [
         "REQ-049",
-        "REQ-048"
+        "REQ-048",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Audio mic switch and remote auth regression pass.",
@@ -744,7 +758,9 @@
         "TASK-005"
       ],
       "requirement_ids": [
-        "REQ-030"
+        "REQ-030",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Browser form submit is blocked until approved with origin, recipient and exact normalized arguments.",
@@ -767,7 +783,9 @@
         "TASK-016"
       ],
       "requirement_ids": [
-        "REQ-035"
+        "REQ-035",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Owner-authorized inbox search/drafts work; send requires operation-specific approval.",
@@ -810,7 +828,9 @@
         "TASK-005"
       ],
       "requirement_ids": [
-        "REQ-032"
+        "REQ-032",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Screen parsing and element targeting run on fixture without unauthorized clicks.",
@@ -833,7 +853,9 @@
         "TASK-005"
       ],
       "requirement_ids": [
-        "REQ-034"
+        "REQ-034",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Authorized personal-account sessions are isolated; read permission does not grant sending.",
@@ -856,7 +878,9 @@
         "TASK-005"
       ],
       "requirement_ids": [
-        "REQ-036"
+        "REQ-036",
+        "REQ-017",
+        "REQ-019"
       ],
       "acceptance": [
         "Read-only availability works in fixtures; creating/modifying events requires confirmation.",
@@ -1225,7 +1249,7 @@
     {
       "id": "TASK-050",
       "title": "Remediate PR 8 reconciliation receipts, memory index and owner renewal",
-      "status": "in_progress",
+      "status": "done",
       "priority": "P1",
       "milestone": "M1",
       "depends_on": [
@@ -1257,10 +1281,11 @@
         "tests/test_release_harness.py",
         "docs/engineering/m1-release-remediation.md",
         "tools/installed_acceptance.py",
-        "docs/engineering/adr025-acceptance-traceability.md"
+        "docs/engineering/adr025-acceptance-traceability.md",
+        "docs/engineering/evidence/adr025-decision-checkpoint.json"
       ],
       "owner": "unassigned",
-      "notes": "Independent review at ee7dbdd871306451a1ea9b44715ac7f3689b192e confirms the remediation; stale pending-review claim removed. In_progress during this decision change pending its fresh exact-head Windows/Ubuntu, installed wheel and selected-Qwen availability record. Does not depend on or imply full M1/REQ-017/019 closure. See docs/engineering/adr025-acceptance-traceability.md."
+      "notes": "Bounded remediation accepted on independently reviewed unchanged PR #8 runtime and fresh decision-checkpoint evidence at 9db7de41f1e96f5e2c694f83f71d133d3aab6993: exact-head Windows/Ubuntu CI, schema/combined DAG, full regression/security/crash/HTTP tests, Ruff, wheel/outside-checkout package, and fresh installed-wheel selected-Qwen smoke/read-search workflow. See docs/engineering/evidence/adr025-decision-checkpoint.json. All own acceptance criteria and TASK-049 dependency satisfied. Real 8.3/case-sensitive-directory gaps remain with TASK-044; this does not close M1 or authorize integration/deploy. Final metadata-only HEAD is revalidated and reported separately."
     }
   ]
 }

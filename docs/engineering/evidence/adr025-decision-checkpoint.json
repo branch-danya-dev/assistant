@@ -1,0 +1,69 @@
+{
+  "recorded_on": "2026-10-31",
+  "scope": "TASK-050 bounded remediation closure and ADR-025 decision checkpoint; not M1 closure",
+  "tested_commit": "9db7de41f1e96f5e2c694f83f71d133d3aab6993",
+  "tested_tree": "ca7ec418ebb1ec971e901267f9a1183980f25dde",
+  "ci": {
+    "url": "https://github.com/branch-danya-dev/assistant/actions/runs/41218755051",
+    "event": "push",
+    "checkout": "both logs record the exact tested_commit, not a pull-request merge ref",
+    "windows": {
+      "job_id": 124588718518,
+      "total": 202,
+      "passed": 197,
+      "skipped": 5
+    },
+    "ubuntu": {
+      "job_id": 124588718715,
+      "total": 202,
+      "passed": 191,
+      "skipped": 11
+    },
+    "checks": [
+      "JSON Schema/fixtures",
+      "traceability",
+      "combined work/acceptance DAG",
+      "regression/security/crash/HTTP integration",
+      "Ruff",
+      "wheel",
+      "installed package outside checkout"
+    ]
+  },
+  "local_windows": {
+    "total": 202,
+    "passed": 197,
+    "skipped": 5,
+    "source": "matching staged tested_tree; suite started before local HEAD was synchronized to remote commit",
+    "restricted_attempt": "not a pass: loopback/link-fixture restrictions caused failures=11/errors=5; unrestricted synthetic-host rerun passed",
+    "wheel_sha256": "ec13f19187cdb0181d5cc03e8becb98acef300d71816d8919fb685e1284a24b4",
+    "installed_package_outside_checkout": "PASS"
+  },
+  "selected_qwen": {
+    "checkout_sha": "9db7de41f1e96f5e2c694f83f71d133d3aab6993",
+    "checkout_clean": true,
+    "model": "qwen3.5:9b",
+    "installed_wheel": true,
+    "outside_checkout": true,
+    "synthetic_fresh_root": true,
+    "harness": "tools/installed_acceptance.py",
+    "process_exit_code": 0,
+    "passed": true,
+    "smoke": "PASSED",
+    "workflow": "PASSED",
+    "scope": "text/tool-intent smoke and two-action read_text/search_memory with evidence codes, no expired-memory canary, one attempt each; no live create/revision or model-blob certification",
+    "production_db_credentials_or_configuration_access": false
+  },
+  "independent_runtime_review": {
+    "sha": "ee7dbdd871306451a1ea9b44715ac7f3689b192e",
+    "url": "https://github.com/branch-danya-dev/assistant/pull/8#pullrequestreview-5723463751",
+    "scope": "same unchanged src implementation; confirms final TASK-050 fixes. Not independent review of decision PR metadata or local host artifacts."
+  },
+  "skips_and_open_evidence": [
+    "Windows: three Linux-only tests plus two unavailable real 8.3 aliases; no OS changes",
+    "Ubuntu: eleven Windows-only tests; real Linux flat-create/Landlock paths run",
+    "Actual Windows case-sensitive-directory flag denial is not certified; injected flags only",
+    "TASK-044 and dependent M1 acceptance remain open for real alias evidence and final bounded coverage review",
+    "New decision PR needs independent policy/traceability review before any integration decision"
+  ],
+  "final_head_policy": "This is a fixed prior checkpoint. The final decision PR body/report must identify its own exact HEAD CI and fresh local evidence; never relabel this checkpoint as a later HEAD."
+}

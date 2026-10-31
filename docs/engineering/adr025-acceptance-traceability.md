@@ -71,6 +71,13 @@ neither erases historical DB/backup bytes nor silently renews admission.
   retains todo/planned because it lacks that implementation; it neither overwrites #9
   nor imports/accepts M2 automatically.
 
+**Decision checkpoint:** [41218755051](https://github.com/branch-danya-dev/assistant/actions/runs/41218755051)
+checks `9db7de41f1e96f5e2c694f83f71d133d3aab6993` directly on both platforms: Windows
+197/202 passed (5 skips), Ubuntu 191/202 (11 skips), all stages successful. Fresh installed-wheel
+Qwen smoke/read-search passed on that clean checkout. [Structured evidence](evidence/adr025-decision-checkpoint.json)
+records exact scope, local staged-tree distinction, wheel digest and the unchanged-runtime review
+used to close TASK-050. Final metadata-only HEAD must be reported and verified separately.
+
 These are historical exact-SHA results. Fresh decision-PR HEAD, CI counts/skips, local wheel
 digest and selected-Qwen result belong to the new PR's validation record/body and delivered
 report; older evidence is not relabelled current. #8's review is not independent review of
@@ -82,7 +89,7 @@ this new policy/traceability diff.
 | --- | --- | --- |
 | ADR-025 / OD-1/2/3 | accepted / YES | No repeated owner decision needed |
 | TASK-049 | done, unchanged | Historical bounded implementation; not M1 acceptance |
-| TASK-050 | in_progress during validation | #8 independent review exists; attach fresh exact-head matrix, installed wheel and selected-Qwen availability before completing remediation |
+| TASK-050 | done | All own criteria and TASK-049 dependency satisfied at the exact-SHA checkpoint below; no M1 closure implied |
 | TASK-044 | in_progress | Actual 8.3 alias and real case-sensitive-directory rejection evidence, final bounded coverage review, current platform/model results; TASK-049/050 done |
 | TASK-026 | in_progress | Open TASK-044 acceptance dependency; re-evaluate scoped memory/egress under policy |
 | TASK-041 | in_progress | TASK-026 dependency; retain renewal/retention/backup limits |
