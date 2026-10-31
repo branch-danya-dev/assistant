@@ -13,6 +13,7 @@ from .data_policy import admit, file_access, tool_result, validate_scope
 from .memory import Memory
 from .safe_fs import MAX_FILE_BYTES, check_scope_paths, create_text, observe
 from .storage import encode
+from .trust import Trust
 
 
 def descriptor(capability: str, operation: str, field: str) -> dict:
@@ -73,6 +74,11 @@ class Registry:
         validate("tool-invocation", request)
         validate_scope(scope)
         admit(request)
+        trust = Trust(self.memory.store)
+        trust.check_scope(task["project_id"], scope, sink="worker")
+        admitted = trust.require_task(task["task_id"], sink="worker")
+        if admitted["scope"] != scope or admitted["project"] != task["project_id"]:
+            raise AgentError("task_scope_mismatch")
         if request["task_id"] != task["task_id"]:
             raise AgentError("task_scope_mismatch")
         definition = self.descriptors.get((request["capability_id"], request["operation"]))

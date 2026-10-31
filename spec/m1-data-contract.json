@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "design": "ADR-025 option B working design; acceptance still provisional",
+  "default": "deny",
+  "authorities": [
+    "local-owner",
+    "reviewed-code"
+  ],
+  "sources": {
+    "owner_intent_scope": "Journal.create owner API attests intent/internal and exact --allow-file/internal; labels materialized only here",
+    "utf8_file": "explicit exact whole-file label, scope, inventory, physical alias checks before read",
+    "memory_provenance": "Memory.add owner API explicit label and whole-record receipt; search verifies project/expiry/inventory/digest",
+    "persona": "Identity.save owner API internal receipt; old versions require ID review",
+    "tool_output": "registered operation, admitted scope, verifier, inherited maximum classification; no authority",
+    "model_steps_revisions": "schema validation, admitted task lineage, registry, immutable revisions; no authority",
+    "saved_legacy_result": "no migration attestation; manual ID/digest review, existing permissions immutable"
+  },
+  "sinks": {
+    "ollama": "numeric loopback only; admitted task/persona/results before call; private local grant",
+    "worker": "before IPC persistence/Popen and repeated in worker; minimal environment",
+    "journal": "before writes; digest-bound derivation refresh is transactional",
+    "diagnostics": "closed errors; no unreviewed/private payload; event lifecycle metadata only",
+    "preview": "owner request, admitted exact task, explicit private preview sink, existing ACL/TTL"
+  },
+  "private_local": {
+    "purpose": "owner-task",
+    "sinks": [
+      "journal",
+      "worker",
+      "ollama",
+      "preview"
+    ],
+    "grant": "exact files and project memory classes; diagnostics excluded"
+  },
+  "inventory": {
+    "secret_values": false,
+    "discovery": false,
+    "default_expiry_days": 30,
+    "maximum_expiry_days": 366,
+    "review": "ID, expiry, label; never effect approval"
+  },
+  "vault": {
+    "backend_candidate": "Windows Credential Manager",
+    "enabled": false,
+    "credential_reads": false
+  },
+  "residuals": [
+    "owner misclassification and incomplete inventory",
+    "opaque/encoded unknown values not discoverable",
+    "same-account process and database are trusted",
+    "no control of arbitrary external Git clients",
+    "absent connector tests do not certify real integrations"
+  ],
+  "admission_lifecycle": {
+    "default_expiry_days": 30,
+    "maximum_expiry_days": 366,
+    "canonical_retention": "independent of projection authorization; no automatic deletion or renewal",
+    "renewal": "owner-only ID/project/unchanged current and previous digest/classification/explicit later expiry; inventory and scope rechecked",
+    "reconciliation": "owner project/current digest, active admission; atomic evidence/event/receipt; expiry and effect approvals unchanged",
+    "index": "single project/ID entry synchronized transactionally on mark/review/renewal; rebuild uses same eligibility",
+    "history": "payload-free bounded show-audit after expiry/revocation; append-only prior and new receipt metadata",
+    "search": {
+      "prefilter": "project/class/removal/canonical retention, matching admission/expiry and active inventory before ranking and candidate limits",
+      "validation": "independent canonical schema/columns, nonempty provenance, whole-record digest, receipt owner/provenance/class, current inventory; denied records skipped",
+      "order": "recorded_at descending, id ascending; literal Unicode words, no global BM25",
+      "maximum_unique_full_checks": 256,
+      "shared_with": "superseded_by history links",
+      "budget_exhaustion": "memory_search_budget_exhausted, no partial payload; agent paused",
+      "fatal": "SQLite/storage/malformed JSON/unknown internal failures abort; no broad exception suppression",
+      "index": "encountered full-check denials pruned transactionally; add/review/renew/rebuild share validation; elapsed-expiry entries may remain physically until rebuild",
+      "automatic_renewal": false
+    }
+  }
+}

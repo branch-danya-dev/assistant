@@ -132,7 +132,20 @@
     "docs/engineering/m1-file-aliases.md",
     "docs/engineering/m1-trust-boundary-proposal.md",
     "docs/engineering/evidence/m1-alias-validation.json",
-    "docs/engineering/evidence/windows-m1-alias-host.json"
+    "docs/engineering/evidence/windows-m1-alias-host.json",
+    "docs/engineering/m1-trust-inventory.md",
+    "tests/test_trust_inventory.py",
+    "tests/test_connector_gates.py",
+    "spec/m1-data-contract.json",
+    "spec/connector-gates.json",
+    "spec/owner-decisions-adr025.json",
+    "docs/engineering/adr025-owner-decisions.md",
+    "docs/engineering/evidence/m1-trust-validation.json",
+    "docs/engineering/evidence/windows-m1-trust-host.json",
+    "tests/test_trust_lifecycle.py",
+    "docs/engineering/evidence/m1-trust-remediation.json",
+    "tests/test_memory_admission_search.py",
+    "docs/engineering/evidence/m1-memory-search-remediation.json"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
@@ -142,7 +155,8 @@
     "spec/schemas/task-state.schema.json",
     "spec/schemas/tool-invocation.schema.json",
     "spec/schemas/persona.schema.json",
-    "spec/schemas/plan-revision.schema.json"
+    "spec/schemas/plan-revision.schema.json",
+    "spec/schemas/connector-gates.schema.json"
   ],
   "agent_read_strategy": "Read AGENTS + manifest then only ID-matched records and relevant topic docs. Do not paste entire repository into LLM context.",
   "implementation_warning": "M0 completed; M1 in_progress after independent review. REQ-017/019 remain specified P0/M1. See m1-review-fixes.md; no merge or deployment implied."

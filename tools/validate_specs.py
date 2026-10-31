@@ -242,6 +242,25 @@ def check() -> list[str]:
         validator = Draft202012Validator(schema, format_checker=FormatChecker())
         for exc in validator.iter_errors(load(f"spec/examples/{key}.json")):
             errors.append(f"{key}: invalid fixture: {exc.message}")
+    gates = load("spec/connector-gates.json")
+    validator = Draft202012Validator(load("spec/schemas/connector-gates.schema.json"))
+    if not validator.is_valid(gates):
+        errors.append("connector-gates: invalid mandatory disabled contract")
+    expected = {"browser", "document", "spreadsheet", "telegram", "email", "cloud",
+                "desktop", "voice", "calendar"}
+    if {g["connector"] for g in gates["gates"]} != expected or len(gates["gates"]) != len(expected):
+        errors.append("connector-gates: incomplete/duplicate connector coverage")
+    for gate in gates["gates"]:
+        check_refs(gate, "task_ids", sets["tasks"], errors)
+        for task_id in gate["task_ids"]:
+            task = next((t for t in tasks if t["id"] == task_id), {})
+            if task.get("security_gate") != gate["connector"]:
+                errors.append(f"{task_id}: missing mandatory connector security gate")
+    decision = load("spec/owner-decisions-adr025.json")
+    if (next(d for d in docs["decisions"] if d["id"] == "ADR-025")["status"] == "accepted"
+            and (decision["status"] != "approved" or not decision["approval_reference"]
+                 or any(d["answer"] is None for d in decision["decisions"]))):
+        errors.append("ADR-025: missing explicit owner decision record")
     return errors
 
 

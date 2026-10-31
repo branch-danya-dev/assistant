@@ -6,7 +6,8 @@ import os
 
 from .config import AgentError, Paths, reject_links, specification, validate
 from .data_policy import admit
-from .storage import encode, now, uid
+from .storage import Store, encode, now, uid
+from .trust import Trust
 
 
 class Identity:
@@ -22,6 +23,8 @@ class Identity:
         versions = self.versions()
         if not versions:
             raise AgentError("persona_not_initialized")
+        with Store(self.paths) as store:
+            Trust(store).guard("persona", "identity", str(versions[-1]))
         path = self.paths.file("identity", f"persona-{versions[-1]}.json")
         reject_links(path)
         if path.stat().st_size > 12000:
@@ -34,6 +37,8 @@ class Identity:
         admit(value)
         if value["version"] != versions[-1]:
             raise AgentError("persona_version_mismatch")
+        with Store(self.paths) as store:
+            Trust(store).require("persona", str(value["version"]), "identity", value)
         return value
 
     def initialize(self):
@@ -53,6 +58,8 @@ class Identity:
                 or (previous and value["persona_id"] != previous["persona_id"])):
             raise AgentError("persona_version_conflict")
         payload = encode(value)
+        with Store(self.paths) as store:
+            Trust(store).guard("persona", "identity", str(expected))
         if len(payload.encode("utf-8")) > 12000:
             raise AgentError("persona_size_exceeded")
         final = self.paths.file("identity", f"persona-{expected}.json")
@@ -67,6 +74,8 @@ class Identity:
                 os.rename(temporary, final)
             else:
                 os.link(temporary, final)
+            with Store(self.paths) as store:
+                Trust(store).attest("persona", str(expected), "identity", value, "internal")
         except FileExistsError:
             raise AgentError("persona_version_conflict") from None
         finally:

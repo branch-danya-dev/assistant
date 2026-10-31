@@ -1,3 +1,4 @@
+import json
 import sys
 import tempfile
 import unittest
@@ -40,3 +41,16 @@ class RuntimeCase(unittest.TestCase):
         self.journal.set_plan(task, [request])
         action = self.journal.prepare(task, 0, request, effect, "workspace/alpha/fixture.txt")
         return task, action, request
+
+    def legacy_restricted_memory(self, project, text, source):
+        """Historical synthetic row: v4 never admits new restricted source bytes."""
+        from personal_agent.memory import Memory
+        from personal_agent.storage import encode
+        identifier = Memory(self.store).remember(project, text, source, sensitivity="internal")
+        record = json.loads(self.store.connection.execute(
+            "SELECT document FROM memory WHERE id=?", (identifier,)).fetchone()[0])
+        record["sensitivity"] = "restricted"
+        self.store.connection.execute("UPDATE memory SET sensitivity='restricted',document=? WHERE id=?",
+                                      (encode(record), identifier))
+        self.store.connection.execute("DELETE FROM data_admissions WHERE object_id=?", (identifier,))
+        return identifier

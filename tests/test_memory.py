@@ -25,7 +25,9 @@ class MemoryTests(RuntimeCase):
     def test_scope_before_ranking(self):
         self.memory.remember("alpha", "public needle", "fixture://a", sensitivity="public")
         self.memory.remember("alpha", "private needle", "fixture://b", sensitivity="private")
-        self.memory.remember("alpha", "restricted needle", "fixture://c", sensitivity="restricted")
+        with self.assertRaises(AgentError):
+            self.memory.remember("alpha", "restricted needle", "fixture://c", sensitivity="restricted")
+        self.legacy_restricted_memory("alpha", "restricted needle", "fixture://c")
         self.memory.remember("beta", "secret needle", "fixture://d", sensitivity="private")
         self.assertEqual(len(self.memory.search("needle OR beta", project_id="alpha")), 1)
         self.assertEqual(len(self.memory.search("needle", project_id="alpha",

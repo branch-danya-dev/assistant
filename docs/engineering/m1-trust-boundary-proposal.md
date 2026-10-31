@@ -5,6 +5,11 @@ priority, milestone or status is changed by this proposal. M1 remains in_progres
 REQ-017 and REQ-019 remain specified, P0/M1. This is a narrow proposed interpretation and
 acceptance change, not evidence that either gate has passed.
 
+Implementation update: the owner separately authorized option B as a working design.
+TASK-049 / ADR-026 now implement [bounded inventory/admission and legacy review](m1-trust-inventory.md)
+with a disabled vault boundary. This does not accept this ADR. The three decisions remain
+pending in [the owner decision record/procedure](adr025-owner-decisions.md).
+
 ## The decision
 
 REQ-017 says “Webpage, document and message instructions cannot escalate privileges or

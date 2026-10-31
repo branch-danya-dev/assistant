@@ -18,6 +18,7 @@ from .models import Ollama
 from .orchestrator import Agent
 from .previews import Previews
 from .storage import Store
+from .trust import Trust
 
 
 class OwnerParser(argparse.ArgumentParser):
@@ -30,11 +31,35 @@ def parser() -> argparse.ArgumentParser:
     root = OwnerParser(description="Local personal agent (M1)")
     root.add_argument("--root", help="Explicit ASSISTANT_ROOT override; default G:\\Assistant on Windows")
     commands = root.add_subparsers(dest="command", required=True)
+    audit = commands.add_parser("data-audit", help="IDs, labels and review digests only; no contents")
+    audit.add_argument("--project", required=True)
+    for command in ("data-review", "data-renew"):
+        review = commands.add_parser(command, help="Owner attestation by exact ID/project/digest/label")
+        review.add_argument("kind", choices=("task", "memory", "persona"))
+        review.add_argument("id")
+        review.add_argument("--project", required=True)
+        review.add_argument("--digest", required=True)
+        review.add_argument("--classification", required=True, choices=("public", "internal", "private"))
+        review.add_argument("--expires-at", required=True)
+    inventory = commands.add_parser("inventory-mark", help="Register source metadata only; never read content")
+    inventory.add_argument("kind", choices=("file", "task", "memory", "persona", "preview"))
+    inventory.add_argument("locator")
+    inventory.add_argument("--project", required=True)
+    inventory.add_argument("--classification", default="restricted",
+                           choices=("public", "internal", "private", "restricted", "unclassified"))
+    inventory.add_argument("--expires-at", required=True)
+    reviewed = commands.add_parser("inventory-review", help="Review a metadata mark; grants no tool permission")
+    reviewed.add_argument("id")
+    reviewed.add_argument("--classification", required=True,
+                          choices=("public", "internal", "private", "restricted"))
+    reviewed.add_argument("--expires-at", required=True)
     commands.add_parser("cleanup-previews", help="Remove expired registered approval previews only")
     for command in ("init", "doctor", "smoke", "demo", "tasks", "stop", "clear-stop", "recover", "backup", "persona"):
         commands.add_parser(command)
     run = commands.add_parser("run")
     run.add_argument("intent")
+    run.add_argument("--private-intent", action="store_true",
+                     help="Attest task intent as private-local; diagnostics withhold its content")
     run.add_argument("--project", required=True)
     run.add_argument("--allow-file", action="append", default=[], help="Exact project-workspace relative UTF-8 file")
     run.add_argument("--allow-create", action="append", default=[],
@@ -44,6 +69,9 @@ def parser() -> argparse.ArgumentParser:
                      help="Exact private file authorized for local tool IPC and Ollama context")
     for command in ("show", "resume", "cancel"):
         commands.add_parser(command).add_argument("task_id")
+    historical = commands.add_parser("show-audit", help="Payload-free task history, including expired tasks")
+    historical.add_argument("task_id")
+    historical.add_argument("--project", required=True)
     evidence = commands.add_parser("show-evidence")
     evidence.add_argument("task_id")
     evidence.add_argument("evidence_ref")
@@ -63,6 +91,8 @@ def parser() -> argparse.ArgumentParser:
     reconcile.add_argument("action_id")
     reconcile.add_argument("--outcome", required=True, choices=("applied", "not_applied"))
     reconcile.add_argument("--evidence", required=True)
+    reconcile.add_argument("--project", required=True)
+    reconcile.add_argument("--digest", required=True, help="Reviewed current task digest from data-audit")
     memory = commands.add_parser("memory").add_subparsers(dest="memory_command", required=True)
     add = memory.add_parser("add")
     add.add_argument("statement")
@@ -121,11 +151,15 @@ def execute(args) -> dict:
                 "model_storage": model_storage_status(paths)}
     with Store(paths) as store:
         journal, memory = Journal(store), Memory(store)
+        if args.command == "data-audit":
+            return Trust(store).audit(args.project)
         if args.command == "tasks":
             return {"tasks": [{"task_id": row[0], "state": row[1]} for row in
                               store.connection.execute("SELECT id,state FROM tasks ORDER BY rowid DESC LIMIT 100")]}
         if args.command == "show":
             return journal.inspect(args.task_id)
+        if args.command == "show-audit":
+            return journal.historical_audit(args.task_id, args.project)
         if args.command == "show-evidence":
             if not 256 <= args.limit <= 32768:
                 raise AgentError("invalid_output_limit")
@@ -144,6 +178,7 @@ def execute(args) -> dict:
             paths.project_workspace(args.project)
             private_files = [safe_relative(p) for p in args.allow_private_file]
             scope = {"files": [safe_relative(p) for p in args.allow_file] + private_files,
+                     "intent_class": "private" if args.private_intent else "internal",
                      "file_classes": {p: "private" for p in private_files},
                      "private_files": private_files,
                      "create_files": [safe_relative(p) for p in args.allow_create], "memory_classes":
@@ -157,6 +192,19 @@ def execute(args) -> dict:
         if args.command == "persona":
             return Identity(paths).current()
         with store.execution_lock():
+            if args.command == "inventory-mark":
+                return {"inventory_id": Trust(store).mark(args.kind, args.project, args.locator,
+                        args.classification, expires_at=args.expires_at), "content_read": False}
+            if args.command == "inventory-review":
+                Trust(store).review_mark(args.id, args.classification, expires_at=args.expires_at)
+                return {"inventory_id": args.id, "reviewed": True, "tool_permission_granted": False}
+            if args.command in ("data-review", "data-renew"):
+                trust = Trust(store)
+                operation = trust.renew if args.command == "data-renew" else trust.review
+                operation(args.kind, args.id, args.project, args.digest,
+                          args.classification, expires_at=args.expires_at)
+                return {"id": args.id, "reviewed": True, "authority_changed": False,
+                        "effect_approval_granted": False, "executed_actions": 0}
             if args.command == "cleanup-previews":
                 return Previews(store).cleanup()
             if args.command == "approval-preview":
@@ -191,7 +239,8 @@ def execute(args) -> dict:
                 journal.approve(args.approval_id, args.digest)
                 return journal.approval(args.approval_id)
             if args.command == "reconcile":
-                journal.reconcile(args.action_id, args.outcome, args.evidence)
+                journal.reconcile(args.action_id, args.outcome, args.evidence,
+                                  project=args.project, expected_digest=args.digest)
                 return {"reconciled": True, "automatic_replay": False}
             if args.command == "memory":
                 if args.memory_command == "add":
@@ -199,7 +248,10 @@ def execute(args) -> dict:
                              sensitivity=args.sensitivity, supersedes=args.supersedes)}
                 if args.memory_command == "search":
                     classes = ("public", "internal", "private") if args.include_private else ("public", "internal")
-                    return {"records": memory.search(args.query, project_id=args.project, allowed_classes=classes)}
+                    records = memory.search(args.query, project_id=args.project, allowed_classes=classes)
+                    return {"records": [{"id": r["id"], "sensitivity": r["sensitivity"],
+                            "content": "[private record withheld from diagnostics]"}
+                            if r["sensitivity"] == "private" else r for r in records]}
                 if args.memory_command == "remove":
                     memory.remove_from_retrieval(args.record_id, project_id=args.project)
                     return {"removed_from_retrieval": True, "physical_and_backup_erasure": False}

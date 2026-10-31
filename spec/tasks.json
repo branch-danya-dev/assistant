@@ -290,7 +290,9 @@
         "SCN-003 passes with diff and no accidental replacement."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "document",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-013",
@@ -308,7 +310,9 @@
         "SCN-002 pass and file reopens; formulas and cached results checked."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "spreadsheet",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-014",
@@ -328,7 +332,9 @@
         "SCN-001 fixture result contains citations and missing data, no send."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "browser",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-015",
@@ -389,7 +395,9 @@
         "Unauthorized user rejected, no send without approval."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "telegram",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-018",
@@ -428,7 +436,9 @@
         "Private fixture payload cannot leave host in local mode."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "cloud",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-020",
@@ -486,7 +496,9 @@
         "Supported operations explicitly verified against installed software."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "desktop",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-023",
@@ -506,7 +518,9 @@
         "Audio mic switch and remote auth regression pass."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "voice",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-024",
@@ -590,7 +604,11 @@
         "docs/engineering/m1-file-aliases.md",
         "docs/engineering/m1-trust-boundary-proposal.md",
         "tests/test_file_aliases.py",
-        "docs/engineering/evidence/m1-alias-validation.json"
+        "docs/engineering/evidence/m1-alias-validation.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure.",
@@ -722,7 +740,9 @@
         "Synthetic hostile page cannot trigger state-changing operation."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "browser",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-033",
@@ -742,7 +762,9 @@
         "Retries after uncertain sending do not duplicate messages."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "email",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-034",
@@ -782,7 +804,9 @@
         "Mutation/privileged operations are classified using actual target and action."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "desktop",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-036",
@@ -802,7 +826,9 @@
         "Sending is blocked pending target-specific approval and logged."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "telegram",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-037",
@@ -822,7 +848,9 @@
         "Time zones and duplicate effects are verified."
       ],
       "evidence": [],
-      "owner": "unassigned"
+      "owner": "unassigned",
+      "security_gate": "calendar",
+      "security_gate_contract": "spec/connector-gates.json"
     },
     {
       "id": "TASK-038",
@@ -914,7 +942,11 @@
         "tests/test_memory.py",
         "tests/test_cli.py",
         "docs/engineering/m1-review-fixes.md",
-        "docs/engineering/m1-security-boundaries.md"
+        "docs/engineering/m1-security-boundaries.md",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
@@ -997,10 +1029,24 @@
         "docs/engineering/m1-file-aliases.md",
         "docs/engineering/m1-trust-boundary-proposal.md",
         "tests/test_file_aliases.py",
-        "docs/engineering/evidence/m1-alias-validation.json"
+        "docs/engineering/evidence/m1-alias-validation.json",
+        "docs/engineering/m1-trust-inventory.md",
+        "tests/test_trust_inventory.py",
+        "tests/test_connector_gates.py",
+        "spec/m1-data-contract.json",
+        "spec/connector-gates.json",
+        "docs/engineering/evidence/m1-trust-validation.json",
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ],
       "owner": "unassigned",
-      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure."
+      "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure. TASK-049 supplies bounded inventory/legacy/disabled-vault controls; ADR-025 owner decisions, literal acceptance and fresh host evidence remain separate open gates.",
+      "acceptance_depends_on": [
+        "TASK-049"
+      ]
     },
     {
       "id": "TASK-045",
@@ -1117,6 +1163,77 @@
       ],
       "owner": "unassigned",
       "notes": "Functional remediation only; does not close TASK-044, REQ-017/019 or M1. ADR-025 remains provisional. Validated on both platforms at 0d50edd (CI 41131159441). 8.3 unavailable and real case-sensitive directory unverified are explicit compatibility/evidence limits; no universal alias certification."
+    },
+    {
+      "id": "TASK-049",
+      "title": "Implement bounded M1 owner admission, metadata inventory and legacy review",
+      "status": "done",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-004",
+        "TASK-005",
+        "TASK-048"
+      ],
+      "requirement_ids": [
+        "REQ-017",
+        "REQ-019",
+        "REQ-018",
+        "REQ-053"
+      ],
+      "acceptance": [
+        "Enumerate implemented M1 sources/sinks; default-deny unreviewed, restricted and inventory-marked sources before content crosses sinks; explicit owner internal/private-local grants.",
+        "Metadata-only inventory and disabled Windows Credential Manager port; no credential reads/import or real connector activation.",
+        "Additive SQLite v4 with strict versions, pre-migration backup, transaction rollback and immutable source/approval/result retention; ID/hash review never changes authority or replays effects.",
+        "Machine-readable disabled M2-M4 connector contracts and synthetic adversarial fixtures, explicitly not actual integration evidence.",
+        "Windows/Ubuntu regression, schema/combined DAG, Ruff, wheel and installed-package validation with honest platform skips and fresh selected-model availability record."
+      ],
+      "evidence": [
+        "docs/engineering/m1-trust-inventory.md",
+        "tests/test_trust_inventory.py",
+        "tests/test_connector_gates.py",
+        "spec/m1-data-contract.json",
+        "spec/connector-gates.json",
+        "docs/engineering/evidence/m1-trust-validation.json",
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
+      ],
+      "owner": "unassigned",
+      "notes": "Authorized implementation using option B; does not accept ADR-025, revise REQ-017/019 or close TASK-044/026/M1. Windows/Ubuntu implementation CI 41136331275 passed at 0748384c733b5e216f4697e2b90cecab62a8b72b. Fresh live check refused with 10061; no live inference or M1 closure claimed."
+    },
+    {
+      "id": "TASK-050",
+      "title": "Remediate PR 8 reconciliation receipts, memory index and owner renewal",
+      "status": "in_progress",
+      "priority": "P1",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-049"
+      ],
+      "requirement_ids": [
+        "REQ-018",
+        "REQ-053",
+        "REQ-054"
+      ],
+      "acceptance": [
+        "Owner project/digest-bound reconciliation atomically refreshes admission while retaining approvals, attempts, append-only evidence and non-replayable effects.",
+        "Exact eligible memory is restored to FTS transactionally after review; revoked, expired, changed, foreign or removed data stay denied.",
+        "Explicit owner renewal retains immutable scope/effect authority and audit history; expired content has bounded payload-free historical diagnostics.",
+        "Windows and Ubuntu schema/DAG, regression, security/crash/integration, Ruff, wheel and installed-package checks; record platform skips and fresh selected-Qwen availability.",
+        "Mixed-admission search returns valid matches despite expired, missing or tampered candidates; metadata filters precede limits, full source checks are independent, bounded exhaustion and storage failures remain explicit, with no payload leakage or replay."
+      ],
+      "evidence": [
+        "docs/engineering/m1-trust-inventory.md",
+        "docs/engineering/runbook.md",
+        "tests/test_m1_create.py",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
+      ],
+      "owner": "unassigned",
+      "notes": "Targeted owner-authorized remediation of review 5722142390 on existing PR #8. Remains in_progress pending final independent review; no M1/ADR-025/P0 acceptance closure. Review 5722293592 follow-up covers mixed-admission lexical search; 16 additional regressions and installed-wheel coverage. Independent review and original acceptance gates remain open."
     }
   ]
 }

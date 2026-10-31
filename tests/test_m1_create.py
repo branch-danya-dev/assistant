@@ -156,7 +156,12 @@ with Store(Paths(sys.argv[1])) as store, store.execution_lock():
         with self.assertRaises(AgentError):
             self.agent.run(self.task_id, resume=True)
         self.assertEqual(self.journal.action(action_id)["attempts"], 1)
-        self.journal.reconcile(action_id, "applied", "fixture://independently-observed")
+        self.journal.reconcile(action_id, "applied", "fixture://independently-observed", project="alpha",
+            expected_digest=self.journal.trust.review_metadata("task", self.task_id, "alpha")["digest"])
+        shown = self.journal.inspect(self.task_id)
+        self.assertFalse(shown.get("content_withheld", False))
+        self.assertEqual(shown["actions"][0]["reconciliation"]["outcome"], "applied")
+        self.assertEqual(self.journal.trust.review_metadata("task", self.task_id, "alpha")["review"], "current")
         with self.assertRaises(AgentError):
             self.agent.run(self.task_id, resume=True)
 
@@ -169,6 +174,23 @@ with Store(Paths(sys.argv[1])) as store, store.execution_lock():
             for folder in (child, self.base, self.paths.directory("workspace")):
                 with self.assertRaises(OSError):
                     folder.rename(folder.with_name(folder.name + "-swap"))
+
+    def test_uncertain_create_not_applied_reconciliation_never_publishes_file(self):
+        action_id = self.approved()
+        self.journal.start(self.task_id)
+        self.journal.dispatch(action_id, approval_required=True)
+        # Crash point before adapter entry: consumed approval, no published bytes.
+        with self.store.execution_lock():
+            self.journal.recover()
+        old = self.journal.action(action_id)
+        self.journal.reconcile(action_id, "not_applied", "fixture://observed-absent", project="alpha",
+            expected_digest=self.journal.trust.review_metadata("task", self.task_id, "alpha")["digest"])
+        self.assertEqual(self.journal.inspect(self.task_id)["actions"][0]["reconciliation"]["outcome"], "not_applied")
+        with self.assertRaises(AgentError):
+            self.agent.run(self.task_id, resume=True)
+        self.assertFalse((self.base / "new.txt").exists())
+        self.assertEqual(self.journal.action(action_id)["attempts"], old["attempts"])
+        self.assertEqual(self.journal.approval(old["approval_id"])["status"], "consumed")
 
     def test_junction_or_symlink_parent_denied(self):
         outside = self.paths.root / "outside"

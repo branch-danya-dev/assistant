@@ -8,7 +8,7 @@ No server/startup daemon is installed. `.env` is a reference template, not autom
 Export `$env:ASSISTANT_ROOT='G:\Assistant'`, set Windows User environment, or pass an explicit
 absolute `--root` before the subcommand. Relative roots fail; there is no C: fallback.
 
-`init` creates the layout, transactional database version 3 and baseline persona, preserving
+`init` creates the layout, transactional database version 4 and baseline persona, preserving
 existing versions. `doctor` reports runtime availability and the separately configured Ollama
 User environment. A matching variable does not prove a running process inherited it:
 `tools/verify_host.py` also checks actual model blob paths.
@@ -123,7 +123,13 @@ Landlock ABI 3+, O_TMPFILE and procfs are required. There is
 no unsafe fallback on unsupported filesystems. See [full boundaries](m1-completion.md).
 
 An unknown mutating outcome becomes `needs_reconciliation`. Inspect the external state before
-`reconcile ACTION_ID --outcome applied|not_applied --evidence SOURCE_REFERENCE`.
+`reconcile ACTION_ID --project PROJECT --digest REVIEWED_TASK_DIGEST --outcome applied|not_applied --evidence SOURCE_REFERENCE`.
+Obtain the current task digest from `data-audit --project PROJECT`, independently inspect the
+outcome, and supply a bounded reference (at most 1000 UTF-8 bytes). This is an owner assertion,
+not automated verification. A valid current task receipt and inventory are required; use the
+explicit review/renewal workflow first if expired or legacy. Reconciliation records evidence,
+blocked state and refreshed receipt atomically, retaining the original expiry. It never clears
+stop/cancel. `show` exposes the outcome and reference digest, not reference text.
 For either outcome, the original action remains non-replayable; retry needs a new task/approval.
 Connector-specific reconciliation and real external senders remain deferred.
 
@@ -139,7 +145,8 @@ python -m personal_agent persona
 ```
 
 Remembering is explicit; generated answers are never promoted automatically. New records default
-to private. `--include-private` grants local access to that project's private records. Restricted
+to private. `--include-private` grants local access to that project's private records; CLI diagnostics
+withhold private contents. New restricted records are refused before storage; existing restricted
 records are excluded from M1 model context. Project/sensitivity filters precede candidate ranking.
 Search is lexical FTS5 with chronological ordering, not semantic embeddings. Supersession retains
 old decisions and sources; unverified claims cannot replace verified ones. Temporary expiry hides
@@ -194,3 +201,99 @@ unqueryable directory semantics fail closed. `--allow-private-file` cannot overl
 spelled `--allow-file`. A blocked legacy scope is not automatically normalized: inspect its
 labels and create a new task with reviewed names. Retain existing evidence and approvals;
 never replay an uncertain create. See [policy and platform limits](m1-file-aliases.md).
+
+## SQLite v4: source inventory and owner review
+
+Read [the exact admission contract and risks](m1-trust-inventory.md) before deployment.
+Opening v1–v3 creates a consistent integrity-checked backup in `backups/`, then adds three
+metadata tables transactionally. It does not attest or relabel old data. No production
+upgrade has been performed by this PR. A fresh v4 root receives a reviewed default persona;
+an existing persona requires explicit review, and `init` does not bypass that gate.
+
+Examples below contain only metadata placeholders. Review the real sources locally yourself;
+never paste secret values into these commands. Use a future UTC expiry within 366 days.
+
+```powershell
+python -m personal_agent inventory-mark file credentials.txt --project example --classification restricted --expires-at 2026-12-01T00:00:00Z
+python -m personal_agent data-audit --project example
+python -m personal_agent data-audit --project identity
+python -m personal_agent data-audit --project legacy-previews
+python -m personal_agent data-review memory RECORD_ID --project example --digest REVIEWED_DIGEST --classification internal --expires-at 2026-12-01T00:00:00Z
+python -m personal_agent data-review persona 1 --project identity --digest REVIEWED_DIGEST --classification internal --expires-at 2026-12-01T00:00:00Z
+python -m personal_agent inventory-review INVENTORY_ID --classification restricted --expires-at 2026-12-01T00:00:00Z
+```
+
+Every new inventory mark blocks until reviewed; restricted stays blocked even when reviewed.
+Review never grants file scope, effect approval or replay. A task review can retain only its
+existing label; missing/ambiguous old file labels require a fresh task with exact `--allow-file`
+or `--allow-private-file`, after checking completed/uncertain effects. Old approvals/results
+remain intact. Ordinary `show`/`show-evidence` withhold unreviewed data; audit lists IDs/hashes,
+not contents. Previews have a separate explicit global metadata namespace because v3 stored
+no project binding; audit never opens/recreates old preview files or scans unregistered ones.
+
+New owner API calls attest internal intent by default; `run --private-intent` explicitly marks
+it private-local. Private task flags grant `journal`, `worker`, `ollama`, `preview` for purpose
+`owner-task`; no diagnostic content or egress grant. Receipts expire after 30 days by default.
+The Python owner API can narrow local sinks. Private `show` retains approval IDs/digests so
+the existing protected `approval-preview` flow remains usable. A real secret should be
+inventory-marked/restricted, not merely private-local.
+
+No credential import/read/store command exists. The Credential Manager adapter always denies.
+Owner review assumes accurate classification: unknown opaque secrets wrongly attested as
+internal remain a documented residual. ADR-025 and M1 are still open. To roll back, close the
+app and restore verified pre-upgrade backup plus matching code in a separate root; never edit
+`user_version` manually. Older code does not enforce this policy and is not permission to
+resume private tasks. Keep backups private and retain the original root until restore checks pass.
+
+## Renewal and historical audit (PR #8 remediation / ADR-027)
+
+Canonical memory, task records and evidence are retained independently of the default **30-day
+authorization to project their contents** into local workers/models. Expiry does not delete them.
+No automatic or sliding renewal occurs. The owner must independently review the original bytes,
+classification and inventory, then renew a single unchanged object (future expiry, max 366 days):
+
+```powershell
+python -m personal_agent data-audit --project example
+python -m personal_agent show-audit TASK_ID --project example
+python -m personal_agent data-renew memory RECORD_ID --project example --digest REVIEWED_DIGEST --classification internal --expires-at 2027-01-01T00:00:00Z
+python -m personal_agent data-renew task TASK_ID --project example --digest REVIEWED_DIGEST --classification internal --expires-at 2027-01-01T00:00:00Z
+```
+
+Renewal requires the current digest to match both canonical data and the previous receipt,
+the unchanged project/classification, and an expiry later than the previous one. Missing legacy
+receipts need `data-review`; changed data require independent source review, not renewal.
+Inventory revocation/expiry is a separate gate: renewal cannot release it. Old ambiguous file
+grants still require a new task. Task renewal rechecks all scope and saved-memory dependencies.
+It never changes action attempts, budgets, consumed approvals, task state or immutable revisions.
+Before/after admission metadata are appended to `data_reviews`; prior review rows remain.
+
+`show-audit` remains available after expiry/revocation and for private tasks: task state,
+action/approval statuses, IDs, current/admitted/result digests, event headers and review history,
+bounded to 100 rows per collection with explicit truncation. It omits intent, paths, evidence
+reference text, statements, provenance and results. Ordinary `show` falls back to this view when
+content admission fails. Digests/IDs are private metadata; do not publish runtime audit output.
+
+Inventory mark/revocation removes only the matching project's memory index entry immediately.
+Inventory review restores it only when its existing exact record receipt remains current and
+matches the class; explicit `data-review`/`data-renew` restores an eligible record in the same
+transaction. No extra `memory reindex` is needed. Removed, expired-retention, restricted,
+changed, mismatched-project and unreviewed records cannot return. Private retrieval still needs
+the exact project and `--include-private`. Rebuild applies the same checks. Stale index bytes
+may remain until rebuild after wall-clock expiry, but retrieval always rechecks admission.
+
+Mixed searches omit expired/missing/revoked/tampered records and keep returning admitted
+matches, including when the newest matches are unavailable. A lone unavailable match returns
+an empty list; it does not renew access or reveal the omitted source. Receipt and inventory
+metadata are filtered before sorting/limits, then every candidate and history link receives
+a full digest/provenance check. Results keep recorded-time descending order with ID tie breaks.
+
+Search validates at most 256 unique candidates/history links. If that is insufficient, it
+returns the closed `memory_search_budget_exhausted` error (a paused agent task), never a
+misleading partial/empty success. Narrow the query or diagnose and explicitly rebuild/review
+the affected data. Ordinary denied records are skipped; SQLite, malformed-JSON and internal
+failures stop the query. Search never auto-renews, and reindex does not attest missing receipts.
+
+Archived canonical records receive no perpetual content authorization. Expired retention and
+owner removal cannot be undone by admission renewal. Backup pages and external source archives
+are not scrubbed or made browsable by this workflow; protect and review them separately. No
+production migration is needed: SQLite stays v4, and earlier rollback limitations still apply.

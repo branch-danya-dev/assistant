@@ -34,7 +34,9 @@
       "adapter": "personal_agent.memory / journal / orchestrator",
       "verification": "Lexical scoped retrieval is verified. Semantic retrieval remains deferred independently of the implemented plan revision.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ]
     },
     {
