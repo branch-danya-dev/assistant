@@ -464,7 +464,14 @@
         "Monetary calculations use deterministic numerical tool and pass known fixtures."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Experimental CAP-009 numerical slice implemented in TASK-011 draft, disabled by default; acceptance remains specified. REQ-039 editable workbook and full SCN-002 remain pending TASK-013.",
+      "evidence": [
+        "docs/engineering/m2-calculator.md",
+        "tests/test_calculator.py",
+        "tests/test_calculator_integration.py",
+        "src/personal_agent/calculator.py",
+        "src/personal_agent/calculator_verify.py"
+      ]
     },
     {
       "id": "REQ-027",
@@ -633,7 +640,14 @@
         "Transparent editable low/base/high scenarios with traceable inputs."
       ],
       "owner": "project",
-      "notes": "Design intent only; implementation pending."
+      "notes": "Experimental CAP-009 numerical slice implemented in TASK-011 draft, disabled by default; acceptance remains specified. REQ-039 editable workbook and full SCN-002 remain pending TASK-013.",
+      "evidence": [
+        "docs/engineering/m2-calculator.md",
+        "tests/test_calculator.py",
+        "tests/test_calculator_integration.py",
+        "src/personal_agent/calculator.py",
+        "src/personal_agent/calculator_verify.py"
+      ]
     },
     {
       "id": "REQ-040",

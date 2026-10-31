@@ -1,0 +1,63 @@
+{
+  "contract": "decimal-v1",
+  "operation": "cost_scenarios",
+  "input_digest": "7b9c93a1f859de1d649e332abf34768f673fb5e91a90e72c3d30adf6e978e4fd",
+  "result": {
+    "currency": "RUB",
+    "quantity_unit": "item",
+    "scenarios": [
+      {
+        "name": "base",
+        "variable_cost": {
+          "value": "200.00",
+          "numerator": "200",
+          "denominator": "1",
+          "scale": 2,
+          "rounding_applied": false
+        },
+        "total_cost": {
+          "value": "250.00",
+          "numerator": "250",
+          "denominator": "1",
+          "scale": 2,
+          "rounding_applied": false
+        },
+        "unit_cost": {
+          "value": "25.00",
+          "numerator": "25",
+          "denominator": "1",
+          "scale": 2,
+          "rounding_applied": false
+        },
+        "revenue": {
+          "value": "300.00",
+          "numerator": "300",
+          "denominator": "1",
+          "scale": 2,
+          "rounding_applied": false
+        },
+        "profit": {
+          "value": "50.00",
+          "numerator": "50",
+          "denominator": "1",
+          "scale": 2,
+          "rounding_applied": false
+        },
+        "gross_margin_percent": {
+          "value": "16.666667",
+          "numerator": "50",
+          "denominator": "3",
+          "scale": 6,
+          "rounding_applied": true
+        },
+        "markup_percent": {
+          "value": "20.000000",
+          "numerator": "20",
+          "denominator": "1",
+          "scale": 6,
+          "rounding_applied": false
+        }
+      }
+    ]
+  }
+}

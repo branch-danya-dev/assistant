@@ -30,8 +30,9 @@ def work(payload):
         from .models import Ollama
         from .trust import Trust
         with Store(paths) as store:
-            Trust(store).require_task(payload["task_id"], sink="ollama")
-        model = Ollama(endpoint=payload["endpoint"], timeout=payload["timeout"])
+            admitted = Trust(store).require_task(payload["task_id"], sink="ollama")
+        model = Ollama(endpoint=payload["endpoint"], timeout=payload["timeout"],
+                       calculator_enabled=admitted["scope"].get("experimental_calculator") is True)
         reply = model.complete(payload["messages"], task_id=payload["task_id"])
         return {"reply": reply, "metrics": model.metrics}
     if payload["kind"] == "tool":

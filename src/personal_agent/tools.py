@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 from jsonschema import Draft202012Validator
 
+from .calculator_contract import check_input, descriptors
 from .config import AgentError, Paths, safe_relative, validate
 from .data_policy import admit, file_access, tool_result, validate_scope
 from .memory import Memory
@@ -49,6 +50,11 @@ def descriptor(capability: str, operation: str, field: str) -> dict:
 DESCRIPTORS = (descriptor("CAP-007", "read_text", "path"),
                descriptor("CAP-002", "search_memory", "query"),
                descriptor("CAP-008", "create_text", "path"))
+CALCULATOR_DESCRIPTORS = descriptors()
+
+
+def available_descriptors(calculator_enabled=False):
+    return DESCRIPTORS + (CALCULATOR_DESCRIPTORS if calculator_enabled else ())
 
 
 @dataclass(frozen=True)
@@ -65,7 +71,7 @@ def read_text(paths: Paths, project_id: str, relative: str) -> dict:
 class Registry:
     def __init__(self, paths: Paths, memory: Memory):
         self.paths, self.memory = paths, memory
-        self.descriptors = {(d["id"], d["operation"]): d for d in DESCRIPTORS}
+        self.descriptors = {(d["id"], d["operation"]): d for d in available_descriptors(True)}
         for definition in self.descriptors.values():
             validate("tool-descriptor", definition)
 
@@ -84,6 +90,10 @@ class Registry:
         definition = self.descriptors.get((request["capability_id"], request["operation"]))
         if not definition:
             raise AgentError("unregistered_operation")
+        if request["capability_id"] == "CAP-009":
+            if scope.get("experimental_calculator") is not True:
+                raise AgentError("calculator_not_enabled")
+            check_input(request["operation"], request["arguments"])
         if not Draft202012Validator(definition["input_schema"]).is_valid(request["arguments"]):
             raise AgentError("invalid_tool_arguments")
         normalized = json.loads(encode(request))
@@ -103,8 +113,12 @@ class Registry:
                     raise AgentError("file_size_exceeded")
             normalized["arguments"]["path"] = relative
             resource = f"{self.paths.config['layout']['workspace']}/{task['project_id']}/{relative}"
-        else:
+        elif request["operation"] == "search_memory":
             resource = f"memory:{task['project_id']}"
+        elif request["capability_id"] == "CAP-009":
+            resource = f"calculator:{task['project_id']}:{task['task_id']}"
+        else:
+            raise AgentError("unregistered_operation")
         return Resolved(normalized, definition, resource)
 
     def _checked(self, resolved, task, scope):
@@ -116,6 +130,9 @@ class Registry:
         self._checked(resolved, task, scope)
         request = resolved.request
         args = request["arguments"]
+        if request["capability_id"] == "CAP-009":
+            from .calculator import execute
+            return execute(request["operation"], args)
         if request["operation"] == "create_text":
             return create_text(self.paths, task["project_id"], args["path"], args["text"],
                                scope["create_bindings"][args["path"]])
@@ -132,13 +149,19 @@ class Registry:
             if request["operation"] == "create_text":
                 del result["text"]
             return result
-        return {"records": self.memory.search(request["arguments"]["query"],
-                 project_id=task["project_id"], allowed_classes=tuple(scope["memory_classes"]))}
+        if request["operation"] == "search_memory":
+            return {"records": self.memory.search(request["arguments"]["query"],
+                     project_id=task["project_id"], allowed_classes=tuple(scope["memory_classes"]))}
+        # Calculator verification is an independent implementation, not re-execution.
+        raise AgentError("unregistered_operation")
 
     def verify(self, resolved: Resolved, result: dict, task: dict, scope: dict):
         if not Draft202012Validator(resolved.descriptor["output_schema"]).is_valid(result):
             raise AgentError("invalid_tool_output")
         tool_result(resolved.request, result, task, scope)
+        if resolved.request["capability_id"] == "CAP-009":
+            self._checked(resolved, task, scope)
+            return  # tool_result already ran the independent numeric verifier.
         if resolved.request["operation"] == "create_text":
             data = resolved.request["arguments"]["text"].encode("utf-8")
             if result["bytes"] != len(data) or result["sha256"] != hashlib.sha256(data).hexdigest():

@@ -1,0 +1,380 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "operation",
+    "input_digest",
+    "result"
+  ],
+  "properties": {
+    "contract": {
+      "const": "decimal-v1"
+    },
+    "operation": {
+      "const": "cost_scenarios"
+    },
+    "input_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "currency",
+        "quantity_unit",
+        "scenarios"
+      ],
+      "properties": {
+        "currency": {
+          "enum": [
+            "RUB",
+            "USD",
+            "EUR",
+            "JPY",
+            "KWD"
+          ]
+        },
+        "quantity_unit": {
+          "const": "item"
+        },
+        "scenarios": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "variable_cost",
+              "total_cost",
+              "unit_cost",
+              "revenue",
+              "profit",
+              "gross_margin_percent",
+              "markup_percent"
+            ],
+            "properties": {
+              "name": {
+                "enum": [
+                  "low",
+                  "base",
+                  "high"
+                ]
+              },
+              "variable_cost": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "numerator",
+                  "denominator",
+                  "scale",
+                  "rounding_applied"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "pattern": "^-?[0-9]{1,67}(\\.[0-9]{1,6})?$",
+                    "maxLength": 75
+                  },
+                  "numerator": {
+                    "type": "string",
+                    "pattern": "^-?(0|[1-9][0-9]{0,59})$"
+                  },
+                  "denominator": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,59}$"
+                  },
+                  "scale": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 6
+                  },
+                  "rounding_applied": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "total_cost": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "numerator",
+                  "denominator",
+                  "scale",
+                  "rounding_applied"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "pattern": "^-?[0-9]{1,67}(\\.[0-9]{1,6})?$",
+                    "maxLength": 75
+                  },
+                  "numerator": {
+                    "type": "string",
+                    "pattern": "^-?(0|[1-9][0-9]{0,59})$"
+                  },
+                  "denominator": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,59}$"
+                  },
+                  "scale": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 6
+                  },
+                  "rounding_applied": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "unit_cost": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "numerator",
+                      "denominator",
+                      "scale",
+                      "rounding_applied"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "pattern": "^-?[0-9]{1,67}(\\.[0-9]{1,6})?$",
+                        "maxLength": 75
+                      },
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^-?(0|[1-9][0-9]{0,59})$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,59}$"
+                      },
+                      "scale": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6
+                      },
+                      "rounding_applied": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status"
+                    ],
+                    "properties": {
+                      "status": {
+                        "const": "undefined_zero_denominator"
+                      }
+                    }
+                  }
+                ]
+              },
+              "revenue": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "numerator",
+                      "denominator",
+                      "scale",
+                      "rounding_applied"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "pattern": "^-?[0-9]{1,67}(\\.[0-9]{1,6})?$",
+                        "maxLength": 75
+                      },
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^-?(0|[1-9][0-9]{0,59})$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,59}$"
+                      },
+                      "scale": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6
+                      },
+                      "rounding_applied": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profit": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "numerator",
+                      "denominator",
+                      "scale",
+                      "rounding_applied"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "pattern": "^-?[0-9]{1,67}(\\.[0-9]{1,6})?$",
+                        "maxLength": 75
+                      },
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^-?(0|[1-9][0-9]{0,59})$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,59}$"
+                      },
+                      "scale": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6
+                      },
+                      "rounding_applied": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "gross_margin_percent": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "numerator",
+                      "denominator",
+                      "scale",
+                      "rounding_applied"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "pattern": "^-?[0-9]{1,67}(\\.[0-9]{1,6})?$",
+                        "maxLength": 75
+                      },
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^-?(0|[1-9][0-9]{0,59})$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,59}$"
+                      },
+                      "scale": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6
+                      },
+                      "rounding_applied": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status"
+                    ],
+                    "properties": {
+                      "status": {
+                        "const": "undefined_zero_denominator"
+                      }
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "markup_percent": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "numerator",
+                      "denominator",
+                      "scale",
+                      "rounding_applied"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "pattern": "^-?[0-9]{1,67}(\\.[0-9]{1,6})?$",
+                        "maxLength": 75
+                      },
+                      "numerator": {
+                        "type": "string",
+                        "pattern": "^-?(0|[1-9][0-9]{0,59})$"
+                      },
+                      "denominator": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,59}$"
+                      },
+                      "scale": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6
+                      },
+                      "rounding_applied": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status"
+                    ],
+                    "properties": {
+                      "status": {
+                        "const": "undefined_zero_denominator"
+                      }
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -58,6 +58,8 @@ def parser() -> argparse.ArgumentParser:
         commands.add_parser(command)
     run = commands.add_parser("run")
     run.add_argument("intent")
+    run.add_argument("--experimental-calculator", action="store_true",
+                     help="Opt this task into draft CAP-009 numerical tools")
     run.add_argument("--private-intent", action="store_true",
                      help="Attest task intent as private-local; diagnostics withhold its content")
     run.add_argument("--project", required=True)
@@ -67,6 +69,12 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--include-private", action="store_true", help="Explicit local-only private memory scope")
     run.add_argument("--allow-private-file", action="append", default=[],
                      help="Exact private file authorized for local tool IPC and Ollama context")
+    for name in ("calculate", "cost-scenarios"):
+        numeric = commands.add_parser(name, help="Experimental owner JSON calculation; no LLM")
+        numeric.add_argument("--input", type=Path, required=True)
+        numeric.add_argument("--project", required=True)
+        numeric.add_argument("--experimental-calculator", action="store_true")
+        numeric.add_argument("--private-intent", action="store_true")
     for command in ("show", "resume", "cancel"):
         commands.add_parser(command).add_argument("task_id")
     historical = commands.add_parser("show-audit", help="Payload-free task history, including expired tasks")
@@ -178,6 +186,7 @@ def execute(args) -> dict:
             paths.project_workspace(args.project)
             private_files = [safe_relative(p) for p in args.allow_private_file]
             scope = {"files": [safe_relative(p) for p in args.allow_file] + private_files,
+                     "experimental_calculator": args.experimental_calculator,
                      "intent_class": "private" if args.private_intent else "internal",
                      "file_classes": {p: "private" for p in private_files},
                      "private_files": private_files,
@@ -185,6 +194,9 @@ def execute(args) -> dict:
                      ["public", "internal", *(["private"] if args.include_private else [])]}
             task_id = journal.create(args.intent, args.project, scope)
             return Agent(store, Ollama()).run(task_id)
+        if args.command in ("calculate", "cost-scenarios"):
+            from .calculator_cli import run
+            return run(store, args)
         if args.command == "resume":
             return Agent(store, Ollama()).run(args.task_id, resume=True)
         if args.command == "backup":

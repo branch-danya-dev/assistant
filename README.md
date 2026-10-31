@@ -1,5 +1,10 @@
 # Personal AI Assistant
 
+This branch adds an **experimental, disabled-by-default TASK-011 / CAP-009 calculator**:
+exact Decimal arithmetic and batch-cost receipts with an independent verifier. Explicit
+task opt-in is required. See [commands, limits and draft boundary](docs/engineering/m2-calculator.md).
+TASK-009/M1 and ADR-025 owner acceptance remain open; this is not M2/MVP completion.
+
 **M0 complete; M1 in progress after independent review.** Python 3.12+ modular monolith,
 SQLite/FTS5, Windows first. Based on Architecture Baseline v1.0 (`c1a0079`).
 

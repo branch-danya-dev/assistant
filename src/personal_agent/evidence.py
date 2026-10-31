@@ -27,6 +27,13 @@ def text_receipt(text: str) -> dict:
 def project_result(request: dict, result: dict, project: str, scope: dict) -> dict:
     """Allowlist structure, never recursively dump arbitrary saved tool output."""
     operation = request["operation"]
+    if request["capability_id"] == "CAP-009" and operation in ("calculate", "cost_scenarios"):
+        if scope.get("experimental_calculator") is not True:
+            raise AgentError("calculator_not_enabled")
+        from .calculator_verify import verify
+        verify(operation, request["arguments"], result)
+        return {"contract": result["contract"], "operation": operation,
+                "input_digest": result["input_digest"], "content": "[numeric inputs/results withheld]"}
     if operation in ("read_text", "create_text"):
         path = request["arguments"]["path"]
         key = "files" if operation == "read_text" else "create_files"

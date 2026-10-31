@@ -1,0 +1,72 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "currency",
+    "quantity_unit",
+    "rounding",
+    "scenarios"
+  ],
+  "properties": {
+    "currency": {
+      "enum": [
+        "RUB",
+        "USD",
+        "EUR",
+        "JPY",
+        "KWD"
+      ]
+    },
+    "quantity_unit": {
+      "const": "item"
+    },
+    "rounding": {
+      "const": "half_even"
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "quantity",
+          "fixed_cost_total",
+          "variable_cost_per_unit"
+        ],
+        "properties": {
+          "name": {
+            "enum": [
+              "low",
+              "base",
+              "high"
+            ]
+          },
+          "quantity": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,17})(\\.[0-9]{1,6})?$",
+            "maxLength": 26
+          },
+          "fixed_cost_total": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,17})(\\.[0-9]{1,6})?$",
+            "maxLength": 26
+          },
+          "variable_cost_per_unit": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,17})(\\.[0-9]{1,6})?$",
+            "maxLength": 26
+          },
+          "selling_price_per_unit": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,17})(\\.[0-9]{1,6})?$",
+            "maxLength": 26
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,6 +1,14 @@
 """Closed public diagnostics. Never add source or exception text here."""
 
 ERROR_CODES = frozenset({
+    'calculator_not_enabled',
+    'calculator_invalid_input',
+    'calculator_invalid_output',
+    'calculator_unit_mismatch',
+    'calculator_zero_division',
+    'calculator_negative_input',
+    'calculator_budget_exhausted',
+    'calculator_verification_failed',
     'invalid_connector-gates',
     'database_version_invalid',
     'inventory_source_denied',

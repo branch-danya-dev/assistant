@@ -69,7 +69,10 @@ def file_key(path):
 def validate_scope(scope):
     if (not isinstance(scope, dict) or not set(scope) <= {
             "files", "create_files", "create_bindings", "memory_classes",
-            "file_classes", "private_files", "local_sinks", "local_purpose", "intent_class"}):
+            "file_classes", "private_files", "local_sinks", "local_purpose", "intent_class",
+            "experimental_calculator"}):
+        raise AgentError("invalid_data_scope")
+    if "experimental_calculator" in scope and type(scope["experimental_calculator"]) is not bool:
         raise AgentError("invalid_data_scope")
     spellings = {}
     for key in ("files", "create_files", "private_files"):
@@ -132,6 +135,11 @@ def tool_result(request, result, task, scope):
                     or record.get("sensitivity") not in scope.get("memory_classes", [])
                     or record.get("sensitivity") == "restricted"):
                 raise AgentError("memory_sensitivity_denied")
+    elif operation in ("calculate", "cost_scenarios"):
+        if request["capability_id"] != "CAP-009" or scope.get("experimental_calculator") is not True:
+            raise AgentError("calculator_not_enabled")
+        from .calculator_verify import verify
+        verify(operation, request["arguments"], result)
     admit(result)
 
 

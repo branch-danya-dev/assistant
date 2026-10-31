@@ -1,0 +1,26 @@
+{
+  "expression": {
+    "op": "add",
+    "args": [
+      {
+        "op": "literal",
+        "value": "0.1",
+        "unit": {
+          "kind": "scalar"
+        }
+      },
+      {
+        "op": "literal",
+        "value": "0.2",
+        "unit": {
+          "kind": "scalar"
+        }
+      }
+    ]
+  },
+  "scale": 2,
+  "rounding": "half_even",
+  "unit": {
+    "kind": "scalar"
+  }
+}

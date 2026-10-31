@@ -1,0 +1,14 @@
+{
+  "currency": "RUB",
+  "quantity_unit": "item",
+  "rounding": "half_even",
+  "scenarios": [
+    {
+      "name": "base",
+      "quantity": "10",
+      "fixed_cost_total": "50",
+      "variable_cost_per_unit": "20",
+      "selling_price_per_unit": "30"
+    }
+  ]
+}

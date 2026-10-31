@@ -310,3 +310,12 @@ Use the tracked `tools/installed_acceptance.py` from an installed wheel environm
 checkout and a fresh explicit synthetic root for live smoke/workflow gates. Require both
 exit 0 and JSON `passed=true`; doctor `reachable=false` never counts. See
 [wrapper provenance, commands and remaining gates](m1-release-remediation.md).
+
+## Experimental TASK-011
+
+The draft CAP-009 calculator is disabled unless this owner task explicitly opts in with
+`--experimental-calculator`. `calculate --input JSON --project PROJECT` and
+`cost-scenarios --input JSON --project PROJECT` use a deterministic provider and the same
+bounded worker/verifier/journal. `run --experimental-calculator` allows selected-Qwen
+planning of these read-only tools. No effect approval, payment or file mutation is granted.
+See [closed inputs, currency/rounding policy, private diagnostics and limits](m2-calculator.md).

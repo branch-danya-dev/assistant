@@ -148,7 +148,14 @@
     "docs/engineering/evidence/m1-memory-search-remediation.json",
     "docs/engineering/m1-release-remediation.md",
     "docs/engineering/M2-TASK-011-spec.md",
-    "tools/installed_acceptance.py"
+    "tools/installed_acceptance.py",
+    "docs/engineering/m2-calculator.md",
+    "tests/test_calculator.py",
+    "tests/test_calculator_integration.py",
+    "src/personal_agent/calculator.py",
+    "src/personal_agent/calculator_verify.py",
+    "docs/engineering/evidence/m2-calculator-validation.json",
+    "tools/verify_calculator_live.py"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",
@@ -159,7 +166,11 @@
     "spec/schemas/tool-invocation.schema.json",
     "spec/schemas/persona.schema.json",
     "spec/schemas/plan-revision.schema.json",
-    "spec/schemas/connector-gates.schema.json"
+    "spec/schemas/connector-gates.schema.json",
+    "spec/schemas/calculate-input.schema.json",
+    "spec/schemas/calculate-output.schema.json",
+    "spec/schemas/cost-scenarios-input.schema.json",
+    "spec/schemas/cost-scenarios-output.schema.json"
   ],
   "agent_read_strategy": "Read AGENTS + manifest then only ID-matched records and relevant topic docs. Do not paste entire repository into LLM context.",
   "implementation_warning": "M0 completed; M1 in_progress after independent review. REQ-017/019 remain specified P0/M1. See m1-review-fixes.md; no merge or deployment implied."
