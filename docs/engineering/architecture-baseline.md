@@ -45,6 +45,15 @@ M2: office, spreadsheets, browser research and supplier workflows. M3: scheduler
 
 Before merging any implementation PR: update related REQ/TASK/CAP/SCN IDs and acceptance evidence, tests on Windows/Linux as relevant, redacted logs, reversible data migration when schema changes, and no unapproved external side effects. `AGENTS.md` is the agent entry point.
 
+## Bounded acceptance addendum (ADR-025, 2026-10-31)
+
+The original baseline remains recorded above. Owner-approved option B explicitly revises
+REQ-017/019 M1 evaluation in their machine-readable acceptance_policy while preserving P0
+and original wording. Actual future adapters have mandatory functional/security gates at
+M2-M4. [Decision source, evidence scope and open gates](adr025-acceptance-traceability.md)
+separate policy acceptance from proof and M1 closure. Current CI runs real runtime tests;
+the earlier statement that CI only validates specifications is historical.
+
 ## Review correction addendum (ADR-022)
 
 The original safety/recovery invariants remain binding. ADR-022 supersedes the lifecycle

@@ -1,5 +1,10 @@
 # M1 bounded data admission and metadata inventory (ADR-026 / TASK-049)
 
+> Current acceptance update (2026-10-31): ADR-025 OD-1/2/3 accepted.
+> [Current policy, evidence and open gates](adr025-acceptance-traceability.md) supersede
+> pending/provisional acceptance statements in this historical implementation account.
+> Historical test outcomes are not relabelled as fresh evidence. M1 remains open.
+
 This is an incremental implementation from PR #7 `e9c0fb3`, not M1 acceptance.
 ADR-025 remains **provisional**. REQ-017/019 remain **specified, P0/M1** with original
 acceptance unchanged. TASK-044/026 and M1 remain **in_progress**. The owner authorized

@@ -1,5 +1,10 @@
 # Independent release audit remediation — PR #8
 
+> Current acceptance update (2026-10-31): ADR-025 OD-1/2/3 accepted.
+> [Current policy, evidence and open gates](adr025-acceptance-traceability.md) supersede
+> pending/provisional acceptance statements in this historical implementation account.
+> Historical test outcomes are not relabelled as fresh evidence. M1 remains open.
+
 Parent: 6e5bef8de4bf4207e703b91fdbdbf2cf10066b2c, tree
 4c16767e83ad81d3550c3af81c0a69e714a9ea25. Review 5723022076.
 

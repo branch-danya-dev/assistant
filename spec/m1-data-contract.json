@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "design": "ADR-025 option B working design; acceptance still provisional",
+  "design": "ADR-025 option B accepted; implementation evidence and M1 closure assessed separately",
   "default": "deny",
   "authorities": [
     "local-owner",
@@ -49,7 +49,9 @@
     "opaque/encoded unknown values not discoverable",
     "same-account process and database are trusted",
     "no control of arbitrary external Git clients",
-    "absent connector tests do not certify real integrations"
+    "absent connector tests do not certify real integrations",
+    "backup copies and canonical retention may preserve data; admission expiry/retrieval removal is not secure erasure",
+    "real Windows 8.3 aliases unavailable in recorded fixtures; real case-sensitive-directory rejection not certified"
   ],
   "admission_lifecycle": {
     "default_expiry_days": 30,
@@ -70,5 +72,6 @@
       "index": "encountered full-check denials pruned transactionally; add/review/renew/rebuild share validation; elapsed-expiry entries may remain physically until rebuild",
       "automatic_renewal": false
     }
-  }
+  },
+  "acceptance_policy": "spec/requirements.json: REQ-017/019 acceptance_policy"
 }

@@ -256,11 +256,54 @@ def check() -> list[str]:
             task = next((t for t in tasks if t["id"] == task_id), {})
             if task.get("security_gate") != gate["connector"]:
                 errors.append(f"{task_id}: missing mandatory connector security gate")
+            if task.get("milestone") not in gate["stages"]:
+                errors.append(f"{task_id}: connector stage mismatch")
+            if not any(task_id in item for item in gate.get("functional_checks", [])):
+                errors.append(f"{task_id}: missing actual-adapter functional check")
+            if task.get("status") == "done" and not (
+                    gate["actual_adapter_evidence"] and gate["owner_enablement"]):
+                errors.append(f"{task_id}: done without actual-adapter evidence and owner enablement")
     decision = load("spec/owner-decisions-adr025.json")
-    if (next(d for d in docs["decisions"] if d["id"] == "ADR-025")["status"] == "accepted"
-            and (decision["status"] != "approved" or not decision["approval_reference"]
-                 or any(d["answer"] is None for d in decision["decisions"]))):
-        errors.append("ADR-025: missing explicit owner decision record")
+    if next(d for d in docs["decisions"] if d["id"] == "ADR-025")["status"] == "accepted":
+        answers = decision.get("decisions", [])
+        source = decision.get("approval_source", {})
+        if (decision.get("status") != "approved"
+                or decision.get("acceptance_change_authorized") is not True
+                or len(answers) != 3
+                or {d.get("id"): d.get("answer") for d in answers}
+                != {"OD-1": "YES", "OD-2": "YES", "OD-3": "YES"}
+                or not decision.get("approval_reference")
+                or not decision.get("recorded_at")
+                or not FormatChecker().conforms(decision["recorded_at"], "date")
+                or not all(source.get(key) for key in (
+                    "kind", "conversation_id", "question_message_id", "owner_answer_message_id",
+                    "enumerated_confirmation_message_id", "answered_at", "date_basis", "scope"))
+                or not FormatChecker().conforms(source.get("answered_at", ""), "date-time")
+                or decision["approval_reference"] != "chatgpt-conversation://"
+                + source.get("conversation_id", "")):
+            errors.append("ADR-025: missing explicit owner decision record")
+        excluded = {"merge", "rebase", "retarget", "deploy", "credential_reads",
+                    "vault_enablement", "connector_enablement", "production_database_access"}
+        if not excluded.issubset(decision.get("not_authorized", [])):
+            errors.append("ADR-025: missing separate authorization boundaries")
+        originals = {
+            "REQ-017": ["Webpage, document and message instructions cannot escalate privileges "
+                        "or override owner policy."],
+            "REQ-019": ["No secrets in prompts/logs/repo; unauthorized cloud egress rejected."],
+        }
+        for req in (r for r in docs["requirements"] if r["id"] in originals):
+            policy = req.get("acceptance_policy", {})
+            if (req["priority"] != "P0" or req["target_milestone"] != "M1"
+                    or req["acceptance"] != originals[req["id"]]
+                    or policy.get("decision") != "ADR-025"
+                    or policy.get("original_acceptance_preserved") is not True
+                    or policy.get("owner_record") != "spec/owner-decisions-adr025.json"
+                    or policy.get("scope_contract") != "spec/m1-data-contract.json"
+                    or policy.get("future_adapter_gates") != "spec/connector-gates.json"
+                    or not policy.get("m1_criteria") or not policy.get("closure_requires")):
+                errors.append(f"{req['id']}: missing explicit bounded policy or original P0 history")
+            if req["status"] == "implemented" and task_statuses["TASK-044"] != "done":
+                errors.append(f"{req['id']}: implemented before TASK-044 acceptance")
     return errors
 
 

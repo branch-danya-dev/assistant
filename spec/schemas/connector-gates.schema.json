@@ -36,7 +36,9 @@
           "actual_adapter_evidence",
           "owner_enablement",
           "fixture_scope",
-          "adversarial_surface"
+          "adversarial_surface",
+          "functional_checks",
+          "evidence_policy"
         ],
         "properties": {
           "connector": {
@@ -107,6 +109,19 @@
           "adversarial_surface": {
             "type": "string",
             "minLength": 1
+          },
+          "functional_checks": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 20
+            }
+          },
+          "evidence_policy": {
+            "type": "string",
+            "minLength": 20
           }
         }
       }

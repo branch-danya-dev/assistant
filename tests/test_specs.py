@@ -16,6 +16,68 @@ from personal_agent.ports import ToolRequest, ToolResult  # noqa: E402
 
 
 class SpecTests(unittest.TestCase):
+    def test_adr025_rejects_negative_missing_duplicate_or_unattributed_approval(self):
+        def reject(change):
+            def mutated(path):
+                value = load(path)
+                if path == "spec/owner-decisions-adr025.json":
+                    change(value)
+                return value
+            with patch("validate_specs.load", side_effect=mutated):
+                self.assertIn("ADR-025: missing explicit owner decision record", check())
+        for answer in (None, "NO", "qualified", True):
+            with self.subTest(answer=answer):
+                reject(lambda d: d["decisions"][0].update(answer=answer))
+        reject(lambda d: d["decisions"].pop())
+        reject(lambda d: d["decisions"][1].update(id="OD-1"))
+        reject(lambda d: d.update(acceptance_change_authorized=False))
+        reject(lambda d: d["approval_source"].pop("owner_answer_message_id"))
+        reject(lambda d: d.update(recorded_at="not-a-date"))
+
+    def test_adr025_does_not_authorize_integration_or_erase_p0_history(self):
+        def mutated(path):
+            value = load(path)
+            if path == "spec/owner-decisions-adr025.json":
+                value["not_authorized"].remove("merge")
+            if path == "spec/requirements.json":
+                for req in value["requirements"]:
+                    if req["id"] == "REQ-017":
+                        req["priority"] = "P1"
+                    if req["id"] == "REQ-019":
+                        req["acceptance"] = ["Known patterns suffice."]
+            return value
+        with patch("validate_specs.load", side_effect=mutated):
+            errors = check()
+        self.assertIn("ADR-025: missing separate authorization boundaries", errors)
+        for rid in ("REQ-017", "REQ-019"):
+            self.assertIn(f"{rid}: missing explicit bounded policy or original P0 history", errors)
+
+    def test_policy_approval_cannot_complete_security_or_future_connector_gates(self):
+        def mutated(path):
+            value = load(path)
+            if path == "spec/requirements.json":
+                next(r for r in value["requirements"] if r["id"] == "REQ-017")["status"] = "implemented"
+            if path == "spec/tasks.json":
+                next(t for t in value["tasks"] if t["id"] == "TASK-012")["status"] = "done"
+            return value
+        with patch("validate_specs.load", side_effect=mutated):
+            errors = check()
+        self.assertIn("REQ-017: implemented before TASK-044 acceptance", errors)
+        self.assertIn("TASK-012: done without actual-adapter evidence and owner enablement", errors)
+
+    def test_connector_functional_checks_cannot_drop_a_stage_or_task(self):
+        def mutated(path):
+            value = load(path)
+            if path == "spec/connector-gates.json":
+                browser = next(g for g in value["gates"] if g["connector"] == "browser")
+                browser["functional_checks"].pop()
+                browser["stages"].remove("M3")
+            return value
+        with patch("validate_specs.load", side_effect=mutated):
+            errors = check()
+        self.assertIn("TASK-032: missing actual-adapter functional check", errors)
+        self.assertIn("TASK-032: connector stage mismatch", errors)
+
     def test_semantic_security_deadlock_without_work_dag_cycle(self):
         def mutated(path):
             value = load(path)

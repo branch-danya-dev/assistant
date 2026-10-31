@@ -1,6 +1,12 @@
 # ADR-025 — proposed M1 trust/data acceptance agreement
 
-**Status: provisional; owner approval required.** Recorded 2026-10-31. No original requirement,
+**Status: accepted option B, OD-1/2/3=YES (2026-10-31).**
+See [actual owner source/date](adr025-owner-decisions.md) and
+[binding acceptance revision, evidence and remaining gates](adr025-acceptance-traceability.md).
+The proposal body below is retained as decision history; its pending/implementation statements
+describe the pre-approval state and do not request renewed approval.
+
+**Historical proposal, recorded 2026-10-31:** No original requirement,
 priority, milestone or status is changed by this proposal. M1 remains in_progress;
 REQ-017 and REQ-019 remain specified, P0/M1. This is a narrow proposed interpretation and
 acceptance change, not evidence that either gate has passed.
