@@ -604,7 +604,9 @@
         "docs/engineering/m1-file-aliases.md",
         "docs/engineering/m1-trust-boundary-proposal.md",
         "tests/test_file_aliases.py",
-        "docs/engineering/evidence/m1-alias-validation.json"
+        "docs/engineering/evidence/m1-alias-validation.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure.",
@@ -938,7 +940,9 @@
         "tests/test_memory.py",
         "tests/test_cli.py",
         "docs/engineering/m1-review-fixes.md",
-        "docs/engineering/m1-security-boundaries.md"
+        "docs/engineering/m1-security-boundaries.md",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut."
@@ -1028,7 +1032,9 @@
         "spec/m1-data-contract.json",
         "spec/connector-gates.json",
         "docs/engineering/evidence/m1-trust-validation.json",
-        "docs/engineering/evidence/windows-m1-trust-host.json"
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Scoped M1 policy implementation and negative tests exist; acceptance remains open. R-M1-SECRET-OPAQUE, R-M1-LEGACY and real connector acceptance are unmet; see m1-security-boundaries.md. Independent closure order TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010. No status shortcut. PR #6 alias remediation: TASK-048 / ADR-024. ADR-025 is provisional, not accepted or a gate closure. TASK-049 supplies bounded inventory/legacy/disabled-vault controls; ADR-025 owner decisions, literal acceptance and fresh host evidence remain separate open gates.",
@@ -1183,10 +1189,42 @@
         "spec/m1-data-contract.json",
         "spec/connector-gates.json",
         "docs/engineering/evidence/m1-trust-validation.json",
-        "docs/engineering/evidence/windows-m1-trust-host.json"
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ],
       "owner": "unassigned",
       "notes": "Authorized implementation using option B; does not accept ADR-025, revise REQ-017/019 or close TASK-044/026/M1. Windows/Ubuntu implementation CI 41136331275 passed at 0748384c733b5e216f4697e2b90cecab62a8b72b. Fresh live check refused with 10061; no live inference or M1 closure claimed."
+    },
+    {
+      "id": "TASK-050",
+      "title": "Remediate PR 8 reconciliation receipts, memory index and owner renewal",
+      "status": "in_progress",
+      "priority": "P1",
+      "milestone": "M1",
+      "depends_on": [
+        "TASK-049"
+      ],
+      "requirement_ids": [
+        "REQ-018",
+        "REQ-053",
+        "REQ-054"
+      ],
+      "acceptance": [
+        "Owner project/digest-bound reconciliation atomically refreshes admission while retaining approvals, attempts, append-only evidence and non-replayable effects.",
+        "Exact eligible memory is restored to FTS transactionally after review; revoked, expired, changed, foreign or removed data stay denied.",
+        "Explicit owner renewal retains immutable scope/effect authority and audit history; expired content has bounded payload-free historical diagnostics.",
+        "Windows and Ubuntu schema/DAG, regression, security/crash/integration, Ruff, wheel and installed-package checks; record platform skips and fresh selected-Qwen availability."
+      ],
+      "evidence": [
+        "docs/engineering/m1-trust-inventory.md",
+        "docs/engineering/runbook.md",
+        "tests/test_m1_create.py",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
+      ],
+      "owner": "unassigned",
+      "notes": "Targeted owner-authorized remediation of review 5722142390 on existing PR #8. Remains in_progress pending final independent review; no M1/ADR-025/P0 acceptance closure."
     }
   ]
 }

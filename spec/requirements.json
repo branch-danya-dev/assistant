@@ -285,7 +285,9 @@
         "spec/m1-data-contract.json",
         "spec/connector-gates.json",
         "docs/engineering/evidence/m1-trust-validation.json",
-        "docs/engineering/evidence/windows-m1-trust-host.json"
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ]
     },
     {
@@ -302,7 +304,9 @@
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ]
     },
     {
@@ -336,7 +340,9 @@
         "spec/m1-data-contract.json",
         "spec/connector-gates.json",
         "docs/engineering/evidence/m1-trust-validation.json",
-        "docs/engineering/evidence/windows-m1-trust-host.json"
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ]
     },
     {
@@ -818,7 +824,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ]
     },
     {
@@ -837,7 +845,9 @@
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ]
     }
   ]

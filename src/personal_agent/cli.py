@@ -33,13 +33,14 @@ def parser() -> argparse.ArgumentParser:
     commands = root.add_subparsers(dest="command", required=True)
     audit = commands.add_parser("data-audit", help="IDs, labels and review digests only; no contents")
     audit.add_argument("--project", required=True)
-    review = commands.add_parser("data-review", help="Attest independently reviewed saved data by ID/hash")
-    review.add_argument("kind", choices=("task", "memory", "persona"))
-    review.add_argument("id")
-    review.add_argument("--project", required=True)
-    review.add_argument("--digest", required=True)
-    review.add_argument("--classification", required=True, choices=("public", "internal", "private"))
-    review.add_argument("--expires-at", required=True)
+    for command in ("data-review", "data-renew"):
+        review = commands.add_parser(command, help="Owner attestation by exact ID/project/digest/label")
+        review.add_argument("kind", choices=("task", "memory", "persona"))
+        review.add_argument("id")
+        review.add_argument("--project", required=True)
+        review.add_argument("--digest", required=True)
+        review.add_argument("--classification", required=True, choices=("public", "internal", "private"))
+        review.add_argument("--expires-at", required=True)
     inventory = commands.add_parser("inventory-mark", help="Register source metadata only; never read content")
     inventory.add_argument("kind", choices=("file", "task", "memory", "persona", "preview"))
     inventory.add_argument("locator")
@@ -68,6 +69,9 @@ def parser() -> argparse.ArgumentParser:
                      help="Exact private file authorized for local tool IPC and Ollama context")
     for command in ("show", "resume", "cancel"):
         commands.add_parser(command).add_argument("task_id")
+    historical = commands.add_parser("show-audit", help="Payload-free task history, including expired tasks")
+    historical.add_argument("task_id")
+    historical.add_argument("--project", required=True)
     evidence = commands.add_parser("show-evidence")
     evidence.add_argument("task_id")
     evidence.add_argument("evidence_ref")
@@ -87,6 +91,8 @@ def parser() -> argparse.ArgumentParser:
     reconcile.add_argument("action_id")
     reconcile.add_argument("--outcome", required=True, choices=("applied", "not_applied"))
     reconcile.add_argument("--evidence", required=True)
+    reconcile.add_argument("--project", required=True)
+    reconcile.add_argument("--digest", required=True, help="Reviewed current task digest from data-audit")
     memory = commands.add_parser("memory").add_subparsers(dest="memory_command", required=True)
     add = memory.add_parser("add")
     add.add_argument("statement")
@@ -152,6 +158,8 @@ def execute(args) -> dict:
                               store.connection.execute("SELECT id,state FROM tasks ORDER BY rowid DESC LIMIT 100")]}
         if args.command == "show":
             return journal.inspect(args.task_id)
+        if args.command == "show-audit":
+            return journal.historical_audit(args.task_id, args.project)
         if args.command == "show-evidence":
             if not 256 <= args.limit <= 32768:
                 raise AgentError("invalid_output_limit")
@@ -190,9 +198,11 @@ def execute(args) -> dict:
             if args.command == "inventory-review":
                 Trust(store).review_mark(args.id, args.classification, expires_at=args.expires_at)
                 return {"inventory_id": args.id, "reviewed": True, "tool_permission_granted": False}
-            if args.command == "data-review":
-                Trust(store).review(args.kind, args.id, args.project, args.digest,
-                                    args.classification, expires_at=args.expires_at)
+            if args.command in ("data-review", "data-renew"):
+                trust = Trust(store)
+                operation = trust.renew if args.command == "data-renew" else trust.review
+                operation(args.kind, args.id, args.project, args.digest,
+                          args.classification, expires_at=args.expires_at)
                 return {"id": args.id, "reviewed": True, "authority_changed": False,
                         "effect_approval_granted": False, "executed_actions": 0}
             if args.command == "cleanup-previews":
@@ -229,7 +239,8 @@ def execute(args) -> dict:
                 journal.approve(args.approval_id, args.digest)
                 return journal.approval(args.approval_id)
             if args.command == "reconcile":
-                journal.reconcile(args.action_id, args.outcome, args.evidence)
+                journal.reconcile(args.action_id, args.outcome, args.evidence,
+                                  project=args.project, expected_digest=args.digest)
                 return {"reconciled": True, "automatic_replay": False}
             if args.command == "memory":
                 if args.memory_command == "add":

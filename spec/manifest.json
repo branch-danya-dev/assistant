@@ -141,7 +141,9 @@
     "spec/owner-decisions-adr025.json",
     "docs/engineering/adr025-owner-decisions.md",
     "docs/engineering/evidence/m1-trust-validation.json",
-    "docs/engineering/evidence/windows-m1-trust-host.json"
+    "docs/engineering/evidence/windows-m1-trust-host.json",
+    "tests/test_trust_lifecycle.py",
+    "docs/engineering/evidence/m1-trust-remediation.json"
   ],
   "schemas": [
     "spec/schemas/memory-record.schema.json",

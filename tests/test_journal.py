@@ -85,7 +85,8 @@ with Store(Paths(sys.argv[1])) as store, store.execution_lock():
                 self.journal.dispatch(action, approval_required=True)
         self.assertEqual(self.paths.under("workspace/effect.txt").read_text(), "once")
         self.assertEqual(self.journal.approval(approval)["status"], "consumed")
-        self.journal.reconcile(action, "applied", "fixture://observed-effect")
+        self.journal.reconcile(action, "applied", "fixture://observed-effect", project="alpha",
+            expected_digest=self.journal.trust.review_metadata("task", task, "alpha")["digest"])
         self.assertEqual(self.journal.get(task)["state"], "blocked")
         with self.assertRaises(AgentError):
             self.journal.dispatch(action, approval_required=True)
@@ -136,7 +137,8 @@ with Store(Paths(sys.argv[1])) as store, store.execution_lock():
             self.journal.recover()
         with self.assertRaises(AgentError):
             self.journal.transition(task, "queued")
-        self.journal.reconcile(action, "not_applied", "fixture://confirmed-absent")
+        self.journal.reconcile(action, "not_applied", "fixture://confirmed-absent", project="alpha",
+            expected_digest=self.journal.trust.review_metadata("task", task, "alpha")["digest"])
         with self.assertRaises(AgentError):
             self.journal.start(task, resume=True)
 

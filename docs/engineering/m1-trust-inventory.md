@@ -30,7 +30,7 @@ remotely exposed security principals.
 
 | Sink | Enforcement |
 | --- | --- |
-| SQLite/journal | New owner inputs checked before source writes. Validated task derivations refresh their content receipt transactionally; missing/expired receipts cannot bootstrap themselves. Metadata-only recovery/stop/reconciliation remain possible without admitting legacy content to model/tools. |
+| SQLite/journal | New owner inputs checked before source writes. Validated task derivations refresh their content receipt transactionally; missing/expired receipts cannot bootstrap themselves. Metadata-only recovery/stop/audit remain possible. Owner reconciliation requires a current reviewed task and scoped inventory; it never bootstraps admission. |
 | Worker IPC | Task and exact scope/registry binding checked before temporary IPC files/Popen; repeated in worker. Minimal environment preserved. Inventory/source labels and known credentials checked on returned data. |
 | Ollama | Admitted task, persona and saved observations before messages/call; worker repeats task check. Numeric loopback only, no proxy, redirect, DNS hostname/cloud fallback. Selected model stays qwen3.5:9b. |
 | CLI diagnostics | Closed error codes, withheld unreviewed/private payloads, private-task action/approval IDs and digests only; private memory content withheld. Event views expose lifecycle metadata only. Scope/evidence diagnostics deny unreviewed data. |
@@ -139,3 +139,59 @@ a repeated live-host availability check; earlier test counts are not final-HEAD 
 
 Integration only after separate owner instructions: #4 → #5 → #6 → #7 → this stacked PR,
 with fresh CI/review after separately authorized integration/retargeting. No merge is implied.
+
+## PR #8 review remediation (ADR-027 / TASK-050)
+
+Review provenance: [5722142390](https://github.com/branch-danya-dev/assistant/pull/8#pullrequestreview-5722142390),
+reviewed parent `8cc373cb46b283b58b72de3837ba33d6128e69d2`. The same branch and stacked base are retained.
+
+**Reconciliation:** the owner must supply the exact project and current task digest, plus an
+observed outcome and bounded evidence reference. Within one SQLite write transaction, the
+existing admission/scope/inventory/saved-memory chain is validated before any mutation; old
+admission metadata are appended to review history, result and owner event are saved, task stays
+non-replayable, and the new digest receipt retains its old expiry. A failure rolls everything
+back. The event is an owner assertion, not a tool-verifier claim. Repeated reconciliation or
+replacement evidence is refused. Stop/cancel controls, attempts, budgets, effect approvals,
+original scope and plan revisions remain unchanged. Resume also rejects any reconciled action
+even if a later state transition changed the task's block reason. Missing, expired, marked or
+restricted tasks require separate explicit owner review/renewal; reconciliation has no bypass.
+
+**Memory index:** mark/revocation immediately removes the exact project/ID entry. A metadata
+inventory review may restore only a still-current, exact prior content receipt. A legacy review
+or renewal updates admission and that one eligible FTS entry atomically. Canonical ID/project,
+class and statement columns must match the document; digest, inventory, retention and removal
+are rechecked. A denied entry is suppressed. Full rebuild uses the same predicate. No bulk
+re-admission or automatic source rewriting occurs. Private project scope is unchanged.
+
+**Lifetime:** 30 days is authorization lifetime, not deletion/retention. Explicit owner-only
+`data-renew` binds ID + project + unchanged current/previous digest + classification + future
+expiry (max 366 days and later than previous expiry). Previous and replacement receipt metadata
+are appended to v4 `data_reviews`. It cannot renew changed/missing receipts, release revoked or
+expired inventory, extend canonical retention or resurrect removed records. Task dependencies
+and existing sink grants are rechecked. `data-review` remains the independent legacy/content
+review API; it also preserves prior receipt metadata. Neither operation approves an effect.
+
+`show-audit --project` provides bounded payload-free historical diagnostics after expiry or
+revocation; `show` uses this fallback when admission is unavailable/private. Current state,
+IDs, action/approval status, digests, event headers and review metadata remain inspectable;
+source content, paths and evidence-reference text remain withheld. Archive/backup content has
+no permanent projection exemption. See [commands and restrictions](runbook.md#renewal-and-historical-audit-pr-8-remediation--adr-027).
+
+SQLite stays v4; no migration or previous grant/journal rewrite. Existing matching-backup/code
+rollback instructions apply. The correction does not repair previously stale reconciled
+receipts automatically: inspect the original evidence and perform explicit ID/digest review.
+
+| Regression evidence | Scope |
+| --- | --- |
+| `tests/test_trust_lifecycle.py` | Atomic receipts/index, both reconciliation outcomes, denial cases, renewal, payload-free history, stop/cancel and cross-project/private scope |
+| `tests/test_m1_create.py` | Real child crash after actual synthetic create; before-effect uncertainty; receipt visibility and no replay |
+| Existing full suite | Aliases, partial 8/32 KiB, approval consumption, revisions, migration/rollback, preview ACL/TTL, disabled connectors |
+
+Fresh validation/provenance is recorded in `evidence/m1-trust-remediation.json`; the final HEAD
+and CI are also reported in PR #8. No historical Qwen success is counted as a new pass.
+
+Additional residual **R-M1-RENEWAL**: owner review remains manual; incomplete inventory or wrong
+classification is not fixed by renewal. Wall-clock expiration suppresses retrieval immediately,
+but stale derived FTS bytes need rebuild and physical/backup erasure remains deferred. Historical
+metadata is sensitive and may be truncated; full canonical evidence remains retained locally.
+All existing risk-register entries and the three pending ADR-025 decisions remain open.

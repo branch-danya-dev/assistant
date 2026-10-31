@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "date": "2026-10-31",
+  "status": "local-validated-awaiting-ci",
+  "review_url": "https://github.com/branch-danya-dev/assistant/pull/8#pullrequestreview-5722142390",
+  "parent_sha": "8cc373cb46b283b58b72de3837ba33d6128e69d2",
+  "branch": "feat/m1-trust-inventory",
+  "base": "fix/m1-file-alias-boundaries",
+  "synthetic_only": true,
+  "production_data_opened": false,
+  "schema_version": 4,
+  "acceptance": {
+    "ADR-025": "provisional",
+    "REQ-017": "specified",
+    "REQ-019": "specified",
+    "M1": "in_progress"
+  },
+  "provenance": "Local validation covers the working tree derived from parent_sha; exact implementation commit and CI will follow. Initial restricted-environment run could not execute FS/loopback fixtures; final full-permission synthetic run passed. No prior live Qwen result reused.",
+  "live_qwen": "not_yet_checked_for_remediation",
+  "local_windows": {
+    "discovered": 175,
+    "passed": 170,
+    "skipped": 5,
+    "schema_dag": "pass",
+    "ruff": "pass",
+    "wheel": "pass",
+    "installed_package_outside_checkout": "pass"
+  }
+}

@@ -50,5 +50,14 @@
     "same-account process and database are trusted",
     "no control of arbitrary external Git clients",
     "absent connector tests do not certify real integrations"
-  ]
+  ],
+  "admission_lifecycle": {
+    "default_expiry_days": 30,
+    "maximum_expiry_days": 366,
+    "canonical_retention": "independent of projection authorization; no automatic deletion or renewal",
+    "renewal": "owner-only ID/project/unchanged current and previous digest/classification/explicit later expiry; inventory and scope rechecked",
+    "reconciliation": "owner project/current digest, active admission; atomic evidence/event/receipt; expiry and effect approvals unchanged",
+    "index": "single project/ID entry synchronized transactionally on mark/review/renewal; rebuild uses same eligibility",
+    "history": "payload-free bounded show-audit after expiry/revocation; append-only prior and new receipt metadata"
+  }
 }

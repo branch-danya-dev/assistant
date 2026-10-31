@@ -190,7 +190,8 @@ class Journal:
             task = self.get(task_id)
             if self.stopped():
                 raise AgentError("emergency_stop_active")
-            if task.get("block_reason") == "reconciled_create_new_task":
+            if task.get("block_reason") == "reconciled_create_new_task" or self.db.execute(
+                    "SELECT 1 FROM actions WHERE task_id=? AND status='reconciled'", (task_id,)).fetchone():
                 raise AgentError("reconciled_action_requires_new_task")
             if task["state"] == "planned":
                 self._transition(task_id, "queued")
@@ -370,22 +371,39 @@ class Journal:
                 changed.append(task_id)
         return changed
 
-    def reconcile(self, action_id: str, outcome: str, evidence_ref: str):
-        admit(evidence_ref)
-        """Owner asserts observed outcome. Never replays the old operation."""
-        if outcome not in ("applied", "not_applied") or not evidence_ref.strip():
+    def reconcile(self, action_id: str, outcome: str, evidence_ref: str, *, project: str,
+                  expected_digest: str):
+        """Owner-only observed outcome, bound to the reviewed project/task snapshot.
+
+        This records an owner assertion, not an independently verified tool result.
+        Stop/cancel do not prevent recording history; no dispatch gate is opened.
+        """
+        if (outcome not in ("applied", "not_applied") or not isinstance(evidence_ref, str)
+                or not evidence_ref.strip() or len(evidence_ref.encode("utf-8")) > 1000):
             raise AgentError("reconciliation_evidence_required")
+        admit(evidence_ref)
         with self.store.transaction():
             action = self.action(action_id)
+            if self.get(action["task_id"])["project_id"] != project:
+                raise AgentError("task_scope_mismatch")
             if (action["status"] != "uncertain"
                     or self.get(action["task_id"])["state"] != "needs_reconciliation"):
                 raise AgentError("action_not_uncertain")
+            value = self.trust.require_task(action["task_id"])
+            if digest(value) != expected_digest:
+                raise AgentError("review_digest_or_label_mismatch")
+            if evidence_ref.startswith("action:"):
+                # Reserved tool references must resolve to verified evidence in this task.
+                self.evidence(action["task_id"], evidence_ref, project, sink="journal")
+            self.trust._archive_admission("task", action["task_id"])
             self.db.execute("UPDATE actions SET status='reconciled',result=? WHERE id=?",
                             (encode({"outcome": outcome, "evidence_ref": evidence_ref}), action_id))
             self._event(action["task_id"], "reconciled", {"outcome": outcome},
                         refs=(evidence_ref,), actor="owner", key=action_id)
             # Fail closed even for 'not applied': a fresh task and approval are required.
             self._transition(action["task_id"], "blocked", "reconciled_create_new_task")
+            self.trust.refresh_task(action["task_id"])
+            self.trust._archive_admission("task", action["task_id"])
 
     def complete(self, task_id: str, result: dict, *, partial: bool = False):
         self.trust.require_task(task_id)
@@ -420,21 +438,14 @@ class Journal:
 
     def inspect(self, task_id: str) -> dict:
         task = self.get(task_id)
-        minimal = {k: task.get(k) for k in ("task_id", "state")}
-        minimal["block_reason"] = str(AgentError(task["block_reason"])) if task.get("block_reason") else None
         try:
             admitted = self.trust.require_task(task_id)
         except AgentError:
             # Legacy/restricted/private data never enters ordinary stdout. The explicit
             # inventory review path supplies only IDs/hashes without payload expansion.
-            return {"task": minimal,
-                    "actions": [], "events": [], "result": None,
-                    "content_withheld": True}
+            return self.historical_audit(task_id, task["project_id"])
         if self.trust.task_class(admitted) == "private":
-            return {"task": minimal, "actions": [dict(r) for r in self.db.execute(
-                "SELECT id,status,effect,digest,approval_id,attempts FROM actions WHERE task_id=?"
-                " ORDER BY ordinal", (task_id,))], "events": [], "result": None,
-                "content_withheld": True}
+            return self.historical_audit(task_id, task["project_id"])
         actions = [dict(row) for row in self.db.execute(
             "SELECT id,status,effect,digest,resource,approval_id,attempts,request FROM actions WHERE task_id=?"
             " ORDER BY ordinal", (task_id,))]
@@ -448,6 +459,11 @@ class Journal:
             if action["status"] == "verified":
                 action["evidence_ref"] = f"action:{action['id']}"
                 action["evidence"] = self.evidence(task_id, action["evidence_ref"], task["project_id"])
+            elif action["status"] == "reconciled":
+                saved = json.loads(self.action(action["id"])["result"])
+                action["reconciliation"] = {"outcome": saved["outcome"],
+                    "evidence_ref": text_receipt(saved["evidence_ref"]),
+                    "result_digest": digest(saved), "authority": "owner-assertion"}
         row = self.db.execute("SELECT result FROM tasks WHERE id=?", (task_id,)).fetchone()
         result = json.loads(row[0]) if row[0] else None
         if result and "answer" in result:
@@ -467,6 +483,35 @@ class Journal:
                 "result": result, "plan": {**plan, "steps": visible_steps},
                 "plan_history": [{k: v for k, v in p.items() if k not in ("steps", "reason")}
                                  for p in self.plans.history(task_id)]}
+
+    def historical_audit(self, task_id: str, project: str) -> dict:
+        """Payload-free history remains available after projection authorization expires."""
+        task = self.get(task_id)
+        if task["project_id"] != project:
+            raise AgentError("task_scope_mismatch")
+        actions = self.db.execute("SELECT id,status,effect,digest,approval_id,attempts,result"
+            " FROM actions WHERE task_id=? ORDER BY ordinal LIMIT 101", (task_id,)).fetchall()
+        visible = []
+        for row in actions[:100]:
+            item = {k: row[k] for k in ("id", "status", "effect", "digest", "approval_id", "attempts")}
+            item["result_digest"] = digest(json.loads(row["result"])) if row["result"] else None
+            if row["approval_id"]:
+                item["approval_status"] = self.approval(row["approval_id"])["status"]
+            visible.append(item)
+        events = self.db.execute("SELECT document FROM events WHERE task_id=?"
+            " ORDER BY sequence DESC LIMIT 101", (task_id,)).fetchall()
+        reviews = self.db.execute("SELECT id,digest,classification,reviewed_at,expires_at FROM"
+            " data_reviews WHERE kind='task' AND object_id=? ORDER BY rowid DESC LIMIT 101",
+            (task_id,)).fetchall()
+        return {"task": {"task_id": task_id, "state": task["state"],
+                    "block_reason": str(AgentError(task["block_reason"])) if task.get("block_reason") else None},
+                "admission": self.trust.review_metadata("task", task_id, project),
+                "actions": visible, "events": [
+                    {k: e[k] for k in ("event_id", "sequence", "kind", "timestamp")}
+                    for e in (json.loads(r[0]) for r in reversed(events[:100]))],
+                "reviews": [dict(r) for r in reviews[:100]], "result": None,
+                "content_withheld": True, "limit": 100,
+                "truncated": any(len(rows) > 100 for rows in (actions, events, reviews))}
 
     def evidence(self, task_id: str, ref: str, project: str, *, sink="diagnostics") -> dict:
         task = self.get(task_id)

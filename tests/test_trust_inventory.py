@@ -77,8 +77,9 @@ class InventoryTests(BoundaryCase):
         memory = Memory(self.store)
         identifier = memory.remember("alpha", "needle " + self.canary, "fixture://owner", sensitivity="internal")
         self.trust.mark("memory", "alpha", identifier)
+        self.assertEqual(memory.search("needle", project_id="alpha"), [])
         with self.assertRaisesRegex(AgentError, "inventory_source_denied"):
-            memory.search("needle", project_id="alpha")
+            memory.search("", project_id="alpha")
         self.assertEqual(memory.search("needle", project_id="beta"), [])
         clean = memory.remember("beta", "needle", "fixture://owner", sensitivity="internal")
         row = json.loads(self.store.connection.execute("SELECT document FROM memory WHERE id=?", (clean,)).fetchone()[0])

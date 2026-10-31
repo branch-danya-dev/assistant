@@ -123,7 +123,13 @@ Landlock ABI 3+, O_TMPFILE and procfs are required. There is
 no unsafe fallback on unsupported filesystems. See [full boundaries](m1-completion.md).
 
 An unknown mutating outcome becomes `needs_reconciliation`. Inspect the external state before
-`reconcile ACTION_ID --outcome applied|not_applied --evidence SOURCE_REFERENCE`.
+`reconcile ACTION_ID --project PROJECT --digest REVIEWED_TASK_DIGEST --outcome applied|not_applied --evidence SOURCE_REFERENCE`.
+Obtain the current task digest from `data-audit --project PROJECT`, independently inspect the
+outcome, and supply a bounded reference (at most 1000 UTF-8 bytes). This is an owner assertion,
+not automated verification. A valid current task receipt and inventory are required; use the
+explicit review/renewal workflow first if expired or legacy. Reconciliation records evidence,
+blocked state and refreshed receipt atomically, retaining the original expiry. It never clears
+stop/cancel. `show` exposes the outcome and reference digest, not reference text.
 For either outcome, the original action remains non-replayable; retry needs a new task/approval.
 Connector-specific reconciliation and real external senders remain deferred.
 
@@ -238,3 +244,44 @@ internal remain a documented residual. ADR-025 and M1 are still open. To roll ba
 app and restore verified pre-upgrade backup plus matching code in a separate root; never edit
 `user_version` manually. Older code does not enforce this policy and is not permission to
 resume private tasks. Keep backups private and retain the original root until restore checks pass.
+
+## Renewal and historical audit (PR #8 remediation / ADR-027)
+
+Canonical memory, task records and evidence are retained independently of the default **30-day
+authorization to project their contents** into local workers/models. Expiry does not delete them.
+No automatic or sliding renewal occurs. The owner must independently review the original bytes,
+classification and inventory, then renew a single unchanged object (future expiry, max 366 days):
+
+```powershell
+python -m personal_agent data-audit --project example
+python -m personal_agent show-audit TASK_ID --project example
+python -m personal_agent data-renew memory RECORD_ID --project example --digest REVIEWED_DIGEST --classification internal --expires-at 2027-01-01T00:00:00Z
+python -m personal_agent data-renew task TASK_ID --project example --digest REVIEWED_DIGEST --classification internal --expires-at 2027-01-01T00:00:00Z
+```
+
+Renewal requires the current digest to match both canonical data and the previous receipt,
+the unchanged project/classification, and an expiry later than the previous one. Missing legacy
+receipts need `data-review`; changed data require independent source review, not renewal.
+Inventory revocation/expiry is a separate gate: renewal cannot release it. Old ambiguous file
+grants still require a new task. Task renewal rechecks all scope and saved-memory dependencies.
+It never changes action attempts, budgets, consumed approvals, task state or immutable revisions.
+Before/after admission metadata are appended to `data_reviews`; prior review rows remain.
+
+`show-audit` remains available after expiry/revocation and for private tasks: task state,
+action/approval statuses, IDs, current/admitted/result digests, event headers and review history,
+bounded to 100 rows per collection with explicit truncation. It omits intent, paths, evidence
+reference text, statements, provenance and results. Ordinary `show` falls back to this view when
+content admission fails. Digests/IDs are private metadata; do not publish runtime audit output.
+
+Inventory mark/revocation removes only the matching project's memory index entry immediately.
+Inventory review restores it only when its existing exact record receipt remains current and
+matches the class; explicit `data-review`/`data-renew` restores an eligible record in the same
+transaction. No extra `memory reindex` is needed. Removed, expired-retention, restricted,
+changed, mismatched-project and unreviewed records cannot return. Private retrieval still needs
+the exact project and `--include-private`. Rebuild applies the same checks. Stale index bytes
+may remain until rebuild after wall-clock expiry, but retrieval always rechecks admission.
+
+Archived canonical records receive no perpetual content authorization. Expired retention and
+owner removal cannot be undone by admission renewal. Backup pages and external source archives
+are not scrubbed or made browsable by this workflow; protect and review them separately. No
+production migration is needed: SQLite stays v4, and earlier rollback limitations still apply.

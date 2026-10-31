@@ -10,7 +10,7 @@ import json
 import unicodedata
 from datetime import datetime, timedelta, timezone
 
-from .config import AgentError, safe_relative
+from .config import AgentError, safe_relative, validate
 from .data_policy import CLASSES, admit, file_access, validate_scope
 from .storage import encode, now, uid
 
@@ -73,6 +73,10 @@ class Trust:
             self.db.execute("INSERT INTO sensitive_inventory VALUES (?,?,?,?,?,?,?,?,?,?)",
                 (identifier, kind, project, locator, key, classification, "local-owner",
                  "owner-mark", None, timestamp))
+            if kind == "memory":
+                # Revocation is metadata-only; never parse the source to suppress its index.
+                self.db.execute("DELETE FROM memory_fts WHERE id=? AND EXISTS"
+                    " (SELECT 1 FROM memory WHERE id=? AND project_id=?)", (locator, locator, project))
         return identifier
 
     def review_mark(self, identifier, classification, *, expires_at=None):
@@ -88,6 +92,12 @@ class Trust:
                             (classification, now(), timestamp, identifier))
             self.db.execute("INSERT INTO data_reviews VALUES (?,?,?,?,?,?,?)",
                 (uid(), "inventory", identifier, fingerprint(dict(row)), classification, now(), timestamp))
+            self._sync_memory(row["kind"], row["locator"], row["project_id"])
+
+    def _sync_memory(self, kind, identifier, project):
+        if kind == "memory":
+            from .memory import Memory
+            Memory(self.store)._sync_index(identifier, project)
 
     def attest(self, kind, object_id, project, value, classification, *,
                provenance="owner-create", expires_at=None):
@@ -181,6 +191,14 @@ class Trust:
         canonical = {k: v for k, v in record.items() if k != "superseded_by"}
         if record.get("project_id") != project or record.get("sensitivity") == "restricted":
             raise AgentError("memory_sensitivity_denied")
+        current, _ = self.review_value("memory", record["id"], project)
+        row = self.db.execute("SELECT removed FROM memory WHERE id=?", (record["id"],)).fetchone()
+        if (canonical != current or row[0] or
+                (current.get("expires_at") and current["expires_at"] <= now())):
+            raise AgentError("source_review_required")
+        marked = self.guard("memory", project, record["id"])
+        if marked and marked != record["sensitivity"]:
+            raise AgentError("inventory_source_denied")
         return self.require("memory", record["id"], project, canonical, sink=sink)
 
     def audit(self, project):
@@ -212,7 +230,7 @@ class Trust:
 
     def review_value(self, kind, identifier, project):
         if kind == "persona" and project == "identity" and identifier.isdigit():
-            from .config import reject_links, validate
+            from .config import reject_links
             path = self.store.paths.file("identity", f"persona-{int(identifier)}.json")
             reject_links(path)
             if path.stat().st_size > 12000:
@@ -226,10 +244,15 @@ class Trust:
                 raise AgentError("task_scope_mismatch")
             return value, self.task_class(value)
         if kind == "memory":
-            row = self.db.execute("SELECT document FROM memory WHERE id=? AND project_id=?",
+            row = self.db.execute("SELECT * FROM memory WHERE id=? AND project_id=?",
                                   (identifier, project)).fetchone()
             if row:
-                value = json.loads(row[0])
+                value = json.loads(row["document"])
+                validate("memory-record", value)
+                if any(value[key] != row[column] for key, column in (
+                        ("id", "id"), ("project_id", "project_id"),
+                        ("sensitivity", "sensitivity"), ("statement", "statement"))):
+                    raise AgentError("source_review_required")
                 return value, value["sensitivity"]
         raise AgentError("source_review_required")
 
@@ -238,8 +261,58 @@ class Trust:
         row = self.db.execute("SELECT digest,expires_at FROM data_admissions WHERE kind=? AND object_id=?",
                               (kind, identifier)).fetchone()
         digest = fingerprint(value)
+        try:
+            if kind == "task":
+                self.require_task(identifier)
+            elif kind == "memory":
+                self.require_memory(value, project)
+            else:
+                self.require(kind, identifier, project, value)
+            status = "current"
+        except AgentError:
+            status = "required"
         return {"kind": kind, "id": identifier, "digest": digest, "classification": classification,
-                "review": "current" if row and row[0] == digest and row[1] > now() else "required"}
+                "review": status, "admitted_digest": row[0] if row else None,
+                "expires_at": row[1] if row else None}
+
+    def _archive_admission(self, kind, identifier):
+        row = self.db.execute("SELECT * FROM data_admissions WHERE kind=? AND object_id=?",
+                              (kind, identifier)).fetchone()
+        if row:
+            self.db.execute("INSERT INTO data_reviews VALUES (?,?,?,?,?,?,?)",
+                (uid(), kind, identifier, row["digest"], row["classification"],
+                 row["reviewed_at"], row["expires_at"]))
+
+    def _reviewed_admission(self, kind, identifier, project, value, classification, timestamp,
+                            provenance):
+        self._archive_admission(kind, identifier)
+        self.attest(kind, identifier, project, value, classification,
+                    provenance=provenance, expires_at=timestamp)
+        if kind == "memory":
+            self.require_memory(value, project)
+            self._sync_memory(kind, identifier, project)
+        self.db.execute("INSERT INTO data_reviews VALUES (?,?,?,?,?,?,?)",
+            (uid(), kind, identifier, fingerprint(value), classification, now(), timestamp))
+
+    def renew(self, kind, identifier, project, digest, classification, *, expires_at):
+        """Owner-only renewal of unchanged reviewed bytes; never restores effect authority."""
+        if not expires_at:
+            raise AgentError("invalid_review_expiry")
+        timestamp = expiry(expires_at)
+        with self.store.transaction():
+            value, existing = self.review_value(kind, identifier, project)
+            prior = self.db.execute("SELECT * FROM data_admissions WHERE kind=? AND object_id=?",
+                                    (kind, identifier)).fetchone()
+            if (not prior or prior["project_id"] != project or prior["digest"] != digest
+                    or fingerprint(value) != digest or classification != existing
+                    or prior["classification"] != classification):
+                raise AgentError("review_digest_or_label_mismatch")
+            if timestamp <= prior["expires_at"]:
+                raise AgentError("invalid_review_expiry")
+            self._reviewed_admission(kind, identifier, project, value, classification,
+                                     timestamp, "owner-renewal")
+            if kind == "task":
+                self.require_task(identifier)  # Current scope, inventory and saved memory too.
 
     def review(self, kind, identifier, project, digest, classification, *, expires_at=None):
         """Owner attests independently reviewed bytes by ID/hash; never changes source rows.
@@ -251,7 +324,5 @@ class Trust:
             value, existing = self.review_value(kind, identifier, project)
             if fingerprint(value) != digest or classification != existing:
                 raise AgentError("review_digest_or_label_mismatch")
-            self.attest(kind, identifier, project, value, classification,
-                        provenance="legacy-owner-review", expires_at=expires_at)
-            self.db.execute("INSERT INTO data_reviews VALUES (?,?,?,?,?,?,?)",
-                (uid(), kind, identifier, digest, classification, now(), expiry(expires_at)))
+            self._reviewed_admission(kind, identifier, project, value, classification,
+                                     expiry(expires_at), "legacy-owner-review")

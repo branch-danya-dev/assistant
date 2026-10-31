@@ -111,15 +111,23 @@ class Memory:
             self.db.execute("INSERT INTO memory_events VALUES (?,?,?,?)",
                             (uid(), "owner_removed_from_retrieval", record_id, now()))
 
+    def _sync_index(self, identifier, project):
+        """Caller holds a transaction. Change one derived entry, never canonical data."""
+        row = self.db.execute("SELECT document FROM memory WHERE id=? AND project_id=?",
+                              (identifier, project)).fetchone()
+        if not row:
+            return  # A mark in another project cannot alter this record's index.
+        self.db.execute("DELETE FROM memory_fts WHERE id=?", (identifier,))
+        record = json.loads(row[0])
+        try:
+            Trust(self.store).require_memory(record, project)
+        except AgentError:
+            return
+        self.db.execute("INSERT INTO memory_fts(id,statement) VALUES (?,?)",
+                        (identifier, record["statement"]))
+
     def rebuild_index(self):
         with self.store.transaction():
-            admitted = []
-            for row in self.db.execute("SELECT document FROM memory WHERE removed=0"):
-                record = json.loads(row[0])
-                try:
-                    Trust(self.store).require_memory(record, record["project_id"])
-                except AgentError:
-                    continue  # Rebuildable index must not re-admit legacy/restricted data.
-                admitted.append((record["id"], record["statement"]))
             self.db.execute("DELETE FROM memory_fts")
-            self.db.executemany("INSERT INTO memory_fts(id,statement) VALUES (?,?)", admitted)
+            for row in self.db.execute("SELECT id,project_id FROM memory WHERE removed=0").fetchall():
+                self._sync_index(row[0], row[1])

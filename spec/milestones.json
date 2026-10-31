@@ -29,7 +29,9 @@
         "spec/m1-data-contract.json",
         "spec/connector-gates.json",
         "docs/engineering/evidence/m1-trust-validation.json",
-        "docs/engineering/evidence/windows-m1-trust-host.json"
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ],
       "remaining": [
         "REQ-017 / TASK-044: current file/memory/result/model policy tests pass; real external connectors are not implemented or certified.",
