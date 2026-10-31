@@ -32,3 +32,9 @@ SQLite tables + FTS5, separate interchangeable embedding index. Performance limi
 Retention classes: `durable` (explicit user preferences, sourced important decisions), `project` (active scoped records), `temporary` (intermediate retrieval/context and scratch), `archive` (readable source/history) and `user_managed` (owner-controlled). Do not delete durable/provenance records merely because context is full. Temporary records may expire according to future owner-visible retention settings; search indexes are rebuildable from canonical records.
 
 Apply project ACL and privacy classification **before** lexical/vector ranking and prompt assembly. Automatically extracted facts carry source/evidence_status; unverified inference does not supersede a verified owner decision. Track changed facts with `supersedes`, effective times and original source pointers. Record TTL for temporary material, and provide explicit privacy-export/delete machinery by M3.
+
+M1 lexical retrieval additionally filters current admission expiry and matching inventory before
+ranking/limits, then independently validates each whole-record receipt/provenance. A denied
+source does not block other matches. Full candidate/history checks are bounded to 256 per call;
+exhaustion is an explicit error, never silent truncation. Storage/internal errors still abort.
+See [implemented search contract and risks](../engineering/m1-trust-inventory.md#mixed-admission-search-follow-up-review-5722293592).

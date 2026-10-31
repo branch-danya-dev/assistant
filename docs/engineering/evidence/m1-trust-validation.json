@@ -1,0 +1,110 @@
+{
+  "recorded_on": "2026-10-31",
+  "timezone": "Europe/Moscow",
+  "implementation_commit": "0748384c733b5e216f4697e2b90cecab62a8b72b",
+  "base_commit": "e9c0fb300605ed77de208e8179a3746e9c790883",
+  "pull_request": "https://github.com/branch-danya-dev/assistant/pull/8",
+  "base_branch": "fix/m1-file-alias-boundaries",
+  "head_branch": "feat/m1-trust-inventory",
+  "runtime_source_fingerprint": "e0074b0a772d723003467f3ee574c52c04725d2cb64c255c2c4a465854ed2319",
+  "ci": {
+    "test_merge_commit": "6bfd77f77509f3ad139c84152a66b7f5f1b6c389",
+    "test_tree_identical_to_head": "df51427ba23058c3c8c162ce29d82fb8106e5b2d",
+    "url": "https://github.com/branch-danya-dev/assistant/actions/runs/41136331275",
+    "head_sha": "0748384c733b5e216f4697e2b90cecab62a8b72b",
+    "status": "success",
+    "event": "pull_request",
+    "windows": {
+      "job_id": 124339585798,
+      "discovered": 155,
+      "passed": 150,
+      "skipped": 5
+    },
+    "ubuntu": {
+      "job_id": 124339585425,
+      "discovered": 155,
+      "passed": 144,
+      "skipped": 11
+    }
+  },
+  "local_windows": {
+    "discovered": 155,
+    "passed": 150,
+    "skipped": 5,
+    "duration_seconds": 87.473,
+    "tools": "Existing Python 3.12 validation environment; no new system software installed",
+    "wheel_sha256": "ed8ee0994135fe5bda27be6ac89852b82b8ce0b267681040e79ddbf7d2c9b9f2"
+  },
+  "checks": {
+    "json_schema": "passed",
+    "combined_dependency_acceptance_dag": "passed",
+    "unittest_security_integration_crash": "passed",
+    "ruff": "passed",
+    "wheel": "passed",
+    "actual_installed_package_outside_checkout": "passed"
+  },
+  "platform_limits": [
+    "Windows: three Linux-only skips; two real 8.3 alias fixtures unavailable both locally and in CI; no filesystem settings changed.",
+    "Ubuntu: eleven Windows-only skips; actual Linux Landlock/root-move/flat-create tests passed.",
+    "Real Windows case/Unicode/hardlink checks passed. Directory-case positive/failure replies are injected; real case-sensitive directory not certified."
+  ],
+  "schema": {
+    "from_versions": [
+      1,
+      2,
+      3
+    ],
+    "to_version": 4,
+    "tables_added": [
+      "data_admissions",
+      "sensitive_inventory",
+      "data_reviews"
+    ],
+    "preupgrade_backup": "SQLite online backup + integrity check before a single schema transaction",
+    "version_checks": "negative, newer, unversioned nonempty schemas fail closed",
+    "source_scope_action_approval_result_rewrites": false,
+    "automatic_legacy_attestation": false,
+    "production_database_opened": false
+  },
+  "live_host": {
+    "evidence": "docs/engineering/evidence/windows-m1-trust-host.json",
+    "status": "unavailable",
+    "connect_errno": 10061,
+    "live_inference_passed": false,
+    "historical_success_reused": false,
+    "selected_model": "qwen3.5:9b",
+    "model_comparisons": 0
+  },
+  "security_evidence": {
+    "inventory_and_receipts": "tests/test_trust_inventory.py",
+    "known_format_nested_credentials_and_numeric_loopback": "tests/test_data_boundary.py; tests/test_models.py",
+    "persuaded_model_with_real_m1_readers": "tests/test_injection_boundary.py",
+    "alias_regressions": "tests/test_file_aliases.py",
+    "approval_retention_and_no_replay": "tests/test_plan_revisions.py; tests/test_m1_create.py; tests/test_trust_inventory.py",
+    "synthetic_future_contracts_only": "tests/test_connector_gates.py; spec/connector-gates.json"
+  },
+  "risk_register": "docs/engineering/m1-trust-inventory.md#risk-register",
+  "owner_decision_record": "spec/owner-decisions-adr025.json",
+  "status": {
+    "TASK-049": "done",
+    "TASK-044": "in_progress",
+    "TASK-026": "in_progress",
+    "REQ-017": "specified",
+    "REQ-019": "specified",
+    "M1": "in_progress",
+    "ADR-025": "provisional"
+  },
+  "original_req017_req019_acceptance_priority_milestone_status_changed": false,
+  "vault_adapter_enabled": false,
+  "real_credentials_read": false,
+  "real_connectors_enabled": false,
+  "merged_or_rebased_or_retargeted_existing_prs": false,
+  "integration_order": [
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "final_head_note": "This record identifies the tested implementation. The following evidence/spec-only commit must receive its own CI; see the PR for the final HEAD/run."
+}

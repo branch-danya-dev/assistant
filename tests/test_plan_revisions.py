@@ -137,11 +137,14 @@ class RevisionTests(RuntimeCase):
         approval_before = self.journal.approval(first["approval_id"])
         # v1 stores the same original tasks.plan/actions/approvals; only v2's additive table is absent.
         self.store.connection.executescript(
-            "DROP TABLE plan_revisions; DROP TABLE approval_previews; PRAGMA user_version=1;")
+            "DROP TABLE plan_revisions; DROP TABLE approval_previews;"
+            "DROP TABLE data_admissions; DROP TABLE sensitive_inventory; DROP TABLE data_reviews;"
+            " PRAGMA user_version=1;")
         with Store(self.paths) as upgraded:
             journal = Agent(upgraded, CreateProvider()).journal
             self.assertTrue(journal.plans.current(self.task_id)["legacy"])
             self.assertEqual(journal.approval(first["approval_id"]), approval_before)
+        self.review_legacy()
         proposal = self.proposal()
         plan_file = self.paths.root / "revision.json"
         plan_file.write_text(json.dumps(proposal), encoding="utf-8")
@@ -160,13 +163,22 @@ class RevisionTests(RuntimeCase):
         first = waiting["actions"][0]
         approval = self.journal.approval(first["approval_id"])
         plan = self.journal.plans.current(self.task_id)
-        self.store.connection.executescript("DROP TABLE approval_previews; PRAGMA user_version=2;")
+        self.store.connection.executescript("DROP TABLE approval_previews; DROP TABLE data_admissions;"
+            "DROP TABLE sensitive_inventory; DROP TABLE data_reviews; PRAGMA user_version=2;")
         with Store(self.paths) as upgraded:
             journal = Agent(upgraded, CreateProvider()).journal
             self.assertEqual(journal.approval(first["approval_id"]), approval)
             self.assertEqual(journal.plans.current(self.task_id), plan)
-            self.assertEqual(upgraded.connection.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertEqual(upgraded.connection.execute("PRAGMA user_version").fetchone()[0], 4)
+        self.review_legacy()
         self.journal.approve(first["approval_id"], first["digest"])
         result = self.agent.run(self.task_id)
         self.assertEqual(result["task"]["state"], "completed", result)
         self.assertEqual(self.journal.action(first["id"])["attempts"], 1)
+
+    def review_legacy(self):
+        from personal_agent.trust import Trust
+        trust = Trust(self.store)
+        for kind, identifier, project in (("task", self.task_id, "alpha"), ("persona", "1", "identity")):
+            meta = trust.review_metadata(kind, identifier, project)
+            trust.review(kind, identifier, project, meta["digest"], "internal")

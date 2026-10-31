@@ -69,7 +69,7 @@ def file_key(path):
 def validate_scope(scope):
     if (not isinstance(scope, dict) or not set(scope) <= {
             "files", "create_files", "create_bindings", "memory_classes",
-            "file_classes", "private_files"}):
+            "file_classes", "private_files", "local_sinks", "local_purpose", "intent_class"}):
         raise AgentError("invalid_data_scope")
     spellings = {}
     for key in ("files", "create_files", "private_files"):
@@ -99,6 +99,12 @@ def validate_scope(scope):
     bindings = scope.get("create_bindings", {})
     if not isinstance(bindings, dict) or not set(bindings) <= set(scope.get("create_files", [])):
         raise AgentError("invalid_data_scope")
+    if (not isinstance(scope.get("local_sinks", []), list) or
+            not set(scope.get("local_sinks", [])) <= {"journal", "worker", "ollama", "preview"} or
+            scope.get("local_purpose", "owner-task") != "owner-task"):
+        raise AgentError("invalid_data_scope")
+    if scope.get("intent_class", "internal") not in {"public", "internal", "private"}:
+        raise AgentError("unclassified_source_denied")
     admit(scope)
 
 
@@ -106,9 +112,9 @@ def file_access(path, scope):
     validate_scope(scope)
     if path not in scope.get("files", []):
         raise AgentError("file_not_in_owner_scope")
-    # Legacy exact allow-file is an owner grant of internal local context. The
-    # caller must not use it for secrets; migrations never relabel stored sources.
-    classification = scope.get("file_classes", {}).get(path, "internal")
+    # Only the owner create boundary materializes an explicit --allow-file grant.
+    # Missing legacy labels never silently become internal during reads/resume.
+    classification = scope.get("file_classes", {}).get(path)
     if classification == "restricted" or classification not in CLASSES:
         raise AgentError("file_sensitivity_denied")
     if classification == "private" and path not in scope.get("private_files", []):

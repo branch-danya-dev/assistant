@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "all_adapters_disabled": true,
+  "requirements": [
+    "REQ-017",
+    "REQ-019"
+  ],
+  "gates": [
+    {
+      "connector": "browser",
+      "stages": [
+        "M2",
+        "M3"
+      ],
+      "task_ids": [
+        "TASK-014",
+        "TASK-032"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "redirects, frames, downloads, submit"
+    }
+  ]
+}

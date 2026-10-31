@@ -27,7 +27,7 @@ def final_context(journal, task, scope, persona, system):
     observations, originals, coverage = [], [], []
     for step in plan["steps"]:
         ref = f"action:{step['action_id']}"
-        receipt = journal.evidence(task["task_id"], ref, task["project_id"])
+        receipt = journal.evidence(task["task_id"], ref, task["project_id"], sink="ollama")
         result = json.loads(journal.action(step["action_id"])["result"])
         tool_result(step["request"], result, task, scope)
         operation = step["request"]["operation"]

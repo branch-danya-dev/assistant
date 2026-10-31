@@ -69,6 +69,7 @@ class Agent:
         return final_context(self.journal, task, scope, self.identity.current(), system)
 
     def _model(self, task: dict, messages: list[dict]) -> dict:
+        self.journal.trust.require_task(task["task_id"], sink="ollama")
         admit(messages)
         self.journal.model_call(task["task_id"])
         if hasattr(self.model, "timeout"):
@@ -92,6 +93,7 @@ class Agent:
         return validate_reply(reply, task["task_id"])
 
     def _tool(self, resolved, task, scope):
+        self.journal.trust.require_task(task["task_id"], sink="worker")
         return run_worker(self.store.paths, {"kind": "tool", "resolved": asdict(resolved),
                           "task": {k: task[k] for k in ("task_id", "project_id")},
                           "scope": scope}, timeout=resolved.descriptor["timeout_seconds"],
@@ -104,6 +106,7 @@ class Agent:
             task, scope = self.journal.get(task_id), self.journal.scope(task_id)
             try:
                 validate_scope(scope)
+                self.journal.trust.require_task(task_id, sink="worker")
                 if scope.get("files") or scope.get("create_files"):
                     run_worker(self.store.paths, {"kind": "scope_check", "project": task["project_id"],
                                "scope": scope}, journal=self.journal, task_id=task_id)

@@ -53,7 +53,21 @@ MIGRATIONS = [
                                 PRIMARY KEY(task_id,revision));
     """,
     # v3 adds preview inventory and terminal partial state; old applications must refuse v3.
-    "CREATE TABLE approval_previews(name TEXT PRIMARY KEY, identity TEXT NOT NULL, expires REAL NOT NULL);"
+    "CREATE TABLE approval_previews(name TEXT PRIMARY KEY, identity TEXT NOT NULL, expires REAL NOT NULL);",
+    """
+    CREATE TABLE data_admissions(kind TEXT NOT NULL, object_id TEXT NOT NULL,
+        project_id TEXT NOT NULL, digest TEXT NOT NULL, classification TEXT NOT NULL,
+        owner TEXT NOT NULL, provenance TEXT NOT NULL, reviewed_at TEXT NOT NULL,
+        expires_at TEXT NOT NULL, PRIMARY KEY(kind,object_id));
+    CREATE TABLE sensitive_inventory(id TEXT PRIMARY KEY, kind TEXT NOT NULL,
+        project_id TEXT NOT NULL, locator TEXT NOT NULL, locator_key TEXT NOT NULL,
+        classification TEXT NOT NULL, owner TEXT NOT NULL, provenance TEXT NOT NULL,
+        reviewed_at TEXT, expires_at TEXT NOT NULL,
+        UNIQUE(kind,project_id,locator_key));
+    CREATE TABLE data_reviews(id TEXT PRIMARY KEY, kind TEXT NOT NULL, object_id TEXT NOT NULL,
+        digest TEXT NOT NULL, classification TEXT NOT NULL, reviewed_at TEXT NOT NULL,
+        expires_at TEXT NOT NULL);
+    """
 ]
 
 
@@ -66,16 +80,29 @@ class Store:
                                           timeout=5, isolation_level=None)
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA foreign_keys=ON")
-        self.connection.execute("PRAGMA journal_mode=WAL")
-        self.connection.execute("PRAGMA synchronous=FULL")
         try:
             version = self.connection.execute("PRAGMA user_version").fetchone()[0]
             if version > len(MIGRATIONS):
                 raise AgentError("database_version_newer_than_application")
-            for index in range(version, len(MIGRATIONS)):
-                self.connection.executescript("BEGIN IMMEDIATE;\n" + MIGRATIONS[index]
-                                              + f"\nPRAGMA user_version={index + 1};\nCOMMIT;")
+            if version < 0 or (version == 0 and self.connection.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table'").fetchone()):
+                raise AgentError("database_version_invalid")
+            self.migration_backup = None
+            if version < len(MIGRATIONS):
+                with self.execution_lock():
+                    version = self.connection.execute("PRAGMA user_version").fetchone()[0]
+                    if not 0 <= version <= len(MIGRATIONS):
+                        raise AgentError("database_version_invalid")
+                    if version:
+                        self.migration_backup = self.backup()
+                    if version < len(MIGRATIONS):
+                        self.connection.executescript("BEGIN IMMEDIATE;\n" +
+                            "\n".join(MIGRATIONS[version:]) +
+                            f"\nPRAGMA user_version={len(MIGRATIONS)};\nCOMMIT;")
+            self.connection.execute("PRAGMA journal_mode=WAL")
+            self.connection.execute("PRAGMA synchronous=FULL")
         except BaseException:
+            self.connection.rollback()
             self.connection.close()
             raise
 

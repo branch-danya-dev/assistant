@@ -4,6 +4,10 @@ M1 remains **in_progress**. REQ-017 and REQ-019 remain **specified, P0, M1**,
 with their original acceptance unchanged. This is implemented defence and executable
 negative evidence, not certification of arbitrary secret detection or future connectors.
 
+Latest implementation: [ADR-026 / TASK-049 inventory and admission](m1-trust-inventory.md)
+adds SQLite v4 receipts, metadata inventory and manual legacy review. The v3 details below
+describe the earlier checkpoint; they do not override the new fail-closed legacy policy.
+
 PR #6 review follow-up: [file alias remediation and compatibility](m1-file-aliases.md)
 enforces fail-closed Windows scope/long-name checks, hardlink rejection and legacy resume
 preflight. [ADR-025 proposed acceptance agreement](m1-trust-boundary-proposal.md) is provisional,

@@ -81,6 +81,19 @@ def run_worker(paths: Paths, payload: dict, *, timeout: float = 5, journal=None,
     end = time.monotonic() + timeout
     payload = {**payload, "root": str(paths.root), "parent_pid": os.getpid()}
     admit(payload)
+    if payload["kind"] in ("tool", "model"):
+        from .storage import Store
+        from .trust import Trust
+        identifier = payload.get("task_id") if payload["kind"] == "model" else payload["task"]["task_id"]
+        with Store(paths) as store:
+            Trust(store).require_task(identifier, sink="worker")
+            if payload["kind"] == "tool":
+                from .memory import Memory
+                from .tools import Registry, Resolved
+                resolved = Resolved(**payload["resolved"])
+                if Registry(paths, Memory(store)).resolve(resolved.request, payload["task"],
+                                                          payload["scope"]) != resolved:
+                    raise AgentError("resolved_target_changed")
     encoded = encode(payload).encode("utf-8")
     if len(encoded) > MAX_WORKER_BYTES:
         raise AgentError("worker_input_budget_exhausted")

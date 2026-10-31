@@ -250,6 +250,7 @@ class FileAliasTests(RuntimeCase):
         self.assertFalse((self.base / "note.txt").samefile(self.base / "NOTE.TXT"))
         scope = {"files": ["note.txt", "NOTE.TXT"], "file_classes": {"NOTE.TXT": "restricted"}}
         task = self.journal.create("synthetic", "alpha", scope)
+        scope = self.journal.scope(task)  # owner create, never a legacy implicit label
         file_access("note.txt", scope)
         with self.assertRaisesRegex(AgentError, "file_sensitivity_denied"):
             file_access("NOTE.TXT", scope)

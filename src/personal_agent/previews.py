@@ -13,6 +13,7 @@ import time
 from contextlib import contextmanager, nullcontext
 
 from .config import AgentError
+from .data_policy import admit
 from .safe_fs import _win_open, identity, opened_path, pinned_parent
 from .storage import encode, uid
 
@@ -118,6 +119,11 @@ class Previews:
                 "ttl_seconds": TTL_SECONDS, "cryptographic_erasure": False}
 
     def create(self, document, *, clock=None):
+        # Caller is owner-only. Production proposals must refer to an admitted task.
+        admit(document)
+        if "approval" in document:
+            from .trust import Trust
+            Trust(self.store).require_task(document["approval"]["task_id"], sink="preview")
         timestamp = time.time() if clock is None else clock
         data = encode(document).encode("utf-8")
         if len(data) > MAX_PREVIEW_BYTES:

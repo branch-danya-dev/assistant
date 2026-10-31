@@ -47,3 +47,9 @@ Never commit runtime state, model weights or secrets to Git.
 Approval previews use `cache/approval-previews-v1`, private ACL/mode, registered identities and
 a 15-minute cleanup TTL. SQLite v3 adds the inventory. Expiry requires on-demand cleanup; it
 is not automatic or cryptographic erasure. See `../engineering/m1-review-fixes.md`.
+
+ADR-026 adds SQLite v4 metadata-only source inventory, admission receipts and review history.
+Upgrading v1–v3 makes an integrity-checked online backup before one schema transaction. No
+source/scope/approval/result rows are migrated or attested; legacy content requires owner
+review. Strict versions and matching-backup/code rollback remain mandatory. Runtime metadata
+and hashes are private, not repository artifacts. See `../engineering/m1-trust-inventory.md`.

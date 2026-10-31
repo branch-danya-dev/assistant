@@ -29,8 +29,6 @@ class EvidenceTests(RuntimeCase):
         task, project, ref = self.completed()
         action = self.journal.action(ref.removeprefix("action:"))
         output = json.loads(action["result"])
-        output["text"] = "secret=CANARY_SECRET arbitrary sensitive words" * 1000
-        self.store.connection.execute("UPDATE actions SET result=? WHERE id=?", (encode(output), action["id"]))
         shown = self.invoke("show-evidence", task, ref, "--project", project)
         self.assertEqual(shown.returncode, 0, shown.stderr)
         data = json.loads(shown.stdout)
@@ -40,6 +38,12 @@ class EvidenceTests(RuntimeCase):
         self.assertLess(len(shown.stdout), 3000)
         limited = self.invoke("show-evidence", task, ref, "--project", project, "--limit", "256")
         self.assertTrue(json.loads(limited.stdout)["truncated"])
+        output["text"] = "secret=CANARY_SECRET arbitrary sensitive words" * 1000
+        self.store.connection.execute("UPDATE actions SET result=? WHERE id=?", (encode(output), action["id"]))
+        denied = self.invoke("show-evidence", task, ref, "--project", project)
+        self.assertNotEqual(denied.returncode, 0)
+        self.assertIn("source_review_required", denied.stderr)
+        self.assertNotIn("CANARY_SECRET", denied.stdout + denied.stderr)
         self.assertNotEqual(self.invoke("show-evidence", task, ref, "--project", "foreign").returncode, 0)
         other, _, _ = self.completed()
         self.assertNotEqual(self.invoke("show-evidence", other, ref, "--project", project).returncode, 0)
@@ -50,5 +54,5 @@ class EvidenceTests(RuntimeCase):
         saved = json.loads(self.journal.action(action["id"])["result"])
         saved["records"][0]["project_id"] = "foreign"
         self.store.connection.execute("UPDATE actions SET result=? WHERE id=?", (encode(saved), action["id"]))
-        with self.assertRaisesRegex(AgentError, "evidence_scope_mismatch"):
+        with self.assertRaisesRegex(AgentError, "source_review_required"):
             self.journal.evidence(task, f"action:{action['id']}", project)

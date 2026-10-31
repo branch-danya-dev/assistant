@@ -57,7 +57,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ]
     },
     {
@@ -73,7 +75,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ]
     },
     {
@@ -115,7 +119,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ]
     },
     {
@@ -278,7 +284,18 @@
         "docs/engineering/m1-file-aliases.md",
         "tests/test_file_aliases.py",
         "docs/engineering/m1-trust-boundary-proposal.md",
-        "docs/engineering/evidence/m1-alias-validation.json"
+        "docs/engineering/evidence/m1-alias-validation.json",
+        "docs/engineering/m1-trust-inventory.md",
+        "tests/test_trust_inventory.py",
+        "tests/test_connector_gates.py",
+        "spec/m1-data-contract.json",
+        "spec/connector-gates.json",
+        "docs/engineering/evidence/m1-trust-validation.json",
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ]
     },
     {
@@ -295,7 +312,9 @@
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "docs/engineering/m1-completion.md"
+        "docs/engineering/m1-completion.md",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ]
     },
     {
@@ -322,7 +341,18 @@
         "docs/engineering/m1-file-aliases.md",
         "tests/test_file_aliases.py",
         "docs/engineering/m1-trust-boundary-proposal.md",
-        "docs/engineering/evidence/m1-alias-validation.json"
+        "docs/engineering/evidence/m1-alias-validation.json",
+        "docs/engineering/m1-trust-inventory.md",
+        "tests/test_trust_inventory.py",
+        "tests/test_connector_gates.py",
+        "spec/m1-data-contract.json",
+        "spec/connector-gates.json",
+        "docs/engineering/evidence/m1-trust-validation.json",
+        "docs/engineering/evidence/windows-m1-trust-host.json",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ]
     },
     {
@@ -804,7 +834,9 @@
       "owner": "project",
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
-        "docs/engineering/m1-evidence.md"
+        "docs/engineering/m1-evidence.md",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json"
       ]
     },
     {
@@ -823,7 +855,11 @@
       "notes": "Verified within the first local M1 slice; see evidence and runbook for operation boundaries.",
       "evidence": [
         "docs/engineering/m1-evidence.md",
-        "docs/engineering/m1-review-fixes.md"
+        "docs/engineering/m1-review-fixes.md",
+        "tests/test_trust_lifecycle.py",
+        "docs/engineering/evidence/m1-trust-remediation.json",
+        "tests/test_memory_admission_search.py",
+        "docs/engineering/evidence/m1-memory-search-remediation.json"
       ]
     }
   ]

@@ -38,6 +38,7 @@ class Plans:
 
     def revise(self, task_id, proposal, registry, *, actor="owner"):
         from .journal import digest
+        self.journal.trust.require_task(task_id)
         admit(proposal)
         if (not isinstance(proposal, dict)
                 or set(proposal) not in ({"base_digest", "reason", "steps"},
@@ -120,4 +121,5 @@ class Plans:
             self.journal._event(task_id, "plan_revised", {
                 "revision": revision["revision"], "previous_digest": current["digest"],
                 "plan_digest": revision["digest"], "action_ids": task["step_ids"]}, actor=actor)
+            self.journal.trust.refresh_task(task_id)
         return revision

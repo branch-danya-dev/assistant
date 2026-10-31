@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0",
+  "all_adapters_disabled": true,
+  "requirements": [
+    "REQ-017",
+    "REQ-019"
+  ],
+  "gates": [
+    {
+      "connector": "browser",
+      "stages": [
+        "M2",
+        "M3"
+      ],
+      "task_ids": [
+        "TASK-014",
+        "TASK-032"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "redirects, frames, downloads, submit"
+    },
+    {
+      "connector": "document",
+      "stages": [
+        "M2"
+      ],
+      "task_ids": [
+        "TASK-012"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "embedded objects, links, parser output"
+    },
+    {
+      "connector": "spreadsheet",
+      "stages": [
+        "M2"
+      ],
+      "task_ids": [
+        "TASK-013"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "formulas, external references, hidden cells"
+    },
+    {
+      "connector": "telegram",
+      "stages": [
+        "M3",
+        "M4"
+      ],
+      "task_ids": [
+        "TASK-017",
+        "TASK-036"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "account, peer, forwarded message, session"
+    },
+    {
+      "connector": "email",
+      "stages": [
+        "M3"
+      ],
+      "task_ids": [
+        "TASK-033"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "headers, attachments, recipient rewrite, uncertain send"
+    },
+    {
+      "connector": "cloud",
+      "stages": [
+        "M3"
+      ],
+      "task_ids": [
+        "TASK-019"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "destination, dataset, purpose, redirects, credential isolation"
+    },
+    {
+      "connector": "desktop",
+      "stages": [
+        "M4"
+      ],
+      "task_ids": [
+        "TASK-022",
+        "TASK-035"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "window, process, account, focus, uncertain click"
+    },
+    {
+      "connector": "voice",
+      "stages": [
+        "M4"
+      ],
+      "task_ids": [
+        "TASK-023"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "speaker, transcript injection, remote session, confirmation"
+    },
+    {
+      "connector": "calendar",
+      "stages": [
+        "M4"
+      ],
+      "task_ids": [
+        "TASK-037"
+      ],
+      "enabled": false,
+      "required_checks": [
+        "source_classification",
+        "origin_scope",
+        "recipient_scope",
+        "target_scope",
+        "credential_isolation",
+        "injection_no_escalation",
+        "outbound_consent",
+        "one_use_approval",
+        "uncertain_effect_reconciliation"
+      ],
+      "actual_adapter_evidence": null,
+      "owner_enablement": null,
+      "fixture_scope": "synthetic_contract_only",
+      "adversarial_surface": "account, event target, attendee changes, uncertain create"
+    }
+  ]
+}

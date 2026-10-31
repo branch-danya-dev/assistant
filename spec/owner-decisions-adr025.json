@@ -1,0 +1,32 @@
+{
+  "adr": "ADR-025",
+  "status": "pending",
+  "implementation_authorized": true,
+  "acceptance_change_authorized": false,
+  "owner_identity": null,
+  "recorded_at": null,
+  "approval_reference": null,
+  "decisions": [
+    {
+      "id": "OD-1",
+      "answer": null,
+      "proposal": "Approve option B bounded M1 sources/sinks and owner responsibility for classification/inventory; exclude universal discovery of unknown secrets."
+    },
+    {
+      "id": "OD-2",
+      "answer": null,
+      "proposal": "Approve default-deny and explicit internal/private-local attestations, ID-based legacy review without authority changes, and Windows Credential Manager as later backend with M1 adapter disabled."
+    },
+    {
+      "id": "OD-3",
+      "answer": null,
+      "proposal": "Require real M2-M4 connector gates at implementation, and fresh selected-Qwen plus Windows/Ubuntu evidence before any M1 closure; no merge/deployment approval."
+    }
+  ],
+  "procedure": [
+    "Owner explicitly answers each decision with ADR-025 reference.",
+    "Record verbatim owner decision reference, date and scope in separate reviewed change.",
+    "Only then consider ADR accepted and explicit acceptance/traceability revision.",
+    "Evaluate original or explicitly revised gates against new evidence before status closure."
+  ]
+}
