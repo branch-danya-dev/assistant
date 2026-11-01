@@ -20,6 +20,7 @@ from personal_agent.orchestrator import Agent
 from personal_agent.safe_fs import check_scope_paths, observe, snapshot
 from personal_agent.storage import encode
 from personal_agent.tools import Registry
+from personal_agent.trust import Trust
 
 
 class FileAliasTests(RuntimeCase):
@@ -198,16 +199,35 @@ class FileAliasTests(RuntimeCase):
         with self.assertRaisesRegex(AgentError, "noncanonical_file_alias"):
             self.task(files=[short, name])
         task = self.task(files=[name])
-        legacy = {"files": [short, name], "file_classes": {name: "restricted"}}
+        self.journal.start(task)
+        request = self.request(task, name)
+        self.journal.set_plan(task, [request])
+        action = self.journal.prepare(task, 0, request, "read", "workspace/alpha/" + name)
+        self.journal.dispatch(action, approval_required=False)
+        self.journal.finish(action, observe(self.paths, "alpha", name))
+        self.journal.transition(task, "paused")
+        saved = self.journal.action(action)
+        legacy = {**self.journal.scope(task), "files": [short, name],
+                  "file_classes": {short: "internal", name: "private"}, "private_files": [name]}
         self.store.connection.execute("UPDATE tasks SET scope=? WHERE id=?", (encode(legacy), task))
+        # A stale receipt must deny first. Explicit test-owner review authorizes
+        # these exact legacy bytes only; it cannot canonicalize or expand grants.
+        trust = Trust(self.store)
+        with self.assertRaisesRegex(AgentError, "source_review_required"):
+            trust.require_task(task)
+        meta = trust.review_metadata("task", task, "alpha")
+        trust.review("task", task, "alpha", meta["digest"], "private")
         agent = Agent(self.store, Mock())
         with patch.object(agent, "_tool") as tool:
-            result = agent.run(task)
+            result = agent.run(task, resume=True)
             tool.assert_not_called()
         agent.model.complete.assert_not_called()
         self.assertEqual(result["task"]["state"], "blocked")
         self.assertEqual(result["task"]["block_reason"], "noncanonical_file_alias")
         self.assertEqual(self.journal.scope(task), legacy)
+        self.assertEqual(self.journal.action(action), saved)
+        with self.assertRaisesRegex(AgentError, "opened_target_changed"):
+            observe(self.paths, "alpha", short)
         document = self.journal.get(task)
         resolved = self.registry.resolve(self.request(task, short), document, legacy)
         with self.assertRaisesRegex(AgentError, "noncanonical_file_alias"):
