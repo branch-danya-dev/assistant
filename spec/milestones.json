@@ -33,13 +33,15 @@
         "tests/test_trust_lifecycle.py",
         "docs/engineering/evidence/m1-trust-remediation.json",
         "spec/owner-decisions-adr025.json",
-        "docs/engineering/adr025-acceptance-traceability.md"
+        "docs/engineering/adr025-acceptance-traceability.md",
+        "docs/engineering/m1-final-security-acceptance.md",
+        "docs/engineering/evidence/m1-final-security-checkpoint.json"
       ],
       "remaining": [
-        "TASK-044: actual Windows 8.3 and case-sensitive-directory evidence plus traceable final bounded coverage review remain open; no blanket Windows filesystem certification.",
-        "Verify exact-head Windows/Ubuntu CI and selected local Qwen evidence separately from historical reports; read/search smoke does not cover every M1 scenario.",
-        "Close TASK-050 on its own sufficient remediation evidence, then TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010 with all dependencies; no automatic M1 closure.",
-        "Owner classification/inventory, unknown secrets, same-account code/DB access and backups/retention remain residual risks. Actual M2-M4 connector gates and separate owner integration/deploy decisions remain mandatory."
+        "TASK-044: final independent bounded coverage review remains open by explicit owner disposition; real isolated Windows 8.3 and case-sensitive denial checks passed at recorded checkpoint.",
+        "Final exact-head Windows/Ubuntu, package and selected local Qwen evidence must remain current; live model-generated revisions are not certified.",
+        "TASK-050 already done; close TASK-044 -> TASK-026 -> TASK-041 -> TASK-009 -> TASK-010 only after all evidence and review gates pass. No automatic M1 closure.",
+        "Owner classification/inventory, unknown secrets, trusted same-account code/DB and backups/retention remain residuals; actual M2-M4 adapter gates and separate integration/deploy decisions remain mandatory."
       ]
     },
     {

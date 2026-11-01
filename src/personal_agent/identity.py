@@ -59,7 +59,11 @@ class Identity:
             raise AgentError("persona_version_conflict")
         payload = encode(value)
         with Store(self.paths) as store:
-            Trust(store).guard("persona", "identity", str(expected))
+            # Persona's owner API admits internal values only. A reviewed private
+            # inventory mark must deny BEFORE publishing any source bytes; the
+            # later receipt check alone leaves an orphaned, unreadable version.
+            if Trust(store).guard("persona", "identity", str(expected)) == "private":
+                raise AgentError("inventory_source_denied")
         if len(payload.encode("utf-8")) > 12000:
             raise AgentError("persona_size_exceeded")
         final = self.paths.file("identity", f"persona-{expected}.json")

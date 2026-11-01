@@ -240,7 +240,7 @@ inventory-marked/restricted, not merely private-local.
 
 No credential import/read/store command exists. The Credential Manager adapter always denies.
 Owner review assumes accurate classification: unknown opaque secrets wrongly attested as
-internal remain a documented residual. ADR-025 and M1 are still open. To roll back, close the
+internal remain a documented residual. ADR-025 is accepted; M1 remains open. To roll back, close the
 app and restore verified pre-upgrade backup plus matching code in a separate root; never edit
 `user_version` manually. Older code does not enforce this policy and is not permission to
 resume private tasks. Keep backups private and retain the original root until restore checks pass.

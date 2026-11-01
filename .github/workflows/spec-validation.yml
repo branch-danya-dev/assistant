@@ -20,6 +20,10 @@ jobs:
         run: python tools/validate_specs.py
       - name: Run unit, security, crash and HTTP integration tests
         run: python -m unittest discover -s tests -v
+      - name: Real isolated NTFS alias and case-sensitive acceptance
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tools/windows_ntfs_acceptance.ps1
       - name: Check Python source
         run: python -m ruff check src tests setup.py tools/verify_host.py tools/validate_specs.py tools/verify_package.py tools/installed_acceptance.py
       - name: Build distributable with canonical contracts

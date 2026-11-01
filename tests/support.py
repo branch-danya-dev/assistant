@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -15,8 +16,10 @@ from personal_agent.storage import Store  # noqa: E402
 class RuntimeCase(unittest.TestCase):
     def setUp(self):
         # Explicit sibling root: no runtime data in Git, no default C: temp on Windows.
-        temp_parent = REPO.parent / "test-runs"
-        temp_parent.mkdir(exist_ok=True)
+        temp_parent = Path(os.environ.get("ASSISTANT_TEST_ROOT", REPO.parent / "test-runs"))
+        if not temp_parent.is_absolute():
+            raise ValueError("Absolute synthetic test root required")
+        temp_parent.mkdir(parents=True, exist_ok=True)
         self.temp = tempfile.TemporaryDirectory(dir=temp_parent)
         self.paths = Paths(Path(self.temp.name) / "home")
         self.paths.bootstrap()
