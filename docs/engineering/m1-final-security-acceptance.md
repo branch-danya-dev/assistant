@@ -64,14 +64,54 @@ and a late flag change after approval (no consumption or file creation).
 Failure to enable is an explicit skip with command exit, never simulated success.
 Existing injected flags/query-failure tests remain labelled simulated.
 
-Exact real/pass/skip counts and capability output are recorded in the run-linked evidence
-and PR after execution. A successful general Windows suite alone cannot close this gap.
+At checkpoint `df0b0e140a2062076ca737542f1f14921dd6e82f`,
+[exact-head push CI](https://github.com/branch-danya-dev/assistant/actions/runs/41261249205)
+passed all stages. Windows: **202 passed / 7 skipped / 209 discovered**; Ubuntu:
+**196 / 13 / 209**. Windows ordinary-root skips are two missing 8.3 aliases, two VHD-only
+case tests, and three Linux-only tests. Ubuntu's 13 skips are Windows-specific.
+The separate VHD run passed **34 / 3 / 37**: both real 8.3 tests and both actual case-mode
+tests passed; only three Linux-only cases skipped. The log records volume state 0,
+successful per-volume enablement, actual case-sensitive enable/query exit 0 and successful
+VHD detach. Ordinary case aliases, Unicode/collision, hardlink and junction checks passed
+on the real VHD too. Injected unknown/case flags remain simulated evidence, separately.
+
+The final child adds absolute opened-name assertions and directory-alias worker/read/legacy
+checks. Its exact final SHA/CI results belong to [PR #11](https://github.com/branch-danya-dev/assistant/pull/11)
+and the delivered report; this checkpoint is not silently relabelled as the final run.
+
+Provisioning syntax follows Microsoft's [per-volume 8.3 command](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-8dot3name)
+and [per-directory case sensitivity](https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity).
+No change to host-wide NTFS settings was needed.
+
+## Fresh installed-wheel Qwen and package evidence
+
+The checkpoint wheel SHA256 is
+`d7f0b14fa63a378a930cab60098be273002d4aaf41efe5c4395ed5ddf90dea93`.
+Local Windows schema/DAG, 209-test discovery (202 pass/7 skips), Ruff and outside-checkout
+installed-wheel checks passed. Dependencies were reused locally; no model was downloaded.
+`tools/installed_acceptance.py` passed both smoke and read/search gates with child exit 0
+AND explicit JSON `passed=true`, from a fresh installed environment outside checkout.
+
+The additional reproducible `live_extended.py` in the delivered evidence bundle passed
+12 checks at 2026-11-01T01:31:56Z. Live Qwen proposed two exact synthetic create requests;
+the owner/test harness approved only equality with the expected full request/digest.
+One create was verified, paused by the harness and resumed after reopening the store:
+completed with one attempt. The other process exited 17 after actual create but before
+acknowledgement; recovery produced `needs_reconciliation`, refused replay, independently
+observed exact bytes/hash, then recorded owner/test-harness `applied` reconciliation.
+The reconciled action remained non-replayable (task blocked, not misreported completed).
+Both approvals consumed once; both 23-byte file hashes matched. The harness and evidence
+hashes are in [structured checkpoint evidence](evidence/m1-final-security-checkpoint.json).
+Pause/crash injection and reconciliation are test-harness actions, **not model-generated
+revisions**. Tool receipts/file observations are verified; model prose remains unverified.
+No production DB, credentials, model settings or model-blob verification was involved.
 
 ## Acceptance disposition
 
-TASK-044 remains **in_progress** until current cross-platform/package/model evidence,
-actual NTFS results (or separately approved evidence-based limitations) and independent
-bounded coverage review are all sufficient. TASK-026 → TASK-041 → TASK-009 → TASK-010
+The owner explicitly chose on 2026-11-01 to **leave independent review as an open gate**.
+TASK-044 remains **in_progress**: actual NTFS and current platform/model checkpoints now
+have evidence, but final independent bounded coverage review is still required. No
+reviewer identity or approval is invented. TASK-026 → TASK-041 → TASK-009 → TASK-010
 remain in_progress; REQ-017/019 and SCN-007 specified; M1 in_progress. TASK-050 stays done.
 No absent connector, vault, M2 calculator or wider M2–M4 feature is accepted here.
 

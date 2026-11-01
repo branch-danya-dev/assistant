@@ -297,7 +297,9 @@
         "tests/test_memory_admission_search.py",
         "docs/engineering/evidence/m1-memory-search-remediation.json",
         "spec/owner-decisions-adr025.json",
-        "docs/engineering/adr025-acceptance-traceability.md"
+        "docs/engineering/adr025-acceptance-traceability.md",
+        "docs/engineering/m1-final-security-acceptance.md",
+        "docs/engineering/evidence/m1-final-security-checkpoint.json"
       ],
       "acceptance_policy": {
         "decision": "ADR-025",
@@ -376,7 +378,9 @@
         "tests/test_memory_admission_search.py",
         "docs/engineering/evidence/m1-memory-search-remediation.json",
         "spec/owner-decisions-adr025.json",
-        "docs/engineering/adr025-acceptance-traceability.md"
+        "docs/engineering/adr025-acceptance-traceability.md",
+        "docs/engineering/m1-final-security-acceptance.md",
+        "docs/engineering/evidence/m1-final-security-checkpoint.json"
       ],
       "acceptance_policy": {
         "decision": "ADR-025",

@@ -1086,10 +1086,11 @@
         "docs/engineering/m1-final-security-acceptance.md",
         "tests/test_final_acceptance.py",
         "tests/test_windows_ntfs.py",
-        "tools/windows_ntfs_acceptance.ps1"
+        "tools/windows_ntfs_acceptance.ps1",
+        "docs/engineering/evidence/m1-final-security-checkpoint.json"
       ],
       "owner": "unassigned",
-      "notes": "ADR-025 policy accepted, not a security completeness certificate. Open: real Windows 8.3 alias fixtures and actual case-sensitive-directory fail-closed evidence; traceable review of the final bounded source/sink coverage and current platform/model evidence. TASK-049 implementation remains done; TASK-050 remediation must also pass before this gate closes. Unknown secrets/inventory/misclassification, same-account access and retention/backups remain explicit assumptions/risks, not detection claims. Actual connector gates are mandatory at M2-M4, not claimed as M1 evidence. See docs/engineering/adr025-acceptance-traceability.md. 2026-11-01 cycle: persona private-inventory prepublication defect fixed with regression; expanded source/sink audit and guarded isolated-NTFS runner added. Current results and independent review disposition are required; no status closure from skips.",
+      "notes": "ADR-025 accepted; TASK-049/050 done. At checkpoint df0b0e1 real short file/directory aliases and actual per-directory case-sensitive fail-closed checks passed on a dedicated CI NTFS VHD, alongside exact-head Windows/Ubuntu/package and fresh selected-Qwen synthetic create/recovery. A persona prepublication admission defect was fixed. Final independent bounded source/sink review remains OPEN by explicit owner disposition on 2026-11-01; dependent gates stay in_progress. Final HEAD must retain passing evidence. See docs/engineering/m1-final-security-acceptance.md; no universal-secret, same-account isolation, retention/erasure or future-adapter certification.",
       "acceptance_depends_on": [
         "TASK-049",
         "TASK-050"

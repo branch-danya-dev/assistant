@@ -1,0 +1,129 @@
+{
+  "recorded_at": "2026-11-01T01:33:57.708935+00:00",
+  "checkpoint_sha": "df0b0e140a2062076ca737542f1f14921dd6e82f",
+  "pr": 11,
+  "base": "docs/adr025-accepted-traceability",
+  "base_sha": "4d033408b041add4c4d0865dab2c5fe662302890",
+  "final_head_results": "PR #11 body and delivered report: rerun after final evidence/test changes; this checkpoint is not relabelled final",
+  "ci": {
+    "url": "https://github.com/branch-danya-dev/assistant/actions/runs/41261249205",
+    "event": "push",
+    "checkout_sha_verified_in_both_logs": true,
+    "windows": {
+      "discovered": 209,
+      "passed": 202,
+      "skipped": 7
+    },
+    "ubuntu": {
+      "discovered": 209,
+      "passed": 196,
+      "skipped": 13
+    },
+    "windows_isolated_ntfs": {
+      "discovered": 37,
+      "passed": 34,
+      "skipped": 3,
+      "real_short_file": true,
+      "real_short_directory": true,
+      "real_case_sensitive": true,
+      "distinct_case_objects_confirmed": true,
+      "vhd_detach_confirmed": true,
+      "global_ntfs_settings_changed": false
+    }
+  },
+  "local_windows": {
+    "discovered": 209,
+    "passed": 202,
+    "skipped": 7
+  },
+  "wheel_sha256": "d7f0b14fa63a378a930cab60098be273002d4aaf41efe5c4395ed5ddf90dea93",
+  "package_outside_checkout": true,
+  "qwen_smoke_workflow": {
+    "passed": true,
+    "status": "PASSED",
+    "gates": {
+      "smoke": {
+        "exit_code": 0,
+        "passed": true,
+        "status": "PASSED"
+      },
+      "workflow": {
+        "exit_code": 0,
+        "passed": true,
+        "status": "PASSED"
+      }
+    }
+  },
+  "qwen_extended": {
+    "utc": "2026-11-01T01:31:56.366584+00:00",
+    "checks": {
+      "pause_exact_live_plan": true,
+      "paused_after_verified_create": true,
+      "restart_final_without_replay": true,
+      "pause_exact_file_hash": true,
+      "pause_one_consumption": true,
+      "crash_exact_live_plan": true,
+      "crash_and_uncertain": true,
+      "uncertain_effect_independently_observed": true,
+      "uncertain_resume_refused": true,
+      "reconciled_effect_not_replayed": true,
+      "crash_exact_file_hash": true,
+      "crash_one_consumption": true
+    },
+    "details": {
+      "pause": {
+        "state": "completed",
+        "action_status": "verified",
+        "sha256": "bd43672be0b0db4721494f52c2284cd8854865f1ef2e1286d4f9656c145cbd43",
+        "bytes": 23,
+        "attempts": 1
+      },
+      "crash": {
+        "state": "blocked",
+        "action_status": "reconciled",
+        "sha256": "14f9165ec3e6b8421ee1d8ab0f65104635fb1e172b26fa5fe379be5730c3dfec",
+        "bytes": 23,
+        "attempts": 1
+      }
+    },
+    "provenance": {
+      "owner_authorization": "current task: synthetic create with exact owner/test-harness approval",
+      "approver": "owner/test-harness",
+      "initial_plan": "live qwen3.5:9b",
+      "recovery_injection": "test-harness only",
+      "live_model_generated_revision_tested": false,
+      "model_summary": "unverified prose; file bytes/identity/hash observed independently",
+      "production_database_access": false,
+      "source_sha": "df0b0e140a2062076ca737542f1f14921dd6e82f",
+      "installed_module": "isolated installed-env/Lib/site-packages/personal_agent/__init__.py; outside checkout"
+    },
+    "passed": true
+  },
+  "artifact_sha256": {
+    "host-capability.json": "167cca4d5d175246191bf10173321695b85fee904a04d7e577ac4c86b16185bf",
+    "final-acceptance-before.log": "89ffd74700ba047989e5cf5a2fc58a45c9517bb01061fa5705c726dcdc2cdaea",
+    "final-acceptance-after.log": "cf87d8306a184c447b14b45c75c5ea34cbda879324c9429e8892738fb89e8e40",
+    "tests-exact-df0b0e1.log": "328a3ed164daf27df01c1f525d350f5410a9c7df518139b97c72ec522f9756eb",
+    "ci-ubuntu-df0b0e1.log": "5f68bb4f6871820d900d0e1b08bdb2b729c68fc2b7cb50e6421f2a829244ba13",
+    "ci-windows-df0b0e1.log": "0a10584e0effa228142d99b6a3e2c147bca5daf5ba3a2f8424f5d2e5c8a49a85",
+    "qwen-smoke-workflow.json": "5740c46c30066ff2bd277f80a3117d1727beb1009a6d92118ffbb72937c4d226",
+    "qwen-extended.json": "284734c83135b34ac0d5b1f1c812ea5f8a29fef60f3536f87a18027e245ca54c",
+    "live_extended.py": "053a83420c9ae6d9f50c20fc736819f00aede8597848702e38f3f764236414a6",
+    "wheel.log": "c9a28a7f7d00c083459afe5046b0dce809f8ba6aa5e2ab3d4fc0f9bb0a960b17",
+    "package.log": "7d7b617743ba34bc621c09497cff57aa35973199f09f1cc8bd427c4899594d79"
+  },
+  "independent_review": {
+    "status": "open",
+    "owner_disposition": "2026-11-01 current chat: leave independent review as an open gate",
+    "claimed_independent": false
+  },
+  "statuses_changed": false,
+  "residuals": [
+    "owner misclassification/incomplete inventory",
+    "unknown/encoded secrets not universally detected",
+    "trusted same-account code/database",
+    "retention/backups not secure erasure",
+    "disabled future adapters require actual gates",
+    "independent final coverage review outstanding"
+  ]
+}

@@ -1,6 +1,9 @@
 # ADR-025 acceptance revision and integration gates
 
 2026-10-31. **Policy accepted; M1 remains in_progress.**
+The [2026-11-01 TASK-044 cycle](m1-final-security-acceptance.md) adds real isolated NTFS
+8.3/case-sensitive evidence and fresh create/recovery checks. The gap descriptions below
+describe this PR #10 checkpoint; final independent review remains open in the new cycle.
 [Owner decision source/date](adr025-owner-decisions.md): OD-1/2/3=YES.
 This decision/traceability layer starts at PR #8 `ee7dbdd871306451a1ea9b44715ac7f3689b192e`,
 base `feat/m1-trust-inventory`. No runtime code, production state, grants or model settings

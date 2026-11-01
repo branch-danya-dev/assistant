@@ -51,7 +51,7 @@
     "no control of arbitrary external Git clients",
     "absent connector tests do not certify real integrations",
     "backup copies and canonical retention may preserve data; admission expiry/retrieval removal is not secure erasure",
-    "real Windows 8.3 aliases unavailable in recorded fixtures; real case-sensitive-directory rejection not certified"
+    "Real Windows 8.3 and case-sensitive-directory denial verified on isolated CI NTFS VHD at the TASK-044 checkpoint; no blanket filesystem certification, final independent coverage review remains open"
   ],
   "admission_lifecycle": {
     "default_expiry_days": 30,
